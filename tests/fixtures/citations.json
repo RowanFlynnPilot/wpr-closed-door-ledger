@@ -1,0 +1,447 @@
+{
+  "_about": "Closed-session notice items with hand-written expected values. Real items were pulled Oct 23, 2026 from all five reachable jurisdictions (CivicClerk, BoardBook, AgendaCenter, Municode) and checked verbatim against the source after whitespace normalization and HTML unescaping; cases marked synthetic are invented edge cases. 'other_citations' lists every statute cited other than 19.85 (municipal code numbers excluded). 'purpose_contains' is a substring purpose_text() must return; null means purpose_text() must return \"\" (statute only) or None (no citation).",
+  "cases": [
+    {
+      "id": "wausau-130-1",
+      "jurisdiction": "wausau",
+      "meeting_date": "2026-01-06",
+      "source": "CivicClerk event 130 (Economic Development Committee)",
+      "text": "Adjourn to Closed Session pursuant to Wisconsin State Statute § 19.85(1)(e) for deliberating or negotiating the purchasing of public properties, the investing of public funds, or conducting other specified public business, whenever competitive or bargaining reasons require a closed session in regard to the sale of 424 Burns Street, Wausau.",
+      "expected": {
+        "exemptions": [
+          "e"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "sale of 424 Burns Street"
+      }
+    },
+    {
+      "id": "wausau-1969-1",
+      "jurisdiction": "wausau",
+      "meeting_date": "2026-09-08",
+      "source": "CivicClerk event 1969 (Common Council)",
+      "note": "Closing parenthesis missing in the original notice.",
+      "text": "Adjourn to Closed Session pursuant to Wisconsin State Statute § 19.85(1)(g for conferring with legal counsel for the governmental body who is rendering oral or written advice concerning strategy to be adopted by the body with respect to litigation in which it is or is likely to become involved regarding a settlement offer received in Marathon County Case No. 24CV40 Green Acres at Greenwood Hills, LLC vs. City of Wausau.",
+      "expected": {
+        "exemptions": [
+          "g"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "settlement offer received in Marathon County Case No. 24CV40"
+      }
+    },
+    {
+      "id": "wausau-731-1",
+      "jurisdiction": "wausau",
+      "meeting_date": "2025-02-18",
+      "source": "CivicClerk event 731 (Board of Public Works)",
+      "note": "Cites 19.85(d) with no subsection (1). Paragraph (d) covers probation/parole and crime detection; the purpose is contractor pre-qualification. Review-queue case.",
+      "text": "CLOSED SESSION pursuant to Section 19.85(d), Wis. Stats., for the purpose of considering and deliberating on pre-qualification statements for 2025 Street Construction Project \"A\" - Randolph Street & Cherry Street, and 2025 Concrete Pavement Repair Project.",
+      "expected": {
+        "exemptions": [
+          "d"
+        ],
+        "cites_subsection_1": false,
+        "other_citations": [],
+        "purpose_contains": "pre-qualification statements"
+      }
+    },
+    {
+      "id": "wausau-203-1",
+      "jurisdiction": "wausau",
+      "meeting_date": "2025-11-18",
+      "source": "CivicClerk event 203 (Board of Public Works)",
+      "text": "Closed Session pursuant to Section 19.85(1)(g), Wis. Stats., for the purpose of deliberating on claims.",
+      "expected": {
+        "exemptions": [
+          "g"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "deliberating on claims"
+      }
+    },
+    {
+      "id": "wausau-1450-1",
+      "jurisdiction": "wausau",
+      "meeting_date": "2025-08-27",
+      "source": "CivicClerk event 1450 (Human Resources Committee)",
+      "note": "'par. (b)' inside the statutory paraphrase must not be read as a citation of (b).",
+      "text": "CLOSED SESSION pursuant to 19.85(1)(f) Considering financial, medical, social or personal histories or disciplinary data of specific persons, preliminary consideration of specific personnel problem or the investigation of charges against specific persons except where par. (b) applies which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such histories or data, or involved in such problems or investigations regarding: Consideration of Disciplinary Grievance Appeal.",
+      "expected": {
+        "exemptions": [
+          "f"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Disciplinary Grievance Appeal"
+      }
+    },
+    {
+      "id": "wausau-2457-1",
+      "jurisdiction": "wausau",
+      "meeting_date": "2026-10-05",
+      "source": "CivicClerk event 2457 (Parks & Recreation Committee)",
+      "note": "Municipal code numbers (12.56.130) must not be parsed as statutes.",
+      "text": "CLOSED SESSION pursuant to § 19.85(1)(a) for deliberating a case which was the subject of any judicial or quasi-judicial trial or hearing before the governmental body, for the purpose of deliberating an appeal of an order of the City Forester, pursuant to Wuasau Municipal Code 12.56.130, imposing a fee for damage to a city tree, pursuant to Wausau Municipal Code 12.56.040",
+      "expected": {
+        "exemptions": [
+          "a"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "appeal of an order of the City Forester"
+      }
+    },
+    {
+      "id": "wausau_sd-677848-1",
+      "jurisdiction": "wausau_sd",
+      "meeting_date": "2025-03-10",
+      "source": "BoardBook 1360 meeting 677848",
+      "note": "Subject comes before the citation; the item sits under a 'REQUEST FOR CLOSED SESSION PURSUANT TO STATE STATUTES' header.",
+      "text": "Administrator Contract Review s. 19.85 (1)(c)",
+      "expected": {
+        "exemptions": [
+          "c"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Administrator Contract Review"
+      }
+    },
+    {
+      "id": "wausau_sd-733411-1",
+      "jurisdiction": "wausau_sd",
+      "meeting_date": "2026-02-23",
+      "source": "BoardBook 1360 meeting 733411",
+      "text": "Preliminary Discussion Regarding Potential Litigation 19.85 (g)",
+      "expected": {
+        "exemptions": [
+          "g"
+        ],
+        "cites_subsection_1": false,
+        "other_citations": [],
+        "purpose_contains": "Potential Litigation"
+      }
+    },
+    {
+      "id": "wausau_sd-639532-1",
+      "jurisdiction": "wausau_sd",
+      "meeting_date": "2024-06-10",
+      "source": "BoardBook 1360 meeting 639532",
+      "note": "Collective bargaining negotiations under s. 19.86, not a 19.85 exemption.",
+      "text": "The Parties may continue negotiations in closed session pursuant to ss. 19.86 and 111.70 (4)(cm).",
+      "expected": {
+        "exemptions": [],
+        "cites_subsection_1": null,
+        "other_citations": [
+          "19.86",
+          "111.70(4)(cm)"
+        ],
+        "purpose_contains": "negotiations"
+      }
+    },
+    {
+      "id": "wausau_sd-619795-1",
+      "jurisdiction": "wausau_sd",
+      "meeting_date": "2024-02-12",
+      "source": "BoardBook 1360 meeting 619795",
+      "text": "The Board will convene into closed session under Wis. Stat. s. 19.85(1)(f) to discuss and consider the investigation of employee matters which, if discussed in open session, would likely have a substantial adverse effect upon the reputation of the individuals involved, and which involves confidential student information protected by Wis. Stat. s. 118.125.",
+      "expected": {
+        "exemptions": [
+          "f"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [
+          "118.125"
+        ],
+        "purpose_contains": "investigation of employee matters"
+      }
+    },
+    {
+      "id": "dc_everest-715226-1",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "2025-11-12",
+      "source": "BoardBook 1315 meeting 715226",
+      "note": "Three exemptions in one item, joined by 'And', each with a parenthetical purpose.",
+      "text": "The Board will consider adjournment to Closed Session Pursuant to W.S.S. 19.85(1)(d) to consider strategy for crime detection or prevention. (Review/Approve annual school safety drills and safety books.) And 19.85(1)(c) for considering performance evaluation data of any public employee over which the governmental body exercises responsibility. (Begin the annual Superintendent's review.) And W.S.S. 19.85(1)(f) for considering personal history or disciplinary data of specific persons, preliminary consideration of specific personnel problems or the investigation of charges against specific persons which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigation (Parent/Student Complaint).",
+      "expected": {
+        "exemptions": [
+          "d",
+          "c",
+          "f"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "school safety drills"
+      }
+    },
+    {
+      "id": "dc_everest-679896-1",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "2025-04-16",
+      "source": "BoardBook 1315 meeting 679896",
+      "note": "Space between (1) and (e).",
+      "text": "The Board will consider adjournment to Closed Session pursuant to 19.85(1) (e) Wis. Stats. for deliberating or negotiating the purchasing of public properties, the investing of public funds, or conducting other specified public business, whenever competitive or bargaining reasons require a closed session. (Update on Negotiations with DCETA)",
+      "expected": {
+        "exemptions": [
+          "e"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Update on Negotiations with DCETA"
+      }
+    },
+    {
+      "id": "dc_everest-691707-1",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "2025-06-18",
+      "source": "BoardBook 1315 meeting 691707",
+      "text": "The Board will contemplate adjournment to Closed Session under W.S.S. 19.85(c) for considering employment, promotion, compensation, or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility. (Superintendent's mid-year goal review)",
+      "expected": {
+        "exemptions": [
+          "c"
+        ],
+        "cites_subsection_1": false,
+        "other_citations": [],
+        "purpose_contains": "mid-year goal review"
+      }
+    },
+    {
+      "id": "dc_everest-627827-1",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "2024-04-17",
+      "source": "BoardBook 1315 meeting 627827",
+      "note": "A closed session noticed with no statutory citation in the item.",
+      "text": "Closed Session Information (Board Only)",
+      "expected": {
+        "exemptions": [],
+        "cites_subsection_1": null,
+        "other_citations": [],
+        "purpose_contains": null
+      }
+    },
+    {
+      "id": "synthetic-list",
+      "jurisdiction": "synthetic",
+      "meeting_date": null,
+      "source": "synthetic",
+      "synthetic": true,
+      "text": "Adjourn to closed session pursuant to Wis. Stat. § 19.85(1)(c), (e) and (f) to discuss the city administrator contract.",
+      "expected": {
+        "exemptions": [
+          "c",
+          "e",
+          "f"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "city administrator contract"
+      }
+    },
+    {
+      "id": "kronenwetter-f68339e9-1",
+      "jurisdiction": "kronenwetter",
+      "meeting_date": "2024-01-31",
+      "source": "Municode ADA agenda f68339e9a1094a4caeefc4a28039a1b1 (Special Village Board)",
+      "note": "No dot in the citation ('1985(1)(f)'); 'to wit' introduces the purpose; 'par. (b)' must not count.",
+      "text": "Consideration of motion to convene into closed session pursuant to Wis. Stat. 1985(1)(f), Considering financial, medical, social or personal histories or disciplinary data of specific persons, preliminary consideration of specific personnel problems or the investigation of charges against specific persons except where par. (b) applies which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations - to wit selection of independent counsel in reference to employee complaint",
+      "expected": {
+        "exemptions": [
+          "f"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "selection of independent counsel"
+      }
+    },
+    {
+      "id": "kronenwetter-1ca2be24-1",
+      "jurisdiction": "kronenwetter",
+      "meeting_date": "2025-06-24",
+      "source": "Municode ADA agenda 1ca2be24e5f74071944c033221d6f6c4 (Special Administrative Policy Committee)",
+      "note": "Spaces inside the parentheses: '(1)( c )'.",
+      "text": "Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit Review of Administrator candidates; to wit- administrator interview.",
+      "expected": {
+        "exemptions": [
+          "c"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Review of Administrator candidates"
+      }
+    },
+    {
+      "id": "kronenwetter-81d6bdbf-reconvene",
+      "jurisdiction": "kronenwetter",
+      "meeting_date": "2026-02-26",
+      "source": "Municode ADA agenda 81d6bdbffd204aeda20b07ca54ac8740 (Special Village Board)",
+      "note": "Not a closed-session item: s. 19.85(2) is the reconvene rule. Parses to nothing; it sets notices_reconvene on the meeting.",
+      "text": "Consideration of motion to reconvene into open session pursuant to Wis. Stat. 19.85(2) for possible additional discussion and/or action concerning any matter discussed in closed session.",
+      "expected": {
+        "exemptions": [],
+        "cites_subsection_1": null,
+        "other_citations": [],
+        "purpose_contains": null
+      }
+    },
+    {
+      "id": "synthetic-statute-only-g",
+      "jurisdiction": "synthetic",
+      "meeting_date": null,
+      "source": "synthetic, modeled on Wausau Common Council wording",
+      "synthetic": true,
+      "note": "Restates (g) and names no subject: purpose_text must be empty.",
+      "text": "5 Closed Session. Adjourn to Closed Session pursuant to Wisconsin State Statute § 19.85(1)(g) for conferring with legal counsel for the governmental body who is rendering oral or written advice concerning strategy to be adopted by the body with respect to litigation in which it is or is likely to become involved.",
+      "expected": {
+        "exemptions": [
+          "g"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": null
+      }
+    },
+    {
+      "id": "synthetic-statute-only-c",
+      "jurisdiction": "synthetic",
+      "meeting_date": null,
+      "source": "synthetic, modeled on D.C. Everest wording",
+      "synthetic": true,
+      "note": "Restates (c) and names no subject: purpose_text must be empty.",
+      "text": "XII. The Board will consider adjournment to Closed Session pursuant to W.S.S. 19.85(1)(c) for considering employment, promotion, compensation, or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility.",
+      "expected": {
+        "exemptions": [
+          "c"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": null
+      }
+    },
+    {
+      "id": "weston-1568-B",
+      "jurisdiction": "weston",
+      "meeting_date": "2024-02-20",
+      "source": "Weston AgendaCenter Agenda _02202024-1568 (Everest Metro Police Commission), page 1-2 of the packet",
+      "note": "Comma between (1) and the letters; 'par. (b)' must not count.",
+      "text": "B. CLOSED SESSION pursuant to Wis. Stat. 19.85(1), (c) and (f), considering employment, promotion, compensation or performance evaluation data or funding of a position of any public employee over which the governmental body has jurisdiction or exercises responsibility and considering financial, medical, social or personal histories or disciplinary data of specific persons, preliminary consideration of specific personnel problems or the investigation of charges against specific persons except where par. (b) applies which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations regarding an Everest Metro Police Department employee.",
+      "expected": {
+        "exemptions": [
+          "c",
+          "f"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Everest Metro Police Department employee"
+      }
+    },
+    {
+      "id": "dc_everest-627827-multi",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "April 17, 2024",
+      "source": "BoardBook 1315 meeting 627827",
+      "note": "Later exemption letters follow the first exemption's paraphrase and parenthetical, without repeating '19.85'.",
+      "text": "XII. The Board Will Consider Adjournment to Closed Session Pursuant to W.S.S. 19.85(1)(c) for Considering Employment, Promotion, Compensation or Performance Evaluation Data of Any Public Employee Over Which the Governmental Body has Jurisdiction or Exercises Responsibility (Administrator Retirement Agreements) and (e) for Deliberating or Negotiating the Purchasing of Public Properties, the IUnvesting of Public Funds or Conducting Other Specified Public Business, Whenever competitive or Bargaining Reasons Require a Closed Session (Teacher Negotiations) and (f) for Considering Financial, Medical, Social or Personal Histories or Disciplinary Data of Specific Persons, Preliminary Consideration of Specific Personnel Problems or the Investigation of Charges Against Specific Persons Except Where Paragraph (b) Applies, Which If Discussed in Public, Would be Likely to Have a Substantial Adverse Effect Upon the Reputation of Any Person Referred to in Such Histories or Data, or Involved in Such Problems or Investigations. (Co-Curricular Program Review)",
+      "expected": {
+        "exemptions": [
+          "c",
+          "e",
+          "f"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Administrator Retirement Agreements"
+      }
+    },
+    {
+      "id": "dc_everest-721905-multi",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "January 14, 2026",
+      "source": "BoardBook 1315 meeting 721905",
+      "note": "Later exemption letters follow the first exemption's paraphrase and parenthetical, without repeating '19.85'.",
+      "text": "XII. The Board will consider adjournment to Closed Session pursuant to W.S.S. 19.85(1)(f) Considering ... disciplinary data of specific persons, or the investigation of charges against specific persons which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations (student safety incident), (e) for deliberating or negotiating the purchasing of public properties, the investing of public funds or conducting other specified public business whenever competitive or bargaining reasons require a closed session (teacher negotiations, compensation planning), and (c) considering employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility (working on the Superintendent's review). The Board will adjourn directly from Closed Session.",
+      "expected": {
+        "exemptions": [
+          "f",
+          "e",
+          "c"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "student safety incident"
+      }
+    },
+    {
+      "id": "dc_everest-668307-multi",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "January 15, 2025",
+      "source": "BoardBook 1315 meeting 668307",
+      "note": "Later exemption letters follow the first exemption's paraphrase and parenthetical, without repeating '19.85'.",
+      "text": "XII. The Board will consider adjournment to Closed Session pursuant to W.S.S. 19.85(1)(e) for deliberating or negotiating the purchasing of public properties, the investing of public funds or conducting other specified public business whenever competitive or bargaining reasons require a closed session (teacher negotiations) (a) deliberating concerning a case which was the subject of any judicial or quasi-judicial trial or hearing before that governmental body (considering expulsion of an Idea School student) (c) considering employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility (working on the Superintendent's review). The Board will adjourn directly from Closed Session.",
+      "expected": {
+        "exemptions": [
+          "e",
+          "a",
+          "c"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "teacher negotiations"
+      }
+    },
+    {
+      "id": "dc_everest-747929-multi",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "June 17, 2026",
+      "source": "BoardBook 1315 meeting 747929",
+      "note": "Later exemption letters follow the first exemption's paraphrase and parenthetical, without repeating '19.85'.",
+      "text": "XIV. The Board will consider adjournment to Closed Session pursuant to WSS 19.85(1)(a) for deliberating concerning a case which was the subject of any judicial or quasi-judicial trial or hearing before that governmental body (Student Expulsion) (c) for considering employment, promotion, compensation or performance evaluation of any public employee over which the governmental body has jurisdiction or exercises responsibility (Employee Compensation and Benefits & Update on Superintendent Goals). The Board will adjourn from Closed Session.",
+      "expected": {
+        "exemptions": [
+          "a",
+          "c"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Student Expulsion"
+      }
+    },
+    {
+      "id": "dc_everest-677783-multi",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "March 19, 2025",
+      "source": "BoardBook 1315 meeting 677783",
+      "note": "Later exemption letters follow the first exemption's paraphrase and parenthetical, without repeating '19.85'.",
+      "text": "XII. The Board will consider adjournment to Closed Session pursuant to 19.85(1)(f) considering financial, medical, social or personal histories or disciplinary data of specific persons, ... which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations. (Student Death) and (e) Wis. Stats. for deliberating or negotiating the purchasing of public properties, the investing of public funds, or conducting other specified public business, whenever competitive or bargaining reasons require a closed session. (Facilities Study & Update on Negotiations with DCETA)",
+      "expected": {
+        "exemptions": [
+          "f",
+          "e"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Facilities Study"
+      }
+    },
+    {
+      "id": "dc_everest-742658-multi",
+      "jurisdiction": "dc_everest",
+      "meeting_date": "May 20, 2026",
+      "source": "BoardBook 1315 meeting 742658",
+      "note": "Later exemption letters follow the first exemption's paraphrase and parenthetical, without repeating '19.85'.",
+      "text": "XIII. The Board will consider adjournment to Closed Session pursuant to WSS 19.85(1)(a) for deliberating concerning a case which was the subject of any judicial or quasi-judicial trial or hearing before that governmental body (Student Expulsion)(c) for considering employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility (Administrator Employment Update and Employee Compensation and Benefits).",
+      "expected": {
+        "exemptions": [
+          "a",
+          "c"
+        ],
+        "cites_subsection_1": true,
+        "other_citations": [],
+        "purpose_contains": "Administrator Employment Update"
+      }
+    }
+  ]
+}

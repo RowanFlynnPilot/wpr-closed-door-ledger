@@ -1,0 +1,74 @@
+{
+  "_about": "Subject words that plausibly fit each s. 19.85(1) exemption. Used ONLY to order the editor's review queue (triage); never published. Matching is case-insensitive substring on purpose_text. Editors tune this file.",
+  "a": [
+    "appeal",
+    "hearing",
+    "expulsion",
+    "case"
+  ],
+  "b": [
+    "dismissal",
+    "demotion",
+    "discipline",
+    "termination",
+    "license"
+  ],
+  "c": [
+    "evaluation",
+    "compensation",
+    "contract review",
+    "applicant",
+    "candidate",
+    "hiring",
+    "employment",
+    "salary",
+    "pay",
+    "review"
+  ],
+  "d": [
+    "safety",
+    "security",
+    "threat",
+    "drill",
+    "violence",
+    "risk assessment",
+    "crime",
+    "parole"
+  ],
+  "e": [
+    "purchase",
+    "sale",
+    "property",
+    "negotiat",
+    "bargaining",
+    "rfp",
+    "term sheet",
+    "offer",
+    "acquisition",
+    "development",
+    "contract"
+  ],
+  "f": [
+    "complaint",
+    "grievance",
+    "investigation",
+    "discipline",
+    "personnel",
+    "employee"
+  ],
+  "g": [
+    "litigation",
+    "lawsuit",
+    "case no",
+    "claim",
+    "settlement",
+    "counsel",
+    "attorney",
+    "legal"
+  ],
+  "h": [
+    "advice",
+    "ethics",
+    "elections"
+  ]
+}

@@ -1,0 +1,207 @@
+# bodies.yaml — every governmental body the Closed Door Ledger covers.
+#
+# Each committee, commission and board is its own governmental body under
+# s. 19.82(1), so results are reported per body, grouped by jurisdiction.
+#
+# Matching rules (one way, applied in this order):
+#   1. Normalize the title: strip leading "*", "REVISED" and "CANCELED"/"CANCELLED"
+#      markers (with any following "-" or ":"). A CANCELED marker sets canceled: true.
+#      "SPECIAL" is NOT stripped.
+#   2. A normalized title matching a jurisdiction's `exclude` pattern is not a
+#      meeting of any body (quorum notices, test events). It is skipped.
+#   3. `overrides` (meeting id -> body key, list of keys, or "exclude") wins over
+#      patterns. Generic titles such as Wausau SD's "Public Meeting" are mapped here
+#      one by one, by their first agenda item.
+#   4. Otherwise the title must match exactly ONE body's `match` pattern
+#      (case-insensitive Python regex). A title matching several bodies counts
+#      for each of them only if it contains "joint"; any other multi-match FAILS
+#      THE BUILD until an override says which bodies met.
+#   5. AgendaCenter bodies match on `category_id` instead of a title.
+#   6. A meeting that matches no body FAILS THE BUILD.
+#
+# `custodian:` names who keeps a body's records when it isn't the jurisdiction
+# whose portal posts the notice. The quarterly audit groups requests by custodian.
+# `confirm:` marks an open editor decision. Bodies with `confirm:` are archived
+# but NOT published until the key is removed.
+#
+# Seeded Oct 23, 2026 from every meeting title the platforms list for
+# Jan 2024–Oct 2026 (Wausau 753, Wausau SD 184, D.C. Everest 46, Kronenwetter 295).
+# Bodies with no `match` are reached only through overrides.
+
+window_start: 2024-01-01
+
+jurisdictions:
+  wausau:
+    name: City of Wausau
+    platform: civicclerk
+    api: https://wausauwi.api.civicclerk.com/v1
+    exclude:
+      - "possible quorum"
+      - "^test( \\d+)? meeting$"   # CivicClerk test events (Feb 2026)
+    bodies:
+      - { key: wausau-common-council, name: Common Council, match: "common council" }
+      - { key: wausau-committee-of-the-whole, name: Committee of the Whole, match: "committee of the whole" }
+      - { key: wausau-finance, name: Finance Committee, match: "^(?!.*community development authority).*\\bfinance committee" }
+      - { key: wausau-board-of-public-works, name: Board of Public Works, match: "board of public works" }
+      - { key: wausau-public-health-safety, name: Public Health & Safety Committee, match: "public health (&|and) safety" }
+      - { key: wausau-sustainability, name: "Sustainability, Energy & Environment Committee", match: "sustainability, energy" }
+      - { key: wausau-water-works, name: Water Works Commission, match: "water works" }
+      - { key: wausau-infrastructure-facilities, name: Infrastructure & Facilities Committee, match: "infrastructure (&|and) facilities" }
+      - { key: wausau-human-resources, name: Human Resources Committee, match: "human resources" }
+      - { key: wausau-economic-development, name: Economic Development Committee, match: "economic development" }
+      - { key: wausau-plan-commission, name: Plan Commission, match: "plan commission" }
+      - { key: wausau-parks-recreation, name: Parks & Recreation Committee, match: "parks? (&|and) recreation" }
+      - { key: wausau-liquor-license-review, name: Liquor License Review Subcommittee, match: "liquor license review" }
+      - { key: wausau-historic-preservation, name: Historic Preservation Commission, match: "historic preservation" }
+      - { key: wausau-police-fire-commission, name: Police & Fire Commission, match: "police (&|and) fire commission" }
+      - { key: wausau-cda, name: Community Development Authority, match: "community development authority(?! finance)" }
+      - { key: wausau-cda-finance, name: Community Development Authority Finance Committee, match: "community development authority finance" }
+      - { key: wausau-transit, name: Transit Commission, match: "transit commission" }
+      - { key: wausau-bike-ped, name: Bicycle & Pedestrian Advisory Committee, match: "bicycle (&|and) pedestrian" }
+      - { key: wausau-airport, name: Airport Committee, match: "airport committee" }
+      - { key: wausau-citizen-advisory, name: Citizen Advisory Committee, match: "citizen advisory" }
+      - { key: wausau-room-tax, name: Room Tax Commission, match: "room tax" }
+      - { key: wausau-building-advisory, name: Building Advisory Board, match: "building advisory" }
+      - { key: wausau-zoning-appeals, name: Board of Zoning Appeals, match: "zoning appeals" }
+      - { key: wausau-board-of-canvassers, name: Municipal Board of Canvassers, match: "board of canvassers" }
+      - { key: wausau-arts-commission, name: Wausau Arts Commission, match: "arts commission" }
+      - { key: wausau-capital-improvement, name: Capital Improvement Projects Committee, match: "capital improvement project" }
+      - { key: wausau-ethics-board, name: Ethics Board, match: "ethics board" }
+      - { key: wausau-bid-board, name: Business Improvement District Board, match: "business improvement district" }
+      - { key: wausau-board-of-review, name: Board of Review, match: "board of review" }
+      - { key: wausau-joint-review-board, name: Joint Review Board, match: "joint review board" }
+      - { key: wausau-rules-review, name: Rules Review Committee, match: "rules review" }
+      - { key: wausau-affordable-housing-task-force, name: Affordable Housing Regional Task Force, match: "affordable housing regional task force",
+          custodian: unknown,
+          confirm: "Regional body. Is it a governmental body under s. 19.82(1), and who keeps its records?" }
+      - { key: marathon-park-commission, name: Marathon County Park Commission, match: "marathon county parks? commission",
+          custodian: Marathon County,
+          confirm: "A county body posted on the city's portal. Report it under Marathon County?" }
+    overrides:
+      # Titled "One Time Event" in CivicClerk; category is Board of Zoning Appeals.
+      "wausau:2291": wausau-zoning-appeals
+      "wausau:3514": wausau-zoning-appeals
+
+  wausau_sd:
+    name: Wausau School District
+    platform: boardbook
+    org: 1360
+    exclude: []
+    bodies:
+      - { key: wausau-sd-board, name: Board of Education, match: "^(regular|special|closed|annual) meeting|budget hearing|^board workshop" }
+      - { key: wausau-sd-education-operations, name: Education/Operations Committee, match: "education/operations committee" }
+      - { key: wausau-sd-audit-of-bills, name: Audit of the Bills Committee, match: "audit of the bills" }
+      - { key: wausau-sd-committee-of-the-whole, name: Committee of the Whole, match: "committee of the whole" }
+      - { key: wausau-sd-elementary-task-force, name: Elementary Task Force,
+          confirm: "Board-created task force (2024-26). Confirm it is a governmental body under s. 19.82(1)." }
+      - { key: wausau-sd-canvass, name: School Board Election Canvass,
+          confirm: "Verifies school board election results each April. Confirm how to report it." }
+    overrides:
+      # "Public Meeting" titles, classified Oct 23, 2026 by their first agenda item. New ones
+      # fail the build until classified here. "exclude" = a quorum notice for an event, not a meeting.
+      "wausau_sd:621602": exclude                            # February 8, 2024: I. A series of Focus Group Meetings will be held in the Nich
+      "wausau_sd:627281": exclude                            # March 13, 2024: I. WEA Sponsored WSD School Board Candidates Meet & Greet Ev
+      "wausau_sd:630145": wausau-sd-canvass                  # April 8, 2024: I. VERIFY SCHOOL BOARD ELECTION RESULTS Web Viewer << Back t
+      "wausau_sd:636660": exclude                            # May 15, 2024: I. Alternative High School Graduation *** A quorum of the Bo
+      "wausau_sd:636667": exclude                            # May 18, 2024: I. Wausau East High School Graduation *** A quorum of the Bo
+      "wausau_sd:636668": exclude                            # May 18, 2024: I. Wausau West High School Graduation *** A quorum of the Bo
+      "wausau_sd:637340": exclude                            # May 22, 2024: I. Wausau Area Virtual Education (WAVE) Graduation *** A quo
+      "wausau_sd:637342": exclude                            # May 23, 2024: I. Enrich Excel Achieve (EEA) Learning Academy Graduation **
+      "wausau_sd:637640": exclude                            # May 29, 2024: I. Wausau Education Association Retirement Celebration *** A
+      "wausau_sd:639532": wausau-sd-board                    # June 10, 2024: I. INTRODUCTIONS II. INITIAL NEGOTIATIONS MEETING BETWEEN RE
+      "wausau_sd:640018": wausau-sd-elementary-task-force    # June 12, 2024: I. Elementary Task Force Meeting 1. Welcome & Overview 2. Re
+      "wausau_sd:644085": wausau-sd-elementary-task-force    # July 10, 2024: I. Elementary Task Force Meeting 1. Meeting Orientation 2. E
+      "wausau_sd:650011": wausau-sd-elementary-task-force    # August 21, 2024: I. Elementary Task Force Meeting 1. Meeting Review & Orienta
+      "wausau_sd:653140": wausau-sd-elementary-task-force    # September 11, 2024: I. Elementary Task Force Meeting 1. Meeting Review & Orienta
+      "wausau_sd:656244": wausau-sd-elementary-task-force    # September 25, 2024: I. Elementary Task Force Meeting 1. Meeting Review & Orienta
+      "wausau_sd:657856": wausau-sd-elementary-task-force    # October 9, 2024: I. Elementary Task Force Meeting 1. Meeting Review & Orienta
+      "wausau_sd:661359": wausau-sd-elementary-task-force    # October 30, 2024: I. Elementary Task Force Meeting 1. Meeting Review & Orienta
+      "wausau_sd:663467": wausau-sd-elementary-task-force    # November 13, 2024: I. Elementary Task Force Meeting 1. Meeting Review & Orienta
+      "wausau_sd:665960": wausau-sd-elementary-task-force    # December 4, 2024: I. Elementary Task Force Meeting 1. Meeting Review & Orienta
+      "wausau_sd:668230": wausau-sd-elementary-task-force    # December 18, 2024: I. Elementary Task Force Meeting 1. Presentation of Task For
+      "wausau_sd:679378": exclude                            # March 6, 2025: I. Community Conversation: Bridging the Future of the Wausau
+      "wausau_sd:683663": wausau-sd-canvass                  # April 7, 2025: I. VERIFY SCHOOL BOARD ELECTION & REFERENDUM RESULTS Web Vie
+      "wausau_sd:692027": exclude                            # May 31, 2025: I. Wausau West High School Graduation *** A quorum of the Bo
+      "wausau_sd:692029": exclude                            # May 31, 2025: I. Wausau East High School Graduation *** A quorum of the Bo
+      "wausau_sd:693007": exclude                            # June 4, 2025: I. Wausau Education Association Retirement Celebration *** A
+      "wausau_sd:695469": wausau-sd-board                    # June 18, 2025: I. INTRODUCTIONS II. INITIAL NEGOTIATIONS MEETING BETWEEN RE
+      "wausau_sd:727607": wausau-sd-elementary-task-force    # February 25, 2026: I. Elementary Task Force Reunion 1. Summary of Elementary Co
+      "wausau_sd:731357": exclude                            # March 4, 2026: I. WEA Sponsored WSD School Board Candidates Meet & Greet Ev
+      "wausau_sd:739874": wausau-sd-canvass                  # April 13, 2026: I. VERIFY SCHOOL BOARD ELECTION RESULTS Web Viewer << Back t
+      "wausau_sd:748411": exclude                            # May 30, 2026: I. Wausau West High School Graduation *** A quorum of the Bo
+      "wausau_sd:748413": exclude                            # May 30, 2026: I. Wausau East High School Graduation *** A quorum of the Bo
+      "wausau_sd:753632": wausau-sd-board                    # July 1, 2026: I. INTRODUCTIONS II. INITIAL NEGOTIATIONS MEETING BETWEEN RE
+
+  dc_everest:
+    name: D.C. Everest Area School District
+    platform: boardbook
+    org: 1315
+    exclude: []
+    bodies:
+      - { key: dc-everest-board, name: Board of Education, match: "school board|board workshop|annual meeting|budget hearing" }
+    overrides: {}
+
+  weston:
+    name: Village of Weston
+    platform: agendacenter
+    base: https://www.westonwi.gov
+    exclude_category_ids: [17]   # Election Notices
+    bodies:
+      - { key: weston-village-board, name: Village Board of Trustees, category_id: 3 }
+      - { key: weston-plan-commission, name: Plan Commission, category_id: 2 }
+      - { key: weston-public-works, name: Public Works Committee, category_id: 5 }
+      - { key: weston-park-recreation, name: Park and Recreation Committee, category_id: 8 }
+      - { key: weston-finance-hr, name: Finance & Human Resources Committee, category_id: 31 }
+      - { key: weston-finance, name: Finance Committee (inactive after 2024), category_id: 11 }
+      - { key: weston-human-resources, name: Human Resources Committee (inactive after 2024), category_id: 10 }
+      - { key: weston-clps, name: "Community, Life and Public Safety Committee", category_id: 30 }
+      - { key: weston-cda, name: Community Development Authority, category_id: 14 }
+      - { key: weston-comp-plan, name: Comprehensive Plan Steering Committee, category_id: 18 }
+      - { key: weston-board-of-review, name: Board of Review, category_id: 21 }
+      - { key: weston-joint-review-board, name: Joint Review Board, category_id: 23 }
+      - { key: weston-tourism, name: Tourism Commission, category_id: 24 }
+      - { key: weston-fire-ems-merger, name: Fire/EMS Possible Merger Review Sub-Committee, category_id: 32 }
+      - { key: safer-fire-commission, name: S.A.F.E.R. Fire Commission, category_id: 6, custodian: S.A.F.E.R. Fire District,
+          confirm: "Intergovernmental fire district. Report as its own jurisdiction?" }
+      - { key: safer-board, name: S.A.F.E.R. Board of Directors, category_id: 7, custodian: S.A.F.E.R. Fire District,
+          confirm: "Intergovernmental. Same question." }
+      - { key: everest-metro-police-commission, name: Everest Metro Police Commission, category_id: 13, custodian: Everest Metro Police Department,
+          confirm: "Intergovernmental police (through 2024)." }
+      - { key: everest-metro-police-joint-finance, name: Everest Metro Police Joint Finance Committee, category_id: 12, custodian: Everest Metro Police Department,
+          confirm: "Intergovernmental." }
+      - { key: mountain-bay-police-commission, name: Mountain Bay Metropolitan Police Commission, category_id: 29, custodian: Mountain Bay Metropolitan Police Department,
+          confirm: "Intergovernmental police (2024 on). Kronenwetter may post the same meetings." }
+      - { key: mountain-bay-police-oversight, name: Mountain Bay Metropolitan Police Oversight Board, category_id: 28, custodian: Mountain Bay Metropolitan Police Department,
+          confirm: "Intergovernmental." }
+    overrides: {}
+
+  kronenwetter:
+    name: Village of Kronenwetter
+    platform: municode
+    base: https://kronenwetter-wi.municodemeetings.com
+    exclude:
+      - "^supplemental packet"   # extra-materials rows, not meetings
+    bodies:
+      - { key: kronenwetter-village-board, name: Village Board, match: "village board" }
+      - { key: kronenwetter-admin-policy, name: Administrative Policy Committee, match: "administrative policy" }
+      - { key: kronenwetter-utility, name: Utility Committee, match: "utility committee" }
+      - { key: kronenwetter-plan-commission, name: Plan Commission, match: "plan commission" }
+      - { key: kronenwetter-clipp, name: "Community Life, Infrastructure and Public Property Committee", match: "community life, infrastructure" }
+      - { key: kronenwetter-police-fire, name: Police and Fire Commission, match: "police and fire comm+ission" }
+      - { key: kronenwetter-rda, name: Redevelopment Authority, match: "redevelopment authority" }
+      - { key: kronenwetter-parks, name: Parks Committee, match: "parks committee" }
+      - { key: kronenwetter-board-of-review, name: Board of Review, match: "board of review" }
+      - { key: kronenwetter-kowalski-ad-hoc, name: Kowalski Road Interchange Ad Hoc Committee, match: "kowalski road" }
+      - { key: kronenwetter-ad-hoc, name: Ad Hoc Committee, match: "^ad hoc committee",
+          confirm: "Generic title. Which ad hoc committee(s)?" }
+    overrides:
+      # "Administrative Policy Committee and Village Board - Budget Workshop 1/2" (Oct 19-20, 2026)
+      "kronenwetter:d0f58e7cc36042c8a67098eda7feab03": [kronenwetter-admin-policy, kronenwetter-village-board]
+      "kronenwetter:781b3450287040eaac31f72144fa1b7d": [kronenwetter-admin-policy, kronenwetter-village-board]
+
+  marathon:
+    name: Marathon County
+    platform: marathon_county   # residential machine only; see CLAUDE.md
+    exclude: []
+    bodies: []                  # to be listed once the county's agenda listing is mapped
+    overrides: {}

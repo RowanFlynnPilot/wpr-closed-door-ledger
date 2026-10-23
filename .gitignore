@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Never commit data or archived documents to this public repo:
+# the archive lives in the private wpr-closed-door-archive repo,
+# and the site deploys as an Actions artifact.
+archive/
+data/
+site/
+web/dist/
+web/node_modules/
+
+.env
