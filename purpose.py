@@ -63,6 +63,13 @@ _STATUTE_WORDING = re.compile(
     r"requests?\s+for\s+confidential\s+(?:written\s+)?advice|probation,?\s+extended\s+supervision",
     re.I,
 )
+# Where each exemption's restated wording ends; a subject with no marker word follows it.
+_BOILERPLATE_END = re.compile(
+    r"likely\s+to\s+become\s+involved|require\w*\s+a\s+closed\s+session|exercises\s+responsibility|"
+    r"involved\s+in\s+such\s+problems\s+or\s+investigations?|before\s+(?:that|the)\s+governmental\s+body|"
+    r"crime\s+detection\s+or\s+prevention|discipline\s+of\s+any\s+public\s+employee|licensee",
+    re.I,
+)
 _FILLER = {"to", "consider", "considering", "the", "of", "a", "an", "and", "or", "for", "data", "any", "on"}
 
 
@@ -130,24 +137,29 @@ def purpose_text(item_text: str) -> str | None:
             # A clause that was only statute wording ("for the purpose of conferring with legal
             # counsel ...") hides nothing: a later "to wit" in it still names the subject.
             covered = marker.end() + end
-    # 3. Subjects given in parentheses (D.C. Everest's layout).
+    # 3. For each citation whose stretch of text named nothing above, the words that follow
+    #    the statute's own wording, to the end of the sentence ("CONTINUE IN CLOSED SESSION
+    #    PURSUANT TO §19.85(1)(c) Reclassification Review ...", "... likely to become
+    #    involved, to receive information ... in the absentee ballot drop box matter").
+    cites_at = list(_CITATION.finditer(item_text))
+    for n, cite in enumerate(cites_at):
+        end = cites_at[n + 1].start() if n + 1 < len(cites_at) else len(item_text)
+        stretch = item_text[cite.end():end]
+        if any(part in _clean(stretch) for part in parts if part):
+            continue
+        boilerplate = list(_BOILERPLATE_END.finditer(stretch))
+        rest = (stretch[boilerplate[-1].end():] if boilerplate else stretch).lstrip(" .,;:-–—")
+        stops = [m.start() for m in (_SENTENCE_END.search(rest), _MOTION_START.search(rest)) if m]
+        tail = _subject(_clean(rest[: min(stops)] if stops else rest))
+        # A tail that opens with a parenthetical is left to step 4 ("(Co-Curricular Program Review)").
+        if tail and _names_something(tail) and not tail.startswith("("):
+            parts.append(tail)
+    # 4. Subjects given in parentheses (D.C. Everest's layout).
     for paren in re.findall(r"\(([^()]{3,})\)", item_text):
         paren = _clean(paren)
         if not re.match(r"^\s*(?:\d|[a-h]{1,2}|cm)\s*$", paren, re.I) and not _NOT_A_SUBJECT.match(paren):
             if _subject(paren):
                 parts.append(paren)
-    # 4. Otherwise, the words right after the last citation, to the end of the sentence
-    #    ("CONTINUE IN CLOSED SESSION PURSUANT TO §19.85(1)(c) Reclassification Review ...").
-    if not parts:
-        last = None
-        for last in _CITATION.finditer(item_text):
-            pass
-        if last:
-            rest = item_text[last.end():]
-            stops = [m.start() for m in (re.search(r"\.\s", rest), _MOTION_START.search(rest)) if m]
-            tail = _subject(_clean(rest[: min(stops)] if stops else rest))
-            if tail and _names_something(tail):
-                parts.append(tail)
     # A part already contained in another ("loss of personal property" inside
     # "Inquiry regarding loss of personal property") is not a second subject.
     seen: list[str] = []

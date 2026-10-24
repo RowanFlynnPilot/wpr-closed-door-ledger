@@ -70,6 +70,9 @@ _KEYWORD_LINE = re.compile(
     r"OPEN\s+SESSION|RETURN\s+TO|MOTION\s+TO|MOVE\s+TO\s+CLOSED|REMAIN\s+IN\s+CLOSED|POSSIBLE\s+ACTION|"
     r"[A-Z][A-Z ,&'/-]{0,60}?CLOSED\s+SESSION)\b"   # "IF NECESSARY, MOTION TO MOVE TO CLOSED SESSION Pursuant ..."
 )
+# A closed-session motion set on its own line, in any capitals, after a sentence ends
+# ("4 Closed Session." then two paragraphs "Closed Session pursuant to ..."): its own item.
+_MOTION_LINE = re.compile(r"closed\s+session\s+(?:pursuant|under)\b", re.I)
 # The agenda's closing item. Packets (Weston, some Wausau) carry other documents
 # after the agenda, such as the previous meeting's minutes; pages after the one
 # holding this line are not read. "Adjourn to closed session" is not it.
@@ -167,7 +170,8 @@ def segment(text: str, stop_at_adjourn: bool = True) -> list[Segment]:
                 if rest.startswith(m.group("label") + " "):     # BoardBook sometimes doubles it: "II.A. II.A."
                     rest = rest[len(m.group("label")) + 1:]
                 segments.append(Segment(m.group("label"), rest, page_no, style))
-            elif _KEYWORD_LINE.match(line):
+            elif _KEYWORD_LINE.match(line) or (_MOTION_LINE.match(line) and segments
+                                              and re.search(r"[.:]$", segments[-1].text)):
                 segments.append(Segment("", line, page_no, "keyword"))
             elif _is_header(line) and not (segments and segments[-1].style == "header"
                                            and not segments[-1].text.rstrip().endswith((".", ":"))

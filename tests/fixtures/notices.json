@@ -886,6 +886,72 @@
      "purpose": "Interim Finance Director Employment Options; Update on Administrator Search Process"
     }
    ]
+  },
+  {
+   "id": "wausau-1121",
+   "jurisdiction": "wausau",
+   "source": "wausau:1121 (excerpt; names replaced)",
+   "note": "A subject with no marker after the (g) wording ('to receive information ...') is read. (blind check, round 12)",
+   "text": "CLOSED SESSION pursuant to § 19.85(1)(g) of the Wisconsin Statutes for\nconferring with legal counsel for the governmental body who is rendering oral or\nwritten advice concerning strategy to be adopted by the body with respect to litigation\nin which it is or is likely to become involved, to receive information and review\nprivileged communications of legal counsel initially appointed by CVMIC in the\nabsentee ballot drop box matter, before approving continued engagement to\nrepresent the City and unelected city staff in the matter currently pending before the\nCity’s Ethics Board pertaining to the citizen complaint filed against Mayor Doe and\nrelated actions.\nCLOSED SESSION pursuant to 19.85(1)(e) of the Wisconsin Statutes for\ndeliberating or negotiating the purchasing of public properties, the investing of public\nfunds, or conducting other specified public business, whenever competitive or\nbargaining reasons require a closed session, in regards to purposes of purchasing\nproperty at 201 N 1st Avenue and 901 & 1021 Cherry Street in the City of Wausau.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "CLOSED SESSION pursuant to § 19.85(1)(g)",
+     "purpose": "to receive information and review privileged communications of legal counsel initially appointed by CVMIC in the absentee ballot drop box matter, before approving continued engagement to represent the City and unelected city staff in the matter currently pending before the City’s Ethics Board pertaining to the citizen complaint filed against Mayor Doe and related actions"
+    },
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "CLOSED SESSION pursuant to 19.85(1)(e) o",
+     "purpose": "purchasing property at 201 N 1st Avenue and 901 & 1021 Cherry Street in the City of Wausau"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-def944acb2554a5e9c312bd9798",
+   "jurisdiction": "kronenwetter",
+   "source": "kronenwetter:def944acb2554a5e9c312bd9798a996b (excerpt; names replaced)",
+   "note": "The second motion's subject follows its (e) wording with no marker; the parcel number stays inside it. (blind check, round 12)",
+   "text": "2. ANNOUNCEMENT OF CLOSED SESSION\n3. PUBLIC COMMENT Please be advised per State Statute Section 19.84(2), information will be received from the public. It is the policy of this Village that Public Comment will take no longer than 15 minutes with a three-minute time period, per person, with time extension per the Chief Presiding Officer’s discretion. Be further advised that there may be limited discussion on the information received, however, no action will be taken under public comments.\n4. APPROVAL OF MEETING MINUTES\nC. May 9, 2024, Meeting minutes\n5. REPORTS FROM STAFF AND VENDORS\nD. Treasurer's Report\n6. NEW BUSINESS\nE. Discussion & Possible Action: Increase of Committee Member Compensation\nF. Discussion & Possible Action: Ehlers TID2 Project Plan Amendment #4\nG. Discussion & Possible Action: Review Approved Budget Amendment #5\nH. Discussion: RPS Update\n7. OLD BUSINESS\n8. CONSIDERATION OF MOTION TO CONVENE INTO CLOSED SESSION PURSUSANT TO WIS. STAT. 19.85(1)(G); CONFERRING WITH LEGAL COUNSEL FOR THE GOVERNMENTAL BODY WHO IS RENDERING ORAL OR WRITTEN ADVICE CONCERNING STRATEGY TO BE ADOPTED BY THE BODY WITH RESPECT TO LITIGATION IN WHICH IT IS OR IS LIKELY TO BECOME INVOLVED. - TO WIT LEASE AND DEVELOPEMENT AGREEMENT FOR POLZER HOLDINGS, LLC. CONSIDERATION OF MOTION TO CONVENE INTO CLOSED SESSION PURSUSANT TO WIS. STAT. 19.85(1)(e) DELIBERATING OR NEGOTATING THE PURCHASING OF PUBLIC PROPERTIES, THE INVESTING OF PUBLIC FUNDS, OR CONDUCTING OTHER SPECIFIED PUBLIC BUSINESS, WHENEVER COMPETITIVE OR BARGAINING REASONS REQUIRE A CLOSED SESSION. Purchase of the A. B. Owner owned parcel on Indianhead (145-2707-281-0998)",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "g",
+      "e"
+     ],
+     "starts": "CONSIDERATION OF MOTION TO CONVENE INTO ",
+     "purpose": "LEASE AND DEVELOPEMENT AGREEMENT FOR POLZER HOLDINGS, LLC; Purchase of the A. B. Owner owned parcel on Indianhead (145-2707-281-0998)"
+    }
+   ]
+  },
+  {
+   "id": "wausau-2487",
+   "jurisdiction": "wausau",
+   "source": "wausau:2487 (excerpt; names replaced)",
+   "note": "Two 'Closed Session pursuant to' paragraphs under one number are two items. (blind check, round 12)",
+   "text": "4 Closed Session.\nClosed Session Pursuant to Section 19.85(1)(c) of the Wisconsin State Statutes\nconsidering employment of any public employee over which the governmental body has\njurisdiction or exercises responsibility for the purpose of interviewing two candidates for\nFirefighter/Paramedic with the Wausau Fire Department and one candidate for promotion\nto Detective with the Wausau Police Department.\nClosed Session pursuant to Wis. Stat. Sec. 19.85(1)(f) for the investigation of charges\nagainst specific persons, which, if discussed in public, would be likely to have a\nsubstantial adverse effect upon the reputation of any person referred to in such\ncomplaint, for the purpose of considering a reconsideration request of dismissal of citizen\ncomplaint of J.V.\n5 Open Session.\nReconvene meeting into Open Session for purpose of potential action upon consideration",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Closed Session Pursuant to Section 19.85",
+     "purpose": "interviewing two candidates for Firefighter/Paramedic with the Wausau Fire Department and one candidate for promotion to Detective with the Wausau Police Department"
+    },
+    {
+     "exemptions": [
+      "f"
+     ],
+     "starts": "Closed Session pursuant to Wis. Stat. Se",
+     "purpose": "considering a reconsideration request of dismissal of citizen complaint of J.V"
+    }
+   ]
   }
  ]
 }
