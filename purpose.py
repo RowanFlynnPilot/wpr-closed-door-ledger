@@ -70,6 +70,7 @@ def _subject(candidate: str) -> str:
     found = _STATUTE_WORDING.search(candidate)
     if found:
         candidate = _clean(candidate[: found.start()])
+    candidate = re.sub(r"(?i)\s+(?:and\s+)?purs\w*\s+to$", "", candidate)   # the next citation's lead-in ("and pursuit to")
     candidate = _clean(re.sub(r"(?i)\s+(?:and|or|when|whenever|which|where)$", "", candidate))
     meaningful = [w for w in re.findall(r"[\w'’/-]+", candidate.lower()) if w not in _FILLER]
     return candidate if len(meaningful) >= 2 or (meaningful and not found) else ""
