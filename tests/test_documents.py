@@ -1,0 +1,83 @@
+"""documents.py, ocr.py and polite.py. The OCR test needs Tesseract on PATH."""
+import io
+import sys
+import time
+from pathlib import Path
+
+import pypdf
+import pytest
+from PIL import Image, ImageDraw, ImageFont
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+import documents  # noqa: E402
+import polite  # noqa: E402
+
+LINES = [
+    "VILLAGE BOARD AGENDA",
+    "7. CLOSED SESSION pursuant to Wis. Stat. 19.85(1)(c) and (f)",
+    "to consider the performance evaluation of the Village Administrator.",
+    "8. Adjourn.",
+] + [f"filler line {k} of the scanned agenda" for k in range(5)]
+
+
+def _scanned_pdf(pages: int = 1) -> bytes:
+    images = []
+    for _ in range(pages):
+        img = Image.new("RGB", (2550, 3300), "white")
+        draw = ImageDraw.Draw(img)
+        try:
+            font = ImageFont.truetype("arial.ttf", 48)
+        except OSError:
+            font = ImageFont.truetype("DejaVuSans.ttf", 48)
+        for i, line in enumerate(LINES):
+            draw.text((200, 200 + i * 90), line, fill="black", font=font)
+        images.append(img)
+    out = io.BytesIO()
+    images[0].save(out, format="PDF", resolution=300, save_all=True, append_images=images[1:])
+    return out.getvalue()
+
+
+def test_scanned_page_is_ocrd():
+    got = documents.pdf_text(_scanned_pdf(), "synthetic.pdf")
+    assert got.text_source == "ocr" and got.ocr_pages == [1] and got.pages == 1
+    assert "19.85(1)(c)" in got.text
+
+
+def test_blank_document_raises():
+    out = io.BytesIO()
+    Image.new("RGB", (850, 1100), "white").save(out, format="PDF")
+    with pytest.raises(documents.UnreadableDocument, match="blank.pdf"):
+        documents.pdf_text(out.getvalue(), "blank.pdf")
+    with pytest.raises(documents.UnreadableDocument):
+        documents.require_text("   short   ", "page.html")
+
+
+def test_first_pages_and_max_pages():
+    pdf = _scanned_pdf(pages=3)
+    assert len(pypdf.PdfReader(io.BytesIO(documents.first_pages(pdf, 2))).pages) == 2
+    got = documents.pdf_text(pdf, "three.pdf", max_pages=1)
+    assert got.pages == 3 and got.ocr_pages == [1] and "\f" not in got.text
+
+
+class _FakeResponse:
+    def raise_for_status(self):
+        pass
+
+
+def test_one_request_per_host_per_second(monkeypatch):
+    calls: list[tuple[str, float]] = []
+
+    def fake(method, url, **kwargs):
+        calls.append((url, time.monotonic()))
+        return _FakeResponse()
+
+    monkeypatch.setattr(polite._session, "request", fake)
+    monkeypatch.setattr(polite, "MIN_INTERVAL", 0.2)
+    polite.get("https://a.example/1")
+    polite.get("https://b.example/1")
+    polite.get("https://a.example/2")
+    a = [t for u, t in calls if "a.example" in u]
+    b = [t for u, t in calls if "b.example" in u]
+    assert a[1] - a[0] >= 0.2
+    assert b[0] - a[0] < 0.2          # a different host is not held back
