@@ -30,7 +30,9 @@ _ROMAN = r"(?:X{0,3})(?:IX|IV|V?I{0,3})"
 _PART = r"(?:[IVXLC]+|[A-Z]|\d{1,2}|[a-z])"
 _LABEL = re.compile(
     r"^\s*(?P<label>"
-    r"(?P<combined>" + _PART + r"(?:\." + _PART + r")+\.?)"          # BoardBook "V.A." "II.A.1."
+    # BoardBook "V.A." "II.A.1.": a Roman numeral or number first, then a capitalized word,
+    # so a wrapped line starting with initials ("J.C.V. and A.T. and one Citizen ...") isn't one.
+    r"(?P<combined>(?:[IVXLC]+|\d{1,2})(?:\." + _PART + r")+\.?)(?=\s+[^a-z\s]|\s*$)"
     r"|(?P<simple>" + _PART + r")[.)]"                                # "IV." "A." "7." "a)"
     r"|(?P<doubled>(?P<letter>[A-Z])(?P=letter))\."                   # Kronenwetter's letters run on past Z: "AA."
     r"|\((?P<paren>\d{1,2}|[a-z]|[ivx]{1,4})\)"                       # "(1)" "(a)"

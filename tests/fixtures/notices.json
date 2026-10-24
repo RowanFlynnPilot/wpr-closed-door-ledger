@@ -952,6 +952,23 @@
      "purpose": "considering a reconsideration request of dismissal of citizen complaint of J.V"
     }
    ]
+  },
+  {
+   "id": "wausau-2147",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 2147 (excerpt; complainants' initials replaced)",
+   "note": "A wrapped line starting with initials is not a sub-item label (blind check, round 13).",
+   "text": "4 Closed Session.\nConvene Meeting into Closed Session pursuant to 19.85(1)(f) for consideration and deliberation related to two Citizen Complaints related to the Police Department made by\nX.Y.Z. and Q.R. and one Citizen Complaint related to the Fire Department made by S.T.\n5 Open Session.\nReconvene meeting into open session for the purpose of potential action upon closed session items.",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "f"
+     ],
+     "starts": "Closed Session. Convene Meeting into Clo",
+     "purpose": "two Citizen Complaints related to the Police Department made by X.Y.Z. and Q.R. and one Citizen Complaint related to the Fire Department made by S.T"
+    }
+   ]
   }
  ]
 }
