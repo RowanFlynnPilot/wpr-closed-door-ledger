@@ -104,3 +104,32 @@ def test_html_versions_are_told_apart_by_text(tmp_path):
     assert not store.apply_document(tmp_path, record, "notice", same_text, "2027-01-02T00:00:00Z")
     amended = dc_replace(same_text, text="I. CALL TO ORDER II. CLOSED SESSION")
     assert store.apply_document(tmp_path, record, "notice", amended, "2027-01-03T00:00:00Z")
+
+
+def test_previous_versions(tmp_path):
+    record = store.new_record(MEETING, "2026-01-01T00:00:00Z")
+    store.update_listing(record, MEETING, "2026-01-01T00:00:00Z")
+    store.apply_document(tmp_path, record, "notice", _doc(b"current"), "2026-01-01T00:00:00Z")
+    routine = replace(_doc(b"draft 1"), url="https://example.test/a/1901")
+    closed = replace(_doc(b"draft 0"), url="https://example.test/a/1824", text="6. CLOSED SESSION per 19.85(1)(e)")
+    assert store.apply_previous_version(tmp_path, record, 1901, routine, "2026-01-02T00:00:00Z")
+    assert store.apply_previous_version(tmp_path, record, 1824, closed, "2026-01-02T00:00:00Z")
+    assert not store.apply_previous_version(tmp_path, record, 1824, closed, "2026-01-03T00:00:00Z")
+    assert [v["archive_id"] for v in store.previous_versions(record, "notice")] == [1824, 1901]
+    assert [v["url"] for v in store.served_versions(record, "notice")] == ["https://example.test/f"]
+    assert store.known_files(record)["notice"]["sha256"] == record["versions"][0]["sha256"]
+    # Only an earlier version that mentions a closed session keeps its file; every one keeps its text.
+    by_id = {v["archive_id"]: v for v in store.previous_versions(record, "notice")}
+    assert by_id[1824]["file"] and by_id[1901]["file"] is None and by_id[1901]["text_file"]
+
+
+def test_previous_versions_are_read_once_per_listing_stamp():
+    class Adapter:
+        def fetch_previous_versions(self, meeting, known):
+            return []
+    meeting = replace(MEETING, source={"listed_at": "2026-01-02T09:00", "previous_versions_url": "https://x.test/p"})
+    assert fetch.needs_previous(Adapter(), None, meeting)
+    assert not fetch.needs_previous(Adapter(), {"previous_checked": "2026-01-02T09:00"}, meeting)
+    assert fetch.needs_previous(Adapter(), {"previous_checked": "2026-01-01T08:00"}, meeting)    # amended since
+    assert not fetch.needs_previous(Adapter(), None, replace(meeting, source={"listed_at": "2026-01-02T09:00"}))
+    assert not fetch.needs_previous(object(), None, meeting)

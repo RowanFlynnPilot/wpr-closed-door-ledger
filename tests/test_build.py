@@ -75,10 +75,49 @@ def test_internal_files(archive):
     assert not next(m for m in meetings if m["id"] == "wausau:927")["changed_after_meeting"]
 
 
+def _record(start, versions, source=None):
+    return {"listing": {"start": start, "source": source or {}}, "versions": versions}
+
+
 def test_backfilled_version_is_used_and_never_changed():
-    late = [{"seen_at": "2026-10-23T12:00:00Z"}]
-    assert build.items_version(late, "2024-03-05T18:00") is late[0]
-    assert build.items_version([{"seen_at": "2026-03-05T12:00:00Z"}], "2026-03-05") is not None   # date-only start
+    late = {"kind": "notice", "seen_at": "2026-10-23T12:00:00Z"}
+    assert build.items_version(_record("2024-03-05T18:00", [late])) is late
+    same_day = {"kind": "notice", "seen_at": "2026-03-05T12:00:00Z"}
+    assert build.items_version(_record("2026-03-05", [same_day])) is same_day        # date-only start
+
+
+def _weston(root, start, stamp, current, earlier):
+    """A Weston meeting backfilled today: the current version stamped `stamp`, plus earlier
+    versions from the platform's PreviousVersions page as (archive id, text)."""
+    meeting = Meeting("weston", "1716", "Board of Trustees Regular Meeting", start,
+                      "https://example.test/1716", None, category_id=3, source={"listed_at": stamp})
+    seen_at = "2026-10-23T12:00:00Z"
+    record = store.new_record(meeting, seen_at)
+    store.update_listing(record, meeting, seen_at)
+    doc = _doc(current)
+    store.apply_document(root, record, "notice", DocFile(**{**doc.__dict__, "last_modified": stamp}), seen_at)
+    for archive_id, text in earlier:
+        doc = _doc(text)
+        store.apply_previous_version(root, record, archive_id,
+                                     DocFile(**{**doc.__dict__, "url": f"https://example.test/a/{archive_id}"}), seen_at)
+    record["last_fetched"] = seen_at
+    store.save(root, record)
+
+
+def test_version_amended_after_the_meeting_yields_to_the_newest_earlier_one(tmp_path):
+    # Re-posted two days after the meeting with the closed session dropped.
+    _weston(tmp_path, "2024-12-16", "2024-12-18T09:00", "1. Call to order." + " x" * 120,
+            [(1790, SALE.replace("424", "999")), (1824, SALE)])
+    meetings, items = build.build_internal(tmp_path, CONFIG)
+    assert meetings[0]["notice_versions"] == 3 and meetings[0]["changed_after_meeting"]
+    assert len(items) == 1 and "424 Burns Street" in items[0]["purpose_text"]     # 1824, not 1790
+    assert meetings[0]["notice_file"].endswith(".pdf")
+
+
+def test_version_posted_before_the_meeting_is_used(tmp_path):
+    _weston(tmp_path, "2024-12-16", "2024-12-11T16:33", SALE, [(1824, "1. Call to order." + " x" * 120)])
+    meetings, items = build.build_internal(tmp_path, CONFIG)
+    assert len(items) == 1 and not meetings[0]["changed_after_meeting"]
 
 
 def test_unclassified_title_fails(archive):
@@ -151,3 +190,22 @@ def test_public_copy_is_the_agenda_only(tmp_path):
     url = next(i["archive_url"] for i in p["closed_sessions"] if i["meeting_id"] == "wausau:930")
     assert len(pypdf.PdfReader(io.BytesIO(build.public_copy(tmp_path, url))).pages) == 1
     assert build.public_copy_path("meetings/wausau_sd/1/notice-abc.html") == "archive/wausau_sd/1/notice-abc.txt"
+
+
+def test_redact_review(archive):
+    meetings, items = build.build_internal(archive, CONFIG)
+    sale = next(i for i in items if i["meeting_id"] == "wausau:130")
+    with pytest.raises(build.BuildError, match="not in the item's wording"):
+        build.check_reviews({sale["id"]: {"decision": "redact", "redact": ["Jane Roe"]}}, items)
+    with pytest.raises(build.BuildError, match="lists the text"):
+        build.check_reviews({sale["id"]: {"decision": "redact"}}, items)
+    with pytest.raises(build.BuildError, match="only to a redact review"):
+        build.check_reviews({sale["id"]: {"decision": "flagged", "redact": ["424 Burns Street"]}}, items)
+    reviews = {sale["id"]: {"decision": "redact", "redact": ["424 Burns Street"], "note": "private address"}}
+    build.check_reviews(reviews, items)
+    p = build.public_projection(CONFIG, meetings, items, reviews)
+    row = next(i for i in p["closed_sessions"] if i["id"] == sale["id"])
+    assert "424 Burns" not in row["item_text"] and "[name withheld]" in row["item_text"]
+    assert "424 Burns" not in row["purpose_text"] and "[name withheld]" in row["purpose_text"]
+    assert row["archive_url"] == "" and row["notice_url"] and row["review_note"] is None
+    assert "424 Burns" in sale["item_text"]                    # internal data keeps the wording

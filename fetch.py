@@ -37,6 +37,13 @@ def needs_fetch(record: dict, start: str, today: date) -> bool:
     return record["last_fetched"] is None or start[:10] >= recheck_from(today).isoformat()
 
 
+def needs_previous(adapter, record: dict | None, meeting) -> bool:
+    """Earlier versions are read once per listing stamp: an amendment moves the old
+    current version onto the platform's previous-versions page and changes the stamp."""
+    return (hasattr(adapter, "fetch_previous_versions") and bool(meeting.source.get("previous_versions_url"))
+            and (record is None or record.get("previous_checked") != meeting.source.get("listed_at")))
+
+
 def check_not_stale(jurisdiction: str, meetings: list, today: date) -> None:
     """A listing with no meeting in the last 60 days means the adapter or the site broke."""
     floor = (today - timedelta(days=STALE_DAYS)).isoformat()
@@ -66,7 +73,7 @@ def run_jurisdiction(root: Path, config: dict, jurisdiction: str, since: date, t
     todo = []
     for meeting in meetings:
         record = store.load(root, jurisdiction, meeting.meeting_id)
-        if record is None or needs_fetch(record, meeting.start, today):
+        if record is None or needs_fetch(record, meeting.start, today) or needs_previous(adapter, record, meeting):
             todo.append((meeting, record))
     if dry_run:
         return f"{jurisdiction}: {len(meetings)} listed, {len(todo)} would be fetched"
@@ -79,10 +86,16 @@ def run_jurisdiction(root: Path, config: dict, jurisdiction: str, since: date, t
             # Not marked fetched: if bodies.yaml later keeps this meeting, the next run fetches it.
             excluded += 1
         else:
-            docs = adapter.fetch_documents(meeting, store.known_files(record))
-            new_versions += store.apply_document(root, record, "notice", docs.notice, seen_at)
-            new_versions += store.apply_document(root, record, "minutes", docs.minutes, seen_at)
-            record["last_fetched"] = seen_at
+            if needs_fetch(record, meeting.start, today):
+                docs = adapter.fetch_documents(meeting, store.known_files(record))
+                new_versions += store.apply_document(root, record, "notice", docs.notice, seen_at)
+                new_versions += store.apply_document(root, record, "minutes", docs.minutes, seen_at)
+                record["last_fetched"] = seen_at
+            if needs_previous(adapter, record, meeting):
+                known = {v["url"] for v in store.versions(record, "notice")}
+                for archive_id, doc in adapter.fetch_previous_versions(meeting, known):
+                    new_versions += store.apply_previous_version(root, record, archive_id, doc, seen_at)
+                record["previous_checked"] = meeting.source.get("listed_at")
         store.save(root, record)
         if i % 25 == 0:
             print(f"  {jurisdiction}: {i}/{len(todo)}", flush=True)

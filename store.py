@@ -66,10 +66,22 @@ def versions(record: dict, kind: str) -> list[dict]:
     return [v for v in record["versions"] if v["kind"] == kind]
 
 
+def served_versions(record: dict, kind: str) -> list[dict]:
+    """Versions the ledger saw served as current, in the order it saw them (not the
+    earlier versions a platform lists on its own, which carry no date)."""
+    return [v for v in versions(record, kind) if v.get("origin") != "previous"]
+
+
+def previous_versions(record: dict, kind: str) -> list[dict]:
+    """Earlier versions the platform lists, oldest first by its archive id."""
+    return sorted((v for v in versions(record, kind) if v.get("origin") == "previous"),
+                  key=lambda v: v["archive_id"])
+
+
 def known_files(record: dict) -> dict[str, KnownFile]:
     known: dict[str, KnownFile] = {}
     for kind in ("notice", "minutes"):
-        latest = versions(record, kind)[-1:]
+        latest = served_versions(record, kind)[-1:]
         if latest:
             v = latest[0]
             known[kind] = KnownFile(url=v["url"], sha256=v["sha256"], size=v["size"], last_modified=v["last_modified"])
@@ -104,5 +116,30 @@ def apply_document(root: Path, record: dict, kind: str, doc: DocFile | Unchanged
         "file": f"{stem}.{doc.extension}" if stored else None, "text_file": f"{stem}.txt",
         "text_source": doc.text_source, "ocr_pages": doc.ocr_pages,
         "size": doc.size, "pages": doc.pages, "last_modified": doc.last_modified,
+    })
+    return True
+
+
+def apply_previous_version(root: Path, record: dict, archive_id: int, doc: DocFile, seen_at: str) -> bool:
+    """Record an earlier agenda version the platform still lists (Weston's PreviousVersions).
+
+    It predates the current version but carries no date, so seen_at is only when the
+    ledger fetched it. Its text and sha256 are always kept; the file only when the text
+    mentions a closed session, since most earlier versions are drafts of routine agendas."""
+    if any(v["sha256"] == doc.sha256 or v["url"] == doc.url for v in versions(record, doc.kind)):
+        return False
+    folder = meeting_dir(root, record["jurisdiction"], record["meeting_id"])
+    folder.mkdir(parents=True, exist_ok=True)
+    stem = f"{doc.kind}-{doc.sha256[:12]}"
+    stored = "closed session" in doc.text.lower() and len(doc.content) <= MAX_FILE
+    if stored:
+        (folder / f"{stem}.{doc.extension}").write_bytes(doc.content)
+    (folder / f"{stem}.txt").write_text(doc.text, encoding="utf-8")
+    record["versions"].append({
+        "kind": doc.kind, "sha256": doc.sha256, "seen_at": seen_at, "url": doc.url,
+        "file": f"{stem}.{doc.extension}" if stored else None, "text_file": f"{stem}.txt",
+        "text_source": doc.text_source, "ocr_pages": doc.ocr_pages,
+        "size": doc.size, "pages": doc.pages, "last_modified": None,
+        "origin": "previous", "archive_id": archive_id,
     })
     return True

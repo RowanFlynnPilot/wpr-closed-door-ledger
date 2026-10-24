@@ -4,7 +4,7 @@
     python build.py --dry-run       # build and check everything, write nothing
 
 Fails (exit 1) on any meeting title bodies.yaml doesn't classify, and on any
-review in reviews.json whose key matches no item.
+review in reviews.json whose key matches no item or whose redact text isn't in the item.
 
 Internal files (archive/data/, every field): meetings.json, closed_sessions.json, and
 unnoticed_closed_sessions.json (minutes that record a closed session the notice never listed).
@@ -63,26 +63,53 @@ def _seen_before_start(version: dict, start: str) -> bool:
     return seen < started
 
 
-def items_version(notices: list[dict], start: str) -> dict | None:
-    """The latest notice version seen before the meeting started; the earliest if none was (backfill)."""
-    before = [v for v in notices if _seen_before_start(v, start)]
-    return before[-1] if before else (notices[0] if notices else None)
+def _stamped_after_start(record: dict) -> bool:
+    """The platform stamps the current version (Weston's "Posted/Amended") after the meeting began."""
+    stamp = record["listing"].get("source", {}).get("listed_at")
+    start = record["listing"]["start"]
+    if not stamp:
+        return False
+    return stamp[:10] > start if len(start) == 10 else stamp > start[:16]
+
+
+def items_version(record: dict) -> dict | None:
+    """The notice version the items come from: the latest seen before the meeting started.
+
+    When none was (the backfill), the version the platform served then, unless the platform
+    stamps it after the meeting and lists earlier versions: then the newest earlier one."""
+    served = store.served_versions(record, "notice")
+    start = record["listing"]["start"]
+    before = [v for v in served if _seen_before_start(v, start)]
+    if before:
+        return before[-1]
+    previous = store.previous_versions(record, "notice")
+    if previous and _stamped_after_start(record):
+        return previous[-1]
+    return served[0] if served else None
 
 
 def changed_after_meeting(root: Path, record: dict) -> bool:
-    """A notice version whose text differs from the one before it, first seen after the meeting date.
+    """A notice version whose text differs from the one before it, first seen after the meeting
+    date; or a current version the platform stamps after the meeting whose text differs from
+    the newest earlier version the platform lists.
 
-    The first archived version never sets it, so backfilled history never does.
+    The first version the ledger saw is never compared with nothing, so backfilled history
+    sets it only on the platform's own stamp.
     """
-    notices = store.versions(record, "notice")
+    served = store.served_versions(record, "notice")
     date = record["listing"]["start"][:10]
     folder = store.meeting_dir(root, record["jurisdiction"], record["meeting_id"])
-    for previous, version in zip(notices, notices[1:]):
-        if _local_date(version["seen_at"]) > date and \
-                (folder / version["text_file"]).read_text(encoding="utf-8") != \
-                (folder / previous["text_file"]).read_text(encoding="utf-8"):
+
+    def text(version: dict) -> str:
+        return (folder / version["text_file"]).read_text(encoding="utf-8")
+
+    for previous, version in zip(served, served[1:]):
+        if _local_date(version["seen_at"]) > date and text(version) != text(previous):
             return True
-    return False
+    previous = store.previous_versions(record, "notice")
+    stamp = record["listing"].get("source", {}).get("listed_at")
+    current = [v for v in served if stamp and v["last_modified"] == stamp]
+    return bool(previous and current and _stamped_after_start(record) and text(current[-1]) != text(previous[-1]))
 
 
 # --- internal files ------------------------------------------------------------
@@ -118,7 +145,7 @@ def build_meeting(root: Path, config: dict, record: dict) -> tuple[dict, list[di
                                       len(minutes))
         meeting["minutes"] = minutes_rules.as_record(facts)
         meeting["minutes_convene_pages"] = list(facts.convene_pages)
-    version = items_version(notices, listing["start"])
+    version = items_version(record)
     items: list[dict] = []
     if version:
         text = (folder / version["text_file"]).read_text(encoding="utf-8")
@@ -174,14 +201,42 @@ def unnoticed_sessions(meetings: list[dict]) -> list[dict]:
             if m["minutes"] and m["minutes"]["motion_recorded"] and not m["closed_item_count"]]
 
 
+DECISIONS = ("confirmed", "flagged", "withhold", "redact")
+REDACTED = "[name withheld]"
+REDACTED_FIELDS = ("item_text", "purpose_text", "citation_raw")
+
+
 def check_reviews(reviews: dict, items: list[dict]) -> None:
-    ids = {i["id"] for i in items}
-    orphans = sorted(k for k in reviews if not k.startswith("_") and k not in ids)
+    by_id = {i["id"]: i for i in items}
+    orphans = sorted(k for k in reviews if not k.startswith("_") and k not in by_id)
     if orphans:
         raise BuildError("reviews.json keys that match no item:\n  " + "\n  ".join(orphans))
     for key, review in reviews.items():
-        if not key.startswith("_") and review["decision"] not in ("confirmed", "flagged", "withhold"):
-            raise BuildError(f"reviews.json {key}: decision must be confirmed, flagged or withhold")
+        if key.startswith("_"):
+            continue
+        if review["decision"] not in DECISIONS:
+            raise BuildError(f"reviews.json {key}: decision must be one of {', '.join(DECISIONS)}")
+        spans = review.get("redact")
+        if review["decision"] == "redact":
+            if not spans or not all(isinstance(s, str) and s.strip() for s in spans):
+                raise BuildError(f'reviews.json {key}: a redact review lists the text to withhold in "redact"')
+            missing = [s for s in spans if s not in by_id[key]["item_text"]]
+            if missing:
+                raise BuildError(f"reviews.json {key}: redact text not in the item's wording: {missing}")
+        elif spans is not None:
+            raise BuildError(f'reviews.json {key}: "redact" belongs only to a redact review')
+
+
+def redacted(item: dict, review: dict) -> dict:
+    """The item with each of a redact review's spans replaced in its wording, wherever it appears."""
+    if review.get("decision") != "redact":
+        return item
+    row = dict(item)
+    for field in REDACTED_FIELDS:
+        if row[field]:
+            for span in review["redact"]:
+                row[field] = row[field].replace(span, REDACTED)
+    return row
 
 
 # --- public projection ---------------------------------------------------------
@@ -193,7 +248,13 @@ def unconfirmed_bodies(config: dict) -> set[str]:
 def public_projection(config: dict, meetings: list[dict], items: list[dict], reviews: dict) -> dict:
     hidden = unconfirmed_bodies(config)
     by_id = {m["id"]: m for m in meetings}
-    withheld_meetings = {i["meeting_id"] for i in items if reviews.get(i["id"], {}).get("decision") == "withhold"}
+    def decided(decision: str) -> set[str]:
+        return {i["meeting_id"] for i in items if reviews.get(i["id"], {}).get("decision") == decision}
+
+    withheld_meetings = decided("withhold")
+    # The archived copy holds the wording a redact review withholds, so the meeting's copy isn't
+    # published; the link to the body's own posting stays.
+    uncopied_meetings = withheld_meetings | decided("redact")
     public_items = []
     for item in items:
         review = reviews.get(item["id"], {})
@@ -201,10 +262,10 @@ def public_projection(config: dict, meetings: list[dict], items: list[dict], rev
         if review.get("decision") == "withhold" or not published_bodies:
             continue
         meeting = by_id[item["meeting_id"]]
-        row = {**item, "bodies": published_bodies,
+        row = {**redacted(item, review), "bodies": published_bodies,
                "minutes": item["minutes"] if PUBLISH_MINUTES else None,
                "notice_url": "" if item["meeting_id"] in withheld_meetings else meeting["notice_url"],
-               "archive_url": "" if item["meeting_id"] in withheld_meetings or not meeting["notice_file"]
+               "archive_url": "" if item["meeting_id"] in uncopied_meetings or not meeting["notice_file"]
                else public_copy_path(meeting["notice_file"]),
                "review_note": review.get("note") if review.get("decision") in ("confirmed", "flagged") else None}
         public_items.append({k: row[k] for k in PUBLIC_ITEM_FIELDS})

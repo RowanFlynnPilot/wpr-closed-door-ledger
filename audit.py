@@ -23,6 +23,7 @@ import sys
 from pathlib import Path
 
 import bodies
+import build
 import quarters
 import store
 
@@ -83,6 +84,7 @@ def main(argv: list[str] | None = None) -> int:
     reviews = json.loads(reviews_path.read_text(encoding="utf-8")) if reviews_path.exists() else {}
     skip = {i["id"] for i in items if reviews.get(i["id"], {}).get("decision") == "withhold"
             or meetings[i["meeting_id"]]["canceled"]}
+    items = [build.redacted(i, reviews.get(i["id"], {})) for i in items]     # a redact review holds here too
     grouped = requests(config, items, args.quarter, skip)
     out = args.archive / "audit" / args.quarter.replace("Q", "-Q")
     summary = [f"# Records audit requests, {args.quarter}", "",

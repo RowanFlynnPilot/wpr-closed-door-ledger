@@ -142,6 +142,10 @@ td.mix-cell { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-sof
 .item:last-child { border-bottom: 0; }
 .item-head { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; align-items: baseline; font-size: 0.85rem; }
 .item-date { font-family: var(--mono); color: var(--ink-soft); white-space: nowrap; }
+.item-when {
+  font-family: var(--mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--teal-deep); border: 1px solid var(--teal-deep); padding: 0.05rem 0.4rem; white-space: nowrap;
+}
 .item-body { font-weight: 700; }
 .item-cites { font-family: var(--mono); font-weight: 700; color: var(--teal-deep); }
 .item-subject { margin: 0.35rem 0 0.4rem; font-family: var(--display); font-size: 1.05rem; line-height: 1.35; }

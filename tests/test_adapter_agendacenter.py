@@ -6,6 +6,7 @@ live AgendaCenter (Oct 23, 2026): the /AgendaCenter page with three categories
 """
 import io
 import sys
+from dataclasses import replace
 from datetime import date
 from pathlib import Path
 
@@ -192,3 +193,37 @@ def test_non_pdf_raises(monkeypatch):
         url, b"<html>error</html>", {"Content-Type": "text/html; charset=utf-8"}))
     with pytest.raises(ValueError, match="not a PDF"):
         agendacenter.fetch_notice(_rows()[0], None)
+
+
+PREVIOUS = (FIXTURES / "previous_versions_1716.html").read_text(encoding="utf-8")
+
+
+def test_archived_versions_lists_each_earlier_version_once():
+    # Each row links its version twice (title and Download menu); the current version's row is not one.
+    assert agendacenter.archived_versions(PREVIOUS, BASE) == [
+        (1824, f"{BASE}/AgendaCenter/ViewFile/ArchivedAgenda/_12162024-1824")]
+    two = PREVIOUS.replace("_12162024-1824", "_12162024-1901", 1)
+    assert [i for i, _ in agendacenter.archived_versions(two, BASE)] == [1824, 1901]
+
+
+def test_fetch_previous_versions_skips_known_urls(monkeypatch):
+    packet = _text_pdf(7)
+    meeting = _rows()[0]
+    meeting = replace(meeting, source={
+        **meeting.source, "previous_versions_url": f"{BASE}/AgendaCenter/PreviousVersions/_12162024-1716"})
+    gets = []
+
+    def get(url, **kw):
+        gets.append(url)
+        if "PreviousVersions" in url:
+            return FakeResponse(url, PREVIOUS.encode("utf-8"))
+        return FakeResponse(url, packet, {"Content-Type": "application/pdf"})
+
+    monkeypatch.setattr(agendacenter.polite, "get", get)
+    [(archive_id, doc)] = agendacenter.fetch_previous_versions(meeting, set())
+    assert archive_id == 1824 and doc.url.endswith("ArchivedAgenda/_12162024-1824")
+    assert doc.sha256 == documents.sha256(packet) and doc.pages == 7 and doc.last_modified is None
+    assert len(pypdf.PdfReader(io.BytesIO(doc.content)).pages) == 5
+    gets.clear()
+    assert agendacenter.fetch_previous_versions(meeting, {doc.url}) == []
+    assert gets == [meeting.source["previous_versions_url"]]

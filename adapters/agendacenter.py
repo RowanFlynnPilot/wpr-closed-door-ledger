@@ -23,6 +23,10 @@ are archived; sha256, size and pages describe the full file. AgendaCenter sends
 no Last-Modified header, so a notice's `last_modified` is the listing's
 Posted/Amended stamp, and a packet is re-downloaded only when that stamp or the
 HEAD Content-Length differs from the archived version.
+
+Earlier versions of an agenda are listed on its PreviousVersions page
+(fetch_previous_versions). They carry no date; the listing's stamp dates the
+current version, and every earlier version predates it.
 """
 from __future__ import annotations
 
@@ -145,6 +149,41 @@ def fetch_notice(meeting: Meeting, known: KnownFile | None) -> DocFile | Unchang
         sha256=documents.sha256(content), text=text.text, text_source=text.text_source,
         size=len(content), pages=text.pages, ocr_pages=text.ocr_pages, last_modified=stamp,
     )
+
+
+_ARCHIVED = re.compile(r"/AgendaCenter/ViewFile/ArchivedAgenda/_\d{8}-(\d+)$")
+
+
+def archived_versions(html: str, base: str) -> list[tuple[int, str]]:
+    """(archive id, URL) of each earlier version on a PreviousVersions page, oldest first.
+
+    The page dates none of them: every row repeats the meeting's Posted stamp. Archive
+    ids rise as versions are archived, so they order the versions."""
+    found = {}
+    for link in BeautifulSoup(html, "html.parser").find_all("a", href=_ARCHIVED):
+        found[int(_ARCHIVED.search(link["href"]).group(1))] = base + link["href"]
+    return sorted(found.items())
+
+
+def fetch_previous_versions(meeting: Meeting, known_urls: set[str]) -> list[tuple[int, DocFile]]:
+    """The meeting's earlier agenda versions not yet archived, as (archive id, DocFile),
+    each read like a notice: the packet's first pages, with the full file's sha256."""
+    page = meeting.source.get("previous_versions_url")
+    if not page:
+        return []
+    base = re.match(r"https?://[^/]+", page).group(0)
+    found = []
+    for archive_id, url in archived_versions(polite.get(page).text, base):
+        if url in known_urls:
+            continue
+        content = pdf_content(polite.get(url))
+        text = documents.pdf_text(content, url, max_pages=NOTICE_PAGES)
+        found.append((archive_id, DocFile(
+            kind="notice", url=url, content=documents.first_pages(content, NOTICE_PAGES), extension="pdf",
+            sha256=documents.sha256(content), text=text.text, text_source=text.text_source,
+            size=len(content), pages=text.pages, ocr_pages=text.ocr_pages, last_modified=None,
+        )))
+    return found
 
 
 def packet_unchanged(url: str, stamp: str, known: KnownFile) -> bool:

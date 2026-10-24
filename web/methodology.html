@@ -30,7 +30,7 @@
         <p>Every count is of closed sessions <strong>noticed in a body's online agenda</strong>.</p>
         <ul>
           <li>A posted agenda isn't necessarily the legal notice. Under Wis. Stat. § 19.84(1), a body can also give notice by physical posting and by notifying the news media.</li>
-          <li>A session that was noticed may never have been held.</li>
+          <li>A session that was noticed may never have been held. Meetings still to come are counted and marked "Upcoming".</li>
           <li>Coverage is the bodies listed in <a href="bodies.yaml">bodies.yaml</a>, from January 1, 2024. Nothing outside them is covered. Marathon County is not yet included: its site refuses automated requests.</li>
           <li>Each committee, commission and board is its own governmental body under s. 19.82(1), so each is reported on its own. A few bodies (task forces, intergovernmental police and fire bodies, a county commission posted on the city's site) are archived but not shown until an editor settles how to report them.</li>
         </ul>
@@ -41,7 +41,7 @@
         <ul>
           <li>The ledger reads each body's agenda from the platform it publishes on: CivicClerk (City of Wausau), BoardBook (both school districts), AgendaCenter (Weston) and Municode (Kronenwetter). Every distinct version of every agenda is archived, with the time it was first seen.</li>
           <li>An agenda is split into its numbered items. A closed-session item is one under a heading or motion to convene in closed session that cites s. 19.85(1) or s. 19.86. A closed session noticed without any citation is recorded too, as one item with no statute cited.</li>
-          <li>Items come from the latest version of the agenda seen before the meeting began; for meetings before the ledger started, from the earliest version it archived.</li>
+          <li>Items come from the latest version of the agenda seen before the meeting began; for meetings before the ledger started, from the earliest version it archived. Where Weston's site dates the current agenda after the meeting and keeps earlier versions, the items come from the latest earlier version.</li>
           <li>Weston posts each agenda as part of the full meeting packet. The ledger reads only the agenda at the front of it.</li>
           <li>Scanned agendas are read with open-source OCR (Tesseract), and every item read that way is checked by an editor.</li>
           <li>No generative AI reads or classifies notices. The rules are deterministic and tested against real notices; the code is on <a href="https://github.com/RowanFlynnPilot/wpr-closed-door-ledger">GitHub</a>.</li>
@@ -78,6 +78,7 @@
           <li>The ledger states what a notice says and what it cites. Nothing more.</li>
           <li>Nothing is characterized automatically. Every published flag is an editor's decision, with a note, made after the body was asked for comment.</li>
           <li>Minutes name private people, such as claimants. The ledger never copies those names; it links to the source.</li>
+          <li>When an agenda's own wording names a private person, an editor either replaces the name with "[name withheld]" and leaves out the archived copy, or withholds the item and its links.</li>
         </ul>
       </section>
 
