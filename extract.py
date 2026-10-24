@@ -34,6 +34,7 @@ _LABEL = re.compile(
     r"|(?P<simple>" + _PART + r")[.)]"                                # "IV." "A." "7." "a)"
     r"|\((?P<paren>\d{1,2}|[a-z]|[ivx]{1,4})\)"                       # "(1)" "(a)"
     r"|(?P<bare>\d{1,2})(?=\s+[A-Z])"                                 # Wausau's "5 Closed Session."
+    r"|(?P<ocr>\d{1,2}),(?=\s+[A-Z])"                                 # OCR reads "8." as "8,"
     r")\s+(?=\S)"
 )
 _CLOSED = re.compile(r"closed\s+session", re.I)
@@ -43,7 +44,8 @@ _NOT_CONVENE = re.compile(
     r"(?:after|following|from|out\s+of|upon\s+return\w*\s+from)\s+(?:the\s+)?closed\s+session|"
     r"(?:discussed|taken\s+up|considered)\s+in\s+(?:the\s+)?closed\s+session|"
     r"\bminutes\b|closed\s+session\s+(?:[IVX]+\s+)?(?:of|held|on)\s+(?:\w+\s+)?\d|"
-    r"prior\s+to\s+(?:any\s+)?(?:potential\s+|possible\s+)?closed\s+session",
+    r"prior\s+to\s+(?:any\s+)?(?:potential\s+|possible\s+)?closed\s+session|"
+    r"action\s+on\s+(?:the\s+)?closed\s+session",
     re.I,
 )
 # Wording that convenes a closed session even when the item also mentions reconvening.
@@ -55,12 +57,19 @@ _CONVENE_VERB = re.compile(
     re.I,
 )
 # An unnumbered line that starts one of these, in capitals, starts a new item
-# (Wausau: "CLOSED SESSION pursuant to ...", "RECONVENE into Open Session").
+# (Wausau: "CLOSED SESSION pursuant to ...", "RECONVENE into Open Session";
+# Weston: "MOTION TO MOVE TO CLOSED SESSION Pursuant to ...", "CONTINUE IN CLOSED SESSION").
 _KEYWORD_LINE = re.compile(
     r"^(?:CLOSED\s+SESSION|RECONVENE|ADJOURN|CONVENE|CONTINUE\s+IN|ACTION\s+AFTER|ANNOUNCEMENT\s+OF|"
-    r"OPEN\s+SESSION|RETURN\s+TO)\b"
+    r"OPEN\s+SESSION|RETURN\s+TO|MOTION\s+TO|POSSIBLE\s+ACTION)\b"
 )
-_RECONVENE = re.compile(r"19\s*\.?\s*85\s*\(\s*2\s*\)|reconven\w*\s+(?:in|into|to)\s+(?:the\s+)?open\s+session", re.I)
+# The agenda's closing item. Packets (Weston, some Wausau) carry other documents
+# after the agenda, such as the previous meeting's minutes; pages after the one
+# holding this line are not read. "Adjourn to closed session" is not it.
+_ADJOURN = re.compile(r"^(?:\S{1,6}\s+)?adjourn(?:ment)?\b(?!\s+(?:to|into|in)\b)", re.I)
+# Page headers and footers repeat at the top or bottom of each page.
+_EDGE_LINES = 3
+_RECONVENE = re.compile(r"19\s*[./]?\s*85\s*\(\s*2\s*\)|reconven\w*\s+(?:in|into|to)\s+(?:the\s+)?open\s+session", re.I)
 
 
 @dataclass
@@ -85,7 +94,7 @@ def _style(m: re.Match, previous_upper: str | None) -> str:
         return f"combined{m.group('combined').rstrip('.').count('.') + 1}"
     if m.group("paren"):
         return "paren-digit" if m.group("paren").isdigit() else "paren-lower"
-    if m.group("bare"):
+    if m.group("bare") or m.group("ocr"):
         return "digit"
     part = m.group("simple")
     if part.isdigit():
@@ -100,14 +109,36 @@ def _style(m: re.Match, previous_upper: str | None) -> str:
     return "upper"
 
 
+def _edge_key(line: str) -> str:
+    return re.sub(r"[\d\s]+", " ", line).strip().casefold()
+
+
+def agenda_pages(text: str) -> list[list[str]]:
+    """Each page's non-empty lines, whitespace collapsed, without repeated page
+    headers and footers, and ending with the page that holds the closing Adjourn."""
+    # U+F0B7 is the Symbol-font bullet Weston's PDFs use; it is a bullet.
+    text = text.replace("", "•")
+    pages = [[re.sub(r"\s+", " ", l).strip() for l in p.splitlines() if l.strip()] for p in text.split("\f")]
+    if len(pages) > 1:
+        seen: dict[str, set[int]] = {}
+        for n, lines in enumerate(pages):
+            for line in lines[:_EDGE_LINES] + lines[-_EDGE_LINES:]:
+                seen.setdefault(_edge_key(line), set()).add(n)
+        repeated = {k for k, on in seen.items() if len(on) > 1}
+        pages = [[l for i, l in enumerate(lines)
+                  if not ((i < _EDGE_LINES or i >= len(lines) - _EDGE_LINES) and _edge_key(l) in repeated)]
+                 for lines in pages]
+    for n, lines in enumerate(pages):
+        if any(_ADJOURN.match(l) and len(l) <= 40 for l in lines):
+            return pages[: n + 1]
+    return pages
+
+
 def segment(text: str) -> list[Segment]:
     segments: list[Segment] = []
     previous_upper = None
-    for page_no, page in enumerate(text.split("\f"), 1):
-        for raw in page.splitlines():
-            line = re.sub(r"\s+", " ", raw).strip()
-            if not line:
-                continue
+    for page_no, lines in enumerate(agenda_pages(text), 1):
+        for line in lines:
             m = _LABEL.match(line)
             if m:
                 style = _style(m, previous_upper)

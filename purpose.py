@@ -17,7 +17,7 @@ from citations import parse
 _CITATION = re.compile(
     r"(?:\b(?:pursuant\s+to|under)\s+)?"
     r"(?:(?:Wisconsin\s+State\s+Statutes?|Wis\.\s*Stats?\.?|W\.?S\.?S\.?|Sections?|ss?\.)\s*)?§*\s*"
-    r"19\s*\.?\s*8[56]\s*(?:\(\s*\w{1,2}\s*\)?\s*(?:,|and|or|&)?\s*)*"
+    r"19\s*[./]?\s*8[56]\s*(?:\(\s*\w{1,2}\s*\)?\s*(?:,|and|or|&)?\s*)*"
     r"(?:\s*,?\s*(?:of\s+the\s+)?(?:Wis(?:consin)?\.?\s*Stat(?:ute)?s?\.?|Wisconsin\s+Statutes))?",
     re.I,
 )

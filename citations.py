@@ -18,8 +18,9 @@ _SUB1 = r"\(\s*[1l]\s*\)"
 # The dot is optional: one Kronenwetter notice reads "Wis. Stat. 1985(1)(f)".
 # Letters are read when chained directly after "19.85", so "except where
 # par. (b) applies" inside the (f) paraphrase is never counted.
-_CITE_1985 = re.compile(r"19\s*\.?\s*85\s*(?:" + _SUB1 + r"\s*,?\s*)?((?:" + _LETTER + _SEP + r")+)", re.I)
-_HAS_SUB1 = re.compile(r"19\s*\.?\s*85\s*" + _SUB1, re.I)
+# A slash may stand in for the dot: one Wausau notice reads "19/85 (1)(f)".
+_CITE_1985 = re.compile(r"19\s*[./]?\s*85\s*(?:" + _SUB1 + r"\s*,?\s*)?((?:" + _LETTER + _SEP + r")+)", re.I)
+_HAS_SUB1 = re.compile(r"19\s*[./]?\s*85\s*" + _SUB1, re.I)
 # D.C. Everest lists further letters after the first exemption's paraphrase:
 # "... (Administrator Retirement Agreements) and (e) for Deliberating ...".
 # Only read when the item already cites 19.85, and only when the letter

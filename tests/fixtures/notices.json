@@ -177,6 +177,61 @@
      "starts": "ANNOUNCEMENT OF CLOSED SESSION / CLOSED SE"
     }
    ]
+  },
+  {
+   "id": "weston-1716",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1716 (Village Board), Dec 16, 2024",
+   "note": "Unnumbered capitals motions after item 67; the (g) item wraps across a page break with the page footer and header between; bullets are U+F0B7.",
+   "text": "67. Discussion and/or action on 2024 Budget Adjustments\nMOTION TO MOVE TO CLOSED SESSION Pursuant to Wis. Stat. § 19.85(1)(g), conferring\nwith legal counsel for the governmental body who is rendering oral or written advise concerning\nBOARD OF TRUSTEES MEETING AGENDA\nPrepared by: Pamela Brehm, Village Clerk\fVILLAGE OF WESTON, WISCONSIN\nOFFICIAL MEETING AGENDA OF THE BOARD OF TRUSTEES\nstrategy to be adopted by the body with respect to litigation in which it is or is likely to become\ninvolved to wit:\n• Marathon County Case No. 2024-CF-544\nCONTINUE IN CLOSED SESSION Pursuant to Wis. Stat. § 19.85(1)(c) to consider\nemployment, promotion, compensation, or performance evaluation data of any public employee\nover which the governmental body has jurisdiction or exercises responsibility to wit: Village\nAdministrator’s one-year evaluation\nRECONVENE TO OPEN SESSION\nPOSSIBLE ACTION ON CLOSED SESSION ITEMS\n• Marathon County Case No. 2024-CF-544\n• Village Administrator’s one-year evaluation\nATTORNEY REFERRALS\nADMINISTRATOR REFERRALS\nREMARKS FROM TRUSTEES\nREMARKS FROM THE PRESIDENT\nFUTURE ITEMS\nNext meeting date(s):\n- Monday, January 20, 2025 at 6:00 p.m.\nADJOURN\nIn accordance with the requirements of Title II of the Americans with Disabilities Act of 1990 (ADA), the Village will not discriminate against qualified individuals with disabilities on\nthe basis of disability in its services, programs or activities. If you need assistance or reasonable accommodations in participating in this meeting or event due to a disability as\ndefined under the ADA, please call the Village Clerk at 715-359-6114 or clerks@westonwi.gov to discuss your accessibility needs. We ask your request be provided a minimum of 72\nhours before the scheduled event or meeting. If a request is made less than 72 hours before the event the Village will make a good faith effort to accommodate your request.\nThis Notice was posted at the Village Municipal Center, on www.westonwi.gov and transmitted to media partners on December 11, 2024.\nBOARD OF TRUSTEES MEETING AGENDA\nPrepared by: Pamela Brehm, Village Clerk",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "MOTION TO MOVE TO CLOSED SESSION Pursuant"
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "CONTINUE IN CLOSED SESSION Pursuant to W"
+    }
+   ]
+  },
+  {
+   "id": "weston-1832",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1832 (Mountain Bay Police Commission), Oct 21, 2025; page 2 is a synthetic stand-in for the previous meeting's minutes",
+   "note": "OCR'd agenda; the packet's later pages hold old minutes, which are not part of the notice.",
+   "text": "NOTICE & AGENDA\n\n\n\nMOUNTAIN BAY METROPOLITAN\n\nPOLICE COMMISSION\n\n\n\nDate: Tuesday, October 21, 2025\n\nTime: 2:15 pm.\n\nPlace: At the Rothschild Village Hall\n\n\n\nPursuant to State Statutes, the following subject matter will come before the Commission for consideration and possible action:\n\n\n\nds | Call to Order\n\n\n\niL. Appointment of Chairperson, Vice-Chairperson, and Secretary for the Police\n\nCommission and Set Terms for Members\n\n3. Announcements and Statements from the Audience\n\n\n\n(This is the only opportunity for the public to address any items of concern including items on the agenda. Public comment is not allowed\n\nwithout Board action when an agenda item is discussed. Due to open meeting laws, the Board will not be able to have a dialog with the person\n\nmaking public comments. If the person making public comments would like answers to questions, then they will need to leave their phone\n\nnumber with the Clerk so they can be contacted by staff to have their questions answered. Public comments will be limited to 3 minutes per\n\nperson. No action will be taken during public comments.)\n\n\n\n4. Minutes of Previous Meeting(s):\n\nPolice Commission Meeting Minutes of February 25, 2025\n\n5. -. Discussion and Possible Action Regarding Day-to-Day Operations Including Monthly\n\n\n\nand Quarterly Report\n\n\n\n6. Discussion and Possible Action Regarding Staffing Levels, Future Hiring for the Police\n\nDepartment and Accepting Letters of Retirement\n\n\n\n7. Consideration of Motion to Adjourn to Closed Session Pursuant to Wisconsin\n\nStatutes Section 19.85 (1)(C) Considering Employment, Promotion, Compensation\n\nor Performance Evaluation Data of Any Public Employee Over which the\n\nGovernmental Body has Jurisdiction or Exercises Responsibility, Specifically\n\nConducting Interviews of Candidates for a Police Officer for the Mountain Bay\n\nMetropolitan Police Department\n\n\n\n8. Motion to Reconvene into Open Session and take Action Regarding Items Discussed\n\nin Closed Session\n\n\n\n9. . Set Date, Time, and Agenda Items to Discuss at Next Meeting\n\n10. Adjourn\n\n\n\nSigned: Elizabeth Llkner, WCMC\n\n\n\nPresiding Officer or Designee\n\n\n\nPosted at the: Rothschild Village Hall & Rothschild Post Office Daily Herald Notified:\n\nVia: FAX\n\nBy: EF By: EF\n\nDate: 10/15/2025 Date: 10/15/2025\n\nNOTE: Please note, upon reasonable notice, efforts will be made to accommodate the needs of disabled individuals through appropriate aids and services. For additional\n\n\n\ninformation or to request this service, contact the Village Clerk’s Office, (715) 359-3660, during the normal hours of operation.\n\n\n\nIf there is a quorum of any other governmental body present at the meeting, the existence of the quorum shall not constitute a meeting as no action of such body is contemplated.\n\n\fMOUNTAIN BAY METROPOLITAN POLICE\nCOMMISSION MEETING MINUTES\nFebruary 25, 2025\n5. Motion to Adjourn to Closed Session Pursuant to Wisconsin Statutes Section 19.85 (1)(C) to interview candidates.\nMotion carried 6:0.\nAdjourned at 4:50 p.m.",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Consideration of Motion to Adjourn to Clo"
+    }
+   ]
+  },
+  {
+   "id": "weston-1568",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1568 (Everest Metro Police Commission)",
+   "note": "Roman sections over lettered items; Weston's comma form 19.85(1), (c) and (f).",
+   "text": "Everest Metropolitan Police Department Police Commission\nMEETING AGENDA\n______________________________________________________________________________________________________________________________\nDATE: Tuesday, February 20, 2024 PLEASE NOTE: ACTION MAY\nBE TAKEN ON ANY ITEM ON\nTHE AGENDA\nTIME: 2:00 PM\nLOCATION: Village of Weston Municipal Center\nVillage Board Room\n4747 Camp Phillips Road\nWeston, WI 54476\nI. CALL TO ORDER\nA. Roll Call\nB. Approval of Minutes from December 21, 2023, EMPD Police Commission meeting.\nII. NEW BUSINESS -EMPD\nA. Discussion and possible action on Joint Agreement Establishing the Rothschild Joint Municipal Court\n– Serving the Communities of the Village of Rothschild, Village of Weston, City of Schofield, Town\nof Weston, Village of Marathon City, and Village of Edgar; Discussion and possible action on current\nEverest Metropolitan Municipal Court.\nB. CLOSED SESSION pursuant to Wis. Stat. 19.85(1), (c) and (f), considering employment, promotion,\ncompensation or performance evaluation data or funding of a position of any public employee over\nwhich the governmental body has jurisdiction or exercises responsibility and considering financial,\nmedical, social or personal histories or disciplinary data of specific persons, preliminary consideration\nof specific personnel problems or the investigation of charges against specific persons except where\npar. (b) applies which, if discussed in public, would be likely to have a substantial adverse effect upon\nthe reputation of any person referred to in such histories or data, or involved in such problems or\ninvestigations regarding an Everest Metro Police Department employee.\nC. RECONVENE into Open Session, to take any action on Closed Session items if necessary.\nVI. ADJOURN:\nAny person planning to attend this meeting who needs special accommodation in order to participate should\ntelephone the Everest Metropolitan Police Department at 359-4202.\nCopy: City Clerk\nVillage Clerk\nTown Clerk Emailed: 2-19-2024 Time: 12:03 p.m.",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c",
+      "f"
+     ],
+     "starts": "CLOSED SESSION pursuant to Wis. Stat. 19."
+    }
+   ]
   }
  ]
 }
