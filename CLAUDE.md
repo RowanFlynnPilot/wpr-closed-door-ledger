@@ -65,6 +65,10 @@ python handcheck.py --quarter 2026Q3   # archive/handcheck/2026-Q3/
 **Report per governmental body.** Each committee, commission and board is its own body under s. 19.82(1). `bodies.yaml` lists all 72 and states the matching rules; `bodies.py` implements them.
 - **Validated** Oct 23 on every 2024–26 meeting title: 1,278 across Wausau, both school districts and Kronenwetter. Each one maps to exactly one body, is a genuine joint meeting, or is excluded on purpose (quorum notices, test events, supplemental-packet rows). Weston matches on AgendaCenter category ids.
 - **Unmatched or ambiguous titles fail the build.** A title matching several bodies counts for each only if it contains "joint". Otherwise it needs an `overrides` entry naming the bodies.
+- **Listing titles don't name joint meetings.** Wausau posts most joint meetings under one committee's title ("Finance Committee Special Meeting" for a joint Finance and Economic Development meeting). Every 2024–26 Wausau agenda header was read on Oct 23, 2026; the 20 joint meetings, 3 quorum notices posted under committee titles and 1 duplicate posting (wausau:1499 = 1279) are in `overrides`. New ones need the same: the agenda header wins over the title.
+  - **Quorum notices are caught from the agenda too.** Wausau posts most possible-quorum notices (ceremonies, retreats) under a committee's title. A notice whose header reads "Meeting of the: POSSIBLE QUORUM …" is not a meeting of any body, whatever the title says (`extract.quorum_notice`; blind check round 8 found 23 still counted).
+  - Weston matches on category, so its joint meetings are overrides too: five "Joint Budget Workshop" meetings (Board of Trustees with Finance & HR), ten Plan Commission meetings held jointly with the village–town Extraterritorial Zoning Committee (category 19, now a `confirm:` body), two Everest Metro joint finance meetings, and one SAFER joint meeting posted under two categories (weston:1904 excluded as the duplicate).
+  - Dates come from the listing. Of 280 Kronenwetter agendas, one header disagrees with its listing (Dec 16 vs. Dec 17, 2025; no closed session); the listing date stands.
 - **Generic titles are mapped one by one.** Wausau SD posts many different things as "Public Meeting".
   - Its 32 such entries since 2024 are mapped in `overrides` by first agenda item: 15 event quorum notices (graduations, celebrations, forums) are excluded; 11 Elementary Task Force meetings, 3 election canvasses and 3 board–union bargaining sessions are kept.
   - A blanket exclusion would have hidden those bargaining sessions, which are closed under s. 19.86.
@@ -191,12 +195,18 @@ Sources: [Wis. Stat. 19.85](https://docs.legis.wisconsin.gov/statutes/statutes/1
 ## Extraction
 - **Segment by agenda item, never by line.** PDF text wraps mid-citation.
   - BoardBook and Municode: the adapter puts one item per line (table rows, list items).
-  - PDFs: a new item starts at a numbering label (`IV.`, `V.A.`, `7.`, `a)`, `(1)`, Wausau's bare `5 Closed Session.`, OCR's `8,`), at an unnumbered line in capitals (a header), or at an unnumbered line that *starts* with a closed-session keyword in capitals (`CLOSED SESSION pursuant to…`, `MOTION TO MOVE TO CLOSED SESSION`, `CONTINUE IN CLOSED SESSION`, `RECONVENE…`, `POSSIBLE ACTION…`). Everything else continues the item before it.
+  - PDFs: a new item starts at a numbering label (`IV.`, `V.A.`, `7.`, `a)`, `(1)`, Wausau's bare `5 Closed Session.`, OCR's `8,`), at an unnumbered line in capitals (a header), or at an unnumbered line that *starts* with a closed-session keyword in capitals (`CLOSED SESSION pursuant to…`, `MOTION TO MOVE TO CLOSED SESSION`, `CONTINUE IN CLOSED SESSION`, `RECONVENE…`, `POSSIBLE ACTION…`, or any capitals lead-in that reaches CLOSED SESSION, like "IF NECESSARY, MOTION TO MOVE TO CLOSED SESSION Pursuant to…"). Everything else continues the item before it.
   - Each item's depth comes from its label style, in the order styles first appear (I. → A. → 1. → a.); BoardBook's combined labels give depth directly. Headers sit above numbered items.
   - Lines repeated at the top or bottom of two or more pages (page headers and footers) are dropped.
   - **Notices stop at the page holding the closing "Adjourn" line** (not "Adjourn to closed session"). Weston's packets and CivicClerk packet-only notices carry the previous meeting's minutes after the agenda, with their own closed-session motions.
 - **Sections.** A closed-session section is an item that speaks of convening in closed session, plus everything under it. Mentions that aren't about convening don't start one: reconvening, action after or on closed-session items, approving closed-session minutes, "prior to any potential closed session".
 - **Closed-session items:** each item that cites s. 19.85(1) or s. 19.86 and either itself speaks of convening or sits under a section that does. Header-only lines are not items.
+  - **A closed-session motion set on its own line is its own item**, under whatever agenda number it sits ("4 Closed Session." followed by two paragraphs that each start "Closed Session pursuant to …": Wausau 2487's (c) interviews and (f) complaint are two items, like 2457's and 2149's). Motions run together in one line or paragraph (Kronenwetter's "… to wit X and pursuant to Section 19.85(1)(f) … to wit Y") stay one item with both letters and both subjects, `"; "`-joined. Settled after blind check round 12 found capitalization deciding it.
+  - A subject with no marker word, after the statute's restated wording ("… likely to become involved, to receive information … in the absentee ballot drop box matter"), is read for each citation in the item.
+  - **In a joint meeting, an item belongs to the bodies its section names.** Agendas split joint meetings into sections ("Finance Committee", then "Joint Finance Committee and Economic Development Committee agenda items"), and bodies adjourn partway ("Adjournment of Utility Committee", "FINANCE AND HUMAN RESOURCES COMMITTEE ADJOURNMENT"). An item gets the bodies named by the nearest section header above it inside the agenda, less any body adjourned before it; with no such structure, all of the meeting's bodies. The meeting keeps all its bodies.
+  - An announcement ("ANNOUNCEMENT OF CLOSED SESSION", "Announcement of possible closed session pursuant to …") forecasts the session the agenda notices again where it's held, so it counts only when nothing else does.
+  - A combined label ("XII.A.", "II.A.1.") starts with a Roman numeral or number and is followed by a capitalized word, so a wrapped line that starts with someone's initials ("J.C.V. and A.T. and one Citizen Complaint …") continues its item.
+  - More label forms: Roman numerals with no period ("IV Closed Session."), a label alone on its line ("a."), and an OCR misread number ("fe", "us.") just before "Motion to …" or "Consideration of Motion …". A word broken at a hyphen across lines rejoins without a space.
 - **`no_citation`:** when a notice has closed-session sections but no cited item anywhere, it yields **one** item with `no_citation: true` whose text is the sections' wording, " / "-joined. A notice with any cited item yields only those: its uncited mentions ("ANNOUNCEMENT OF CLOSED SESSION", "Closed Session Information (Board Only)") belong to the same session.
 - **`notices_reconvene`** is set by a `19.85(2)` citation or wording that states the intent to reconvene in open session ("reconvene [meeting] into open session", "return to open session", even the misspelled "RECONVEVE"), read from the agenda's own pages only (not a packet's bound-in earlier agendas).
 - Labels may have no space after them in some PDFs ("III.The Board"); a label BoardBook doubles ("II.A. II.A.") is read once.
@@ -209,6 +219,7 @@ Sources: [Wis. Stat. 19.85](https://docs.legis.wisconsin.gov/statutes/statutes/1
   - The parser passes all 27 fixtures.
 - **`purpose.purpose_text(text)`** returns the notice's own subject.
   - It looks for, in order: text before the citation, kept whole when it names something beyond procedural words ("Meet with Attorney to Discuss Sale of Property"; not "MOTION TO MOVE TO" or "The Board will adjourn to"); text after a marker ("for the purpose of", "regarding", "in regard to", "to wit", "specifically", "to discuss", "including", "discussing", "related to", "relating to", "to hold", a bullet), running to the next citation, bullet, motion or sentence end, so a second "regarding" inside one subject doesn't split it; text in parentheses; and, when none of those names anything, the words right after the last citation.
+  - An unnumbered "CLOSED SESSION pursuant to …" line that names nothing, sitting under a numbered item ("4. HEARING: Appeal of Declaration of Chronic Nuisance Premises – 1013 N. Third Avenue"), takes that item's text as its subject.
   - Every candidate is cut where the statute's own wording begins ("employment, promotion, compensation", "substantial adverse effect", …), so restated statute text never passes as a subject.
   - It returns `""` when the notice only restates the statute and `None` when the item cites nothing.
   - It passes every fixture. On the 110 sample items it found a subject in 109.
@@ -222,6 +233,7 @@ Sources: [Wis. Stat. 19.85](https://docs.legis.wisconsin.gov/statutes/statutes/1
 - `cites_subsection_1` is false
 - `purpose_text` is empty or under 4 words
 - `text_source` is `ocr`
+- the item uses another exemption's statute wording without citing that letter (a (c) item that goes on to "conferring with legal counsel … with respect to litigation"; three Wausau (b) bargaining items with (e)'s "competitive or bargaining reasons"). Added after blind check round 9.
 - the `purpose_text` contains none of the terms listed in `triage_terms.json` for any of the cited letters (a case-insensitive substring match). Letters with no terms (ee, eg, em) always check.
 
 Otherwise `triage` is `ok`. Nearly every notice names some subject, so the real *Buswell* question is generic subjects such as "Potential Litigation" or "deliberating on claims". That's why the word-count rule exists.
@@ -235,7 +247,9 @@ Otherwise `triage` is `ok`. Nearly every notice names some subject, so the real 
 - `withhold` drops the item from the site and blanks its meeting's `notice_url` and archived-copy link. Use it, for example, for an agenda that named a student.
 
 ## Archive rules
-- **Append-only, every version.** Archive each distinct file version (by sha256) with `seen_at` (UTC).
+- **Append-only, every version.** Archive each distinct file version (by sha256) with `seen_at` (UTC). **HTML pages are told apart by their agenda text:** BoardBook's page chrome changes on its own (copyright years, asset versions like `All.27.css`), so a page whose text matches an archived version is the same version.
+- A meeting a jurisdiction excludes is listed but not marked fetched, so if `bodies.yaml` later keeps it, the next run fetches its documents.
+- Files over 45 MB keep their text, sha256, size and URL, but not the file (one so far: Wausau event 1584's 51.6 MB minutes).
 - **`changed_after_meeting`** is set only when a meeting already had an archived notice version, and a *new* version whose **text differs** from the one before it is first seen on a later Central date than the meeting date. Backfilled history never sets it. The text test keeps a re-published file with identical wording (Wausau re-published everything Jan 26, 2026) from looking like a change.
 - **Removals are shown neutrally** ("no longer on the body's site"). A meeting inside the listed window that the platform no longer lists gets `source_status: "removed"`; a file no longer served gets `file_status[kind]: "removed"` in `meeting.json`.
 - **Fail fast:**
@@ -308,7 +322,9 @@ DOJ's training (March 2026) says the vote of each member must be recorded. Wheth
 **Public projection** (`site/data/`, JSON and CSV):
 - **Items, whitelisted fields only:** `id`, `meeting_id`, `bodies`, `meeting_date`, `item_text`, `citation_raw`, `exemptions`, `other_citations`, `purpose_text`, `notice_url`, `archive_url`, `minutes` (`null` until `PUBLISH_MINUTES`), plus `review_note` for `confirmed` or `flagged` items.
 - **Meetings, whitelisted:** `id`, `bodies`, `jurisdiction`, `meeting_date`, `canceled`, `notice_url`, `notice_versions`, `source_status`, `closed_item_count`, `minutes_url`. Also `bodies.json` (key, name, jurisdiction), `meta.json` (build time, window, jurisdictions, how many bodies are held back) and a copy of `bodies.yaml`.
-- **`archive_url`** is a site-relative path (`archive/<jurisdiction>/<meeting_id>/notice-<sha12>.<ext>`). `build.py` copies those archived notices, and only those, into the site artifact. The archive repo stays private.
+- **`archive_url`** is a site-relative path (`archive/<jurisdiction>/<meeting_id>/notice-<sha12>.<pdf|txt>`). The archive repo stays private; `build.py` writes into the site artifact only what a reader needs:
+  - a PDF notice cut after the page holding the agenda's closing Adjourn. Weston packets bind the previous meeting's minutes, with residents' names, right behind the agenda (the code review found five such copies).
+  - an HTML notice (BoardBook, Municode) as its extracted text, so the platform's scripts never run on the ledger's site.
 - **Never published:**
   - `triage`, `cites_subsection_1`, `no_citation`, `text_source`, `notices_reconvene`, `changed_after_meeting`
   - withheld items
@@ -318,7 +334,7 @@ DOJ's training (March 2026) says the vote of each member must be recorded. Wheth
 Each quarter, file the same simple request with each **custodian**: the open-session minutes or s. 19.88(3) records showing the motion and vote for each closed session noticed in the quarter.
 - `audit.py` groups `closed_sessions.json` by `custodian` (from `bodies.yaml`, defaulting to the jurisdiction's name) and fills `audit/request_template.md`, one file per custodian in `archive/audit/<year>-Q<n>/`. The template is pending Shereen's review.
   - A joint meeting's item goes to each of its bodies' custodians.
-  - s. 19.86-only items are left out: the open meetings law doesn't apply to bargaining negotiations, so there are no s. 19.88(3) records to ask for.
+  - s. 19.86-only items are left out: the open meetings law doesn't apply to bargaining negotiations, so there are no s. 19.88(3) records to ask for. So are withheld items (their wording may name a student) and items of canceled meetings.
   - The requester's fields (`[RECORDS CUSTODIAN]`, `[EMAIL]`, `[AMOUNT]`, `[NAME]`, `[PHONE]`) are left for the editor. Custodian `unknown` (the regional housing task force) can't be sent until its `confirm:` is settled.
 - The requests are filed by an editor and logged in the Records Ledger. Nothing files automatically.
 - **The first round covers Q3 2026.** Its responses feed the phase 2 hand-check.
@@ -358,5 +374,5 @@ Each quarter, file the same simple request with each **custodian**: the open-ses
 - **Code:** Python 3.12. Scripts use `argparse` and support `--dry-run`.
 - **Locally:** Windows, PowerShell 5.1, `python -m pip`, commands chained with semicolons. Tesseract for Windows comes from the UB Mannheim build, added to PATH.
 - **Principles:** One correct path, no fallbacks, fail fast. Single-responsibility functions.
-- **Workflow:** `.github/workflows/ledger.yml` runs daily on `cron: "17 11 * * *"` (11:17 UTC, early morning Central): test, `fetch.py --recent`, `build.py`, commit the archive, `archive_check.py --push`, then upload `site/` and deploy it to Pages. It lives on the `workflow` branch until merged; schedules only run from the default branch.
+- **Workflow:** `.github/workflows/ledger.yml` runs daily on `cron: "17 11 * * *"` (11:17 UTC, early morning Central): test; `fetch.py --recent`; commit and push what was fetched even if a jurisdiction failed (so a notice version seen tonight is never lost); `build.py`; commit and push the built data; upload `site/` and deploy it to Pages only if the build passed; then fail the job if fetch or build failed. The archive is checked out with full history so `archive_check.py` measures what GitHub stores, and each push rebases first. It lives on the `workflow` branch until merged; schedules only run from the default branch.
 - **Site:** `web/` reuses the Records Ledger's tokens, masthead and footer. Values from the data are always set as text, never HTML. Preview with `.claude/launch.json` ("site": `http.server` on port 8790 over `site/`).

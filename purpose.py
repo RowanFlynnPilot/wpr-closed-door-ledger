@@ -23,7 +23,7 @@ _CITATION = re.compile(
 )
 # Phrases after which a notice names its actual subject.
 _MARKER = re.compile(
-    r"(?:\b(?:for\s+the\s+purposes?\s+of|regarding|in\s+regards?\s+to|to\s+wit|specifically|to\s+discuss|re:|"
+    r"(?:\b(?:for\s+the\s+purposes?\s+of|regarding|in\s+regards?\s+to|t\s?o[\s-]+wit|specifically|to\s+discuss|re:|"
     r"including|discussing|related\s+to|relating\s+to|to\s+hold)|•|[–—](?=\s*[A-Z]))\s*[:\-–—•]?\s*",
     re.I,
 )
@@ -38,12 +38,16 @@ _PROCEDURAL = set("""
     consider consideration contemplate of motion motions move moving to into in continue continuing convene
     convening adjourn adjournment adjourning directly enter entering go recess closed session pursuant under
     per wis wisconsin stat stats statute statutes state sec section sections s ss meeting meetings regular special
-    following after before open prior
+    following after before open prior remain remaining executive if necessary needed trustees for
+    announcement possible discussion action approve approving going and
 """.split())
+# A sentence's end, but not an initial ("T. Winters") or an abbreviation ("vs. City", "No. 24CV40").
+_SENTENCE_END = re.compile(r"(?<!\b[A-Z])(?<!\bvs)(?<!\bv)(?<!\bNo)(?<!\bSt)(?<!\bInc)(?<!\bMr)(?<!\bMs)(?<!\bDr)(?<!\bWis)(?<!\bStat)(?<!\bStats)\.\s+[A-Z]")
 # Statute letters in parentheses inside a clause ("(1)(c)") are dropped; longer
 # parentheses ("(Riverlife South)", "applicant(s)") are part of the subject.
 _SHORT_PAREN = re.compile(r"\(\s*(?:\d{1,2}|[a-h]{1,2}|cm)\s*\)", re.I)
-_NOT_A_SUBJECT = re.compile(r"^(?:board only|if necessary|if needed)$", re.I)
+_NOT_A_SUBJECT = re.compile(r"^(?:board only|if necessary|if needed|same|the same|said|"
+                            r"action requested|possible action|action item|information only|discussion only)$", re.I)
 # The statute's own wording, restated in the notice. A subject candidate is cut
 # where it begins: "To consider the employment, promotion, compensation or
 # performance evaluation data of an employee" names no subject.
@@ -52,10 +56,18 @@ _STATUTE_WORDING = re.compile(
     r"(?:to\s+)?have\s+a\s+substantial\s+adverse\s+effect|"
     r"employment,\s*promotion,\s*compensation|performance\s+evaluation\s+data|financial,\s*medical,\s*social|"
     r"deliberating\s+or\s+negotiating\s+the\s+purchas|conferring\s+with\s+legal\s+counsel|"
+    r"legal\s+counsel'?s?\s+(?:who\s+is\s+rendering\s+)?(?:oral\s+or\s+)?written\s+advice|strategy\s+to\s+be\s+adopted|"
     r"dismissal,\s*demotion,\s*licensing|crime\s+detection\s+or\s+prevention|(?:judicial\s+or\s+)?quasi-judicial\s+trial|"
     r"(?:deliberating\s+(?:concerning\s+|on\s+)?)?a\s+case\s+which\s+was\s+the\s+subject|purchasing\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|"
-    r"competitive\s+or\s+bargaining\s+reasons|personal\s+histories|preliminary\s+consideration\s+of\s+specific|"
+    r"competitive\s+(?:or|and)\s+bargaining\s+reasons|personal\s+histories|preliminary\s+consideration\s+of\s+specific|"
     r"requests?\s+for\s+confidential\s+(?:written\s+)?advice|probation,?\s+extended\s+supervision",
+    re.I,
+)
+# Where each exemption's restated wording ends; a subject with no marker word follows it.
+_BOILERPLATE_END = re.compile(
+    r"likely\s+to\s+become\s+involved|require\w*\s+a\s+closed\s+session|exercises\s+responsibility|"
+    r"involved\s+in\s+such\s+problems\s+or\s+investigations?|before\s+(?:that|the)\s+governmental\s+body|"
+    r"crime\s+detection\s+or\s+prevention|discipline\s+of\s+any\s+public\s+employee|licensee",
     re.I,
 )
 _FILLER = {"to", "consider", "considering", "the", "of", "a", "an", "and", "or", "for", "data", "any", "on"}
@@ -66,7 +78,8 @@ def _subject(candidate: str) -> str:
     found = _STATUTE_WORDING.search(candidate)
     if found:
         candidate = _clean(candidate[: found.start()])
-    candidate = _clean(re.sub(r"(?i)\s+(?:and|or)$", "", candidate))
+    candidate = re.sub(r"(?i)\s+(?:and\s+)?purs\w*\s+to$", "", candidate)   # the next citation's lead-in ("and pursuit to")
+    candidate = _clean(re.sub(r"(?i)\s+(?:and|or|when|whenever|which|where)$", "", candidate))
     meaningful = [w for w in re.findall(r"[\w'’/-]+", candidate.lower()) if w not in _FILLER]
     return candidate if len(meaningful) >= 2 or (meaningful and not found) else ""
 
@@ -110,35 +123,43 @@ def purpose_text(item_text: str) -> str | None:
             continue
         rest = item_text[marker.end():]
         stops = [m.start() for m in (_CITATION.search(rest), re.search("•", rest), _MOTION_START.search(rest),
-                                     re.search(r"(?<!\b[A-Z])\.\s+[A-Z]", rest),   # the sentence's end (not "T. Winters")
+                                     _SENTENCE_END.search(rest), re.search(r"[;,]\s*t\s?o[\s-]+wit", rest, re.I),
                                      re.search(r"^[^(]*?\)", rest)) if m]           # the parenthesis it sits in
         end = min(stops) if stops else len(rest)
-        covered = marker.end() + end
         clause = _clean(_SHORT_PAREN.sub(" ", rest[:end]))
         while (opening := _MARKER.match(clause)) and opening.end():
             clause = _clean(clause[opening.end():])        # "specifically, to discuss the ..."
-        clause = re.sub(r"(?i)^and\s+(?:consider|discuss)\s+", "", clause)   # "to discuss and consider the ..."
-        clause = _subject(clause)
+        clause = re.sub(r"(?i)^and\s+(?:(?:consider|discuss)\s+)?", "", clause)   # "to discuss and consider the ..."
+        clause = re.sub(r"(?i)^(?:the\s+)?purposes?\s+of\s+", "", clause)          # "for the purpose of the purpose of ..."
+        clause = "" if _NOT_A_SUBJECT.match(clause) else _subject(clause)
         if clause:
             parts.append(clause)
-    # 3. Subjects given in parentheses (D.C. Everest's layout).
+            # A clause that was only statute wording ("for the purpose of conferring with legal
+            # counsel ...") hides nothing: a later "to wit" in it still names the subject.
+            covered = marker.end() + end
+    # 3. For each citation whose stretch of text named nothing above, the words that follow
+    #    the statute's own wording, to the end of the sentence ("CONTINUE IN CLOSED SESSION
+    #    PURSUANT TO §19.85(1)(c) Reclassification Review ...", "... likely to become
+    #    involved, to receive information ... in the absentee ballot drop box matter").
+    cites_at = list(_CITATION.finditer(item_text))
+    for n, cite in enumerate(cites_at):
+        end = cites_at[n + 1].start() if n + 1 < len(cites_at) else len(item_text)
+        stretch = item_text[cite.end():end]
+        if any(part in _clean(stretch) for part in parts if part):
+            continue
+        boilerplate = list(_BOILERPLATE_END.finditer(stretch))
+        rest = (stretch[boilerplate[-1].end():] if boilerplate else stretch).lstrip(" .,;:-–—")
+        stops = [m.start() for m in (_SENTENCE_END.search(rest), _MOTION_START.search(rest)) if m]
+        tail = _subject(_clean(rest[: min(stops)] if stops else rest))
+        # A tail that opens with a parenthetical is left to step 4 ("(Co-Curricular Program Review)").
+        if tail and _names_something(tail) and not tail.startswith("("):
+            parts.append(tail)
+    # 4. Subjects given in parentheses (D.C. Everest's layout).
     for paren in re.findall(r"\(([^()]{3,})\)", item_text):
         paren = _clean(paren)
         if not re.match(r"^\s*(?:\d|[a-h]{1,2}|cm)\s*$", paren, re.I) and not _NOT_A_SUBJECT.match(paren):
             if _subject(paren):
                 parts.append(paren)
-    # 4. Otherwise, the words right after the last citation, to the end of the sentence
-    #    ("CONTINUE IN CLOSED SESSION PURSUANT TO §19.85(1)(c) Reclassification Review ...").
-    if not parts:
-        last = None
-        for last in _CITATION.finditer(item_text):
-            pass
-        if last:
-            rest = item_text[last.end():]
-            stops = [m.start() for m in (re.search(r"\.\s", rest), _MOTION_START.search(rest)) if m]
-            tail = _subject(_clean(rest[: min(stops)] if stops else rest))
-            if tail and _names_something(tail):
-                parts.append(tail)
     # A part already contained in another ("loss of personal property" inside
     # "Inquiry regarding loss of personal property") is not a second subject.
     seen: list[str] = []

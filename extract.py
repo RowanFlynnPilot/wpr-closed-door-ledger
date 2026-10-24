@@ -30,14 +30,21 @@ _ROMAN = r"(?:X{0,3})(?:IX|IV|V?I{0,3})"
 _PART = r"(?:[IVXLC]+|[A-Z]|\d{1,2}|[a-z])"
 _LABEL = re.compile(
     r"^\s*(?P<label>"
-    r"(?P<combined>" + _PART + r"(?:\." + _PART + r")+\.?)"          # BoardBook "V.A." "II.A.1."
+    # BoardBook "V.A." "II.A.1.": a Roman numeral or number first, then a capitalized word,
+    # so a wrapped line starting with initials ("J.C.V. and A.T. and one Citizen ...") isn't one.
+    r"(?P<combined>(?:[IVXLC]+|\d{1,2})(?:\." + _PART + r")+\.?)(?=\s+[^a-z\s]|\s*$)"
     r"|(?P<simple>" + _PART + r")[.)]"                                # "IV." "A." "7." "a)"
+    r"|(?P<doubled>(?P<letter>[A-Z])(?P=letter))\."                   # Kronenwetter's letters run on past Z: "AA."
     r"|\((?P<paren>\d{1,2}|[a-z]|[ivx]{1,4})\)"                       # "(1)" "(a)"
     r"|(?P<bare>\d{1,2})(?=\s+[A-Z])"                                 # Wausau's "5 Closed Session."
+    r"|(?P<bareroman>[IVX]{1,4})(?=\s+[A-Z])"                         # Wausau's "IV Closed Session."
     r"|(?P<ocr>\d{1,2}),(?=\s+[A-Z])"                                 # OCR reads "8." as "8,"
-    r")(?:\s+(?=\S)|(?<=\.)(?=[A-Z][a-z]))"                           # D.C. Everest PDFs: "III.The Board"
+    # OCR misreads a number ("7." as "fe", "13." as "us.") before a motion line.
+    r"|(?P<junk>(?!(?:of|to|a|an|by|in|on|or|and|the|for)\b)[a-z]{1,3}\.?)(?=\s+(?:Consideration\s+of\s+Motion|Motion\s+to)\b)"
+    r")(?:\s+(?=\S)|(?<=\.)(?=[A-Z][a-z])|\s*$)"                      # "III.The Board"; a label alone on its line ("a.")
 )
 _CLOSED = re.compile(r"closed\s+session", re.I)
+_ANNOUNCEMENT = re.compile(r"\bannouncement\s+of\s+(?:a\s+)?(?:possible\s+)?closed\s+session", re.I)
 # Mentions of closed session that are not about convening one.
 _NOT_CONVENE = re.compile(
     r"reconven|return\w*\s+(?:to|into)\s+open|"
@@ -62,8 +69,12 @@ _CONVENE_VERB = re.compile(
 # Weston: "MOTION TO MOVE TO CLOSED SESSION Pursuant to ...", "CONTINUE IN CLOSED SESSION").
 _KEYWORD_LINE = re.compile(
     r"^(?:CLOSED\s+SESSION|RECONVENE|ADJOURN|CONVENE|CONTINUE\s+IN|ACTION\s+AFTER|ANNOUNCEMENT\s+OF|"
-    r"OPEN\s+SESSION|RETURN\s+TO|MOTION\s+TO|POSSIBLE\s+ACTION)\b"
+    r"OPEN\s+SESSION|RETURN\s+TO|MOTION\s+TO|MOVE\s+TO\s+CLOSED|REMAIN\s+IN\s+CLOSED|POSSIBLE\s+ACTION|"
+    r"[A-Z][A-Z ,&'/-]{0,60}?CLOSED\s+SESSION)\b"   # "IF NECESSARY, MOTION TO MOVE TO CLOSED SESSION Pursuant ..."
 )
+# A closed-session motion set on its own line, in any capitals, after a sentence ends
+# ("4 Closed Session." then two paragraphs "Closed Session pursuant to ..."): its own item.
+_MOTION_LINE = re.compile(r"closed\s+session\s+(?:pursuant|under)\b", re.I)
 # The agenda's closing item. Packets (Weston, some Wausau) carry other documents
 # after the agenda, such as the previous meeting's minutes; pages after the one
 # holding this line are not read. "Adjourn to closed session" is not it.
@@ -99,7 +110,11 @@ def _style(m: re.Match, previous_upper: str | None) -> str:
         return f"combined{m.group('combined').rstrip('.').count('.') + 1}"
     if m.group("paren"):
         return "paren-digit" if m.group("paren").isdigit() else "paren-lower"
-    if m.group("bare") or m.group("ocr"):
+    if m.group("bareroman"):
+        return "roman"
+    if m.group("doubled"):
+        return "upper"
+    if m.group("bare") or m.group("ocr") or m.group("junk"):
         return "digit"
     part = m.group("simple")
     if part.isdigit():
@@ -157,14 +172,17 @@ def segment(text: str, stop_at_adjourn: bool = True) -> list[Segment]:
                 if rest.startswith(m.group("label") + " "):     # BoardBook sometimes doubles it: "II.A. II.A."
                     rest = rest[len(m.group("label")) + 1:]
                 segments.append(Segment(m.group("label"), rest, page_no, style))
-            elif _KEYWORD_LINE.match(line):
+            elif _KEYWORD_LINE.match(line) or (_MOTION_LINE.match(line) and segments
+                                              and re.search(r"[.:]$", segments[-1].text)):
                 segments.append(Segment("", line, page_no, "keyword"))
             elif _is_header(line) and not (segments and segments[-1].style == "header"
                                            and not segments[-1].text.rstrip().endswith((".", ":"))
                                            and len(segments[-1].text) < 60):
                 segments.append(Segment("", line, page_no, "header"))
             elif segments:
-                segments[-1].text += " " + line
+                # A word or number broken at a hyphen ("Project ID 6999-" / "18-11") rejoins without a space.
+                joiner = "" if re.search(r"\w-$", segments[-1].text) else " "
+                segments[-1].text = (segments[-1].text + joiner + line).strip()
             else:
                 segments.append(Segment("", line, page_no, "preamble"))
     _assign_depths(segments)
@@ -221,6 +239,16 @@ def cites(text: str) -> bool:
     return bool(c.exemptions) or any(o.startswith("19.86") for o in c.other_citations)
 
 
+_QUORUM_HEADER = re.compile(r"\bmeeting(?:\s+of\s+the)?\s*:?\s*possible\s+quorum\b", re.I)
+
+
+def quorum_notice(text: str) -> bool:
+    """The agenda's own header says it is a possible-quorum notice ("Meeting of the: POSSIBLE
+    QUORUM of the COMMON COUNCIL and/or ..."), whatever the listing title says."""
+    first = agenda_pages(text)[0] if text else []
+    return bool(_QUORUM_HEADER.search(" ".join(first[:15])))
+
+
 def notices_reconvene(text: str) -> bool:
     """The agenda states the intent to reconvene in open session. Only the agenda's own
     pages count: a packet's bound-in earlier agendas and minutes don't."""
@@ -233,6 +261,7 @@ class Found:
     page: int
     no_citation: bool
     subject_from: str | None = None     # another item that names this one's subject (s. 19.86 footnotes)
+    context: str | None = None          # the agenda item an unnumbered closed-session line sits under
 
 
 # A heading row carrying an asterisked footnote: "ADJOURNMENT* * The Parties may
@@ -253,7 +282,15 @@ def _cited(segments: list[Segment], i: int, picked: list[int]) -> Found:
         earlier = [segments[j].text for j in range(i) if j not in picked
                    and any(o.startswith("19.86") for o in citations.parse(segments[j].text).other_citations)]
         subject_from = earlier[-1] if earlier else None
-    return Found(text, segments[i].page, False, subject_from)
+    # An unnumbered "CLOSED SESSION pursuant to ..." line under a numbered item ("4. HEARING:
+    # Appeal of Declaration of Chronic Nuisance Premises - 1013 N. Third Avenue") is that item's
+    # closed session: when the line names nothing itself, the item above names the subject.
+    context = None
+    if segments[i].style == "keyword" and i > 0 and i - 1 not in picked:
+        above = segments[i - 1]
+        if above.style not in ("header", "preamble", "keyword") and not _CLOSED.search(above.text):
+            context = above.text
+    return Found(text, segments[i].page, False, subject_from, context)
 
 
 def closed_items(text: str) -> list[Found]:
@@ -268,6 +305,12 @@ def closed_items(text: str) -> list[Found]:
     picked = [i for i, seg in enumerate(segments)
               if cites(seg.text) and (convenes(seg.text)
                                       or any(convenes(segments[a].text) for a in _ancestors(segments, i)))]
+    # An announcement ("ANNOUNCEMENT OF CLOSED SESSION", "Announcement of possible closed
+    # session pursuant to ...") forecasts a session the agenda notices again where it is
+    # held; it is counted only when nothing else is (Kronenwetter, Nov 14, 2024).
+    held = [i for i in picked if not any(_ANNOUNCEMENT.search(segments[j].text)
+                                         for j in [i] + _ancestors(segments, i))]
+    picked = held or picked
     if picked:
         return [_cited(segments, i, picked) for i in picked]
     uncited: list[tuple[int, str]] = []
@@ -282,6 +325,73 @@ def closed_items(text: str) -> list[Found]:
     return [Found(" / ".join(t for _, t in uncited), uncited[0][0], True)]
 
 
+# --- which bodies of a joint meeting an item belongs to -----------------------
+
+_SECTION_FILLER = {"joint", "and", "the", "of", "agenda", "items", "item", "meeting", "session", "regular", "special"}
+
+
+def _norm(text: str) -> str:
+    return re.sub(r"\s+", " ", text.replace("&", " and ")).strip().casefold()
+
+
+def _name_forms(name: str) -> list[str]:
+    """A body's name as headers write it: whole, without "Village "/"City of ", and without
+    its trailing "Committee" ("JOINT FINANCE AND HUMAN RESOURCES COMMITTEE" names two)."""
+    short = re.sub(r"^(?:village|city\s+of)\s+", "", name, flags=re.I)
+    core = re.sub(r"\s+(?:committee|commission)$", "", short, flags=re.I)
+    return [_norm(f) for f in dict.fromkeys([name, short, core])]
+
+
+def _names_in(line: str, names: dict[str, str]) -> list[str]:
+    """Body keys the line names."""
+    low = _norm(line)
+    return [key for key, name in names.items() if any(re.search(rf"\b{re.escape(f)}\b", low) for f in _name_forms(name))]
+
+
+def _is_section_header(line: str, names: dict[str, str]) -> bool:
+    keys = _names_in(line, names)
+    if not keys or len(line) > 100 or re.search(r"adjourn", line, re.I):
+        return False
+    rest = _norm(line)
+    for key in keys:
+        for form in _name_forms(names[key]):
+            rest = rest.replace(form, " ")
+    return len([w for w in re.findall(r"[a-z0-9]+", rest) if w not in _SECTION_FILLER | {"committee", "committees"}]) <= 1
+
+
+def _item_line(lines: list[str], item_text: str) -> int | None:
+    """The line an item starts on, found by its whole text in the joined lines, spaces
+    ignored (items often open with the same long statute wording)."""
+    flat, starts = "", []
+    for line in lines:
+        starts.append(len(flat))
+        flat += re.sub(r"\s+", "", line.casefold())
+    pos = flat.find(re.sub(r"\s+", "", item_text.casefold()))
+    if pos < 0:
+        return None
+    return max(i for i, s in enumerate(starts) if s <= pos)
+
+
+def section_bodies(text: str, item_text: str, names: dict[str, str]) -> list[str]:
+    """In a joint meeting's agenda, the bodies an item belongs to: those named by the
+    section header it sits under ("Finance Committee" / "Joint Finance Committee and
+    Economic Development Committee"), less any body adjourned before it ("Adjournment of
+    Utility Committee"). All of the meeting's bodies when the agenda has no such structure."""
+    lines = [line for page in agenda_pages(text) for line in page]
+    at = _item_line(lines, item_text)
+    first = next((i for i, line in enumerate(lines) if _LABEL.match(line)), None)
+    if at is None or first is None:
+        return list(names)
+    section = list(names)
+    for i in range(at - 1, first - 2, -1):     # the agenda's own lines, and the one just above its first item
+        if i >= 0 and not _LABEL.match(lines[i]) and _is_section_header(lines[i], names):
+            section = _names_in(lines[i], names)
+            break
+    adjourned = {key for line in lines[first:at] if re.search(r"adjourn", line, re.I) for key in _names_in(line, names)}
+    kept = [key for key in section if key not in adjourned]
+    return kept or list(names)
+
+
 # --- item records -----------------------------------------------------------
 
 def normalize(item_text: str) -> str:
@@ -292,9 +402,32 @@ def item_id(meeting_id: str, item_text: str) -> str:
     return f"{meeting_id}:{hashlib.sha256(normalize(item_text).encode('utf-8')).hexdigest()[:12]}"
 
 
+# Each exemption's own wording. An item that uses one of these but doesn't cite its
+# letter names a purpose with no exemption cited for it (a (c) item that goes on to
+# "conferring with legal counsel ... with respect to litigation"), so it goes to review.
+_LETTER_WORDING = {
+    "a": r"quasi-judicial|a\s+case\s+which\s+was\s+the\s+subject",
+    "b": r"dismissal,\s*demotion,\s*licensing",
+    "c": r"employment,\s*promotion,\s*compensation",
+    "d": r"crime\s+detection\s+or\s+prevention|probation,?\s+extended\s+supervision",
+    "e": r"purchas\w*\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|competitive\s+(?:or|and)\s+bargaining\s+reasons",
+    "f": r"financial,\s*medical,\s*social|substantial\s+adverse\s+effect",
+    "g": r"conferring\s+with\s+legal\s+counsel",
+    "h": r"requests?\s+for\s+confidential\s+(?:written\s+)?advice",
+}
+
+
+def uncited_wording(item_text: str, exemptions: list[str]) -> list[str]:
+    """Letters whose statute wording the item uses without citing them."""
+    return [letter for letter, wording in _LETTER_WORDING.items()
+            if letter not in exemptions and re.search(wording, item_text, re.I)]
+
+
 def triage(no_citation: bool, cites_subsection_1: bool | None, purpose: str | None,
-           text_source: str, exemptions: list[str]) -> str:
+           text_source: str, exemptions: list[str], item_text: str = "") -> str:
     if no_citation or not cites_subsection_1 or text_source == "ocr":
+        return "check"
+    if exemptions and uncited_wording(item_text, exemptions):
         return "check"
     if not purpose or len(purpose.split()) < 4:
         return "check"
@@ -310,6 +443,8 @@ def item_record(meeting: dict, found: Found, text_source: str) -> dict:
     c = citations.parse(found.item_text)
     # None only when the item cites no statute at all; a wrong statute ("19.81(1)(c)") still names a subject.
     purpose = purpose_text(found.subject_from or found.item_text)
+    if purpose == "" and found.context:
+        purpose = re.sub(r"\s+", " ", found.context).strip(" .;:")
     return {
         "id": item_id(meeting["id"], found.item_text),
         "meeting_id": meeting["id"],
@@ -323,6 +458,6 @@ def item_record(meeting: dict, found: Found, text_source: str) -> dict:
         "no_citation": found.no_citation,
         "text_source": text_source,
         "purpose_text": purpose,
-        "triage": triage(found.no_citation, c.cites_subsection_1, purpose, text_source, c.exemptions),
+        "triage": triage(found.no_citation, c.cites_subsection_1, purpose, text_source, c.exemptions, found.item_text),
         "minutes": None,
     }

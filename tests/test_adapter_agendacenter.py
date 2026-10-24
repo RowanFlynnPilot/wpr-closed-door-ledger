@@ -87,7 +87,8 @@ def test_parse_listing_rows():
     assert budget.source["listed"] == "Posted" and budget.source["listed_at"] == "2026-09-03T12:40"
     assert canceled.title.startswith("**CANCELED**") and canceled.canceled
     for m in _rows():
-        assert bodies.match(bodies.load(), "weston", m.meeting_id, m.title, m.category_id).bodies == ["weston-village-board"]
+        want = ["weston-village-board", "weston-finance-hr"] if m.meeting_id == "1963" else ["weston-village-board"]
+        assert bodies.match(bodies.load(), "weston", m.meeting_id, m.title, m.category_id).bodies == want   # 1963: joint budget workshop
 
 
 def test_canceled_markers_anywhere_in_title():

@@ -72,6 +72,8 @@ jurisdictions:
       - { key: wausau-board-of-review, name: Board of Review, match: "board of review" }
       - { key: wausau-joint-review-board, name: Joint Review Board, match: "joint review board" }
       - { key: wausau-rules-review, name: Rules Review Committee, match: "rules review" }
+      - { key: wausau-capital-improvements-street-maintenance, name: Capital Improvements and Street Maintenance Committee,
+          confirm: "Named only in a Feb 13, 2024 joint agenda. Is it the Infrastructure & Facilities Committee's former name?" }
       - { key: wausau-affordable-housing-task-force, name: Affordable Housing Regional Task Force, match: "affordable housing regional task force",
           custodian: unknown,
           confirm: "Regional body. Is it a governmental body under s. 19.82(1), and who keeps its records?" }
@@ -88,9 +90,32 @@ jurisdictions:
       # Listed as "CANCELED-Common Council Retreat"; the agenda's header reads
       # "MEETING: Committee of the Whole" (2026). Sites win: the agenda names the body.
       "wausau:2356": wausau-committee-of-the-whole
-      # Listed as "Committee Of The Whole Special Meeting"; the agenda is a possible-quorum
-      # notice for a firefighter swearing-in ceremony, not a meeting of any body (2024).
+      # Listed as "Committee Of The Whole Special Meeting"; the agendas are possible-quorum
+      # notices (a firefighter swearing-in, a screening, 2024-25), not meetings of any body.
       "wausau:981": exclude
+      "wausau:983": exclude
+      "wausau:989": exclude
+      # Joint meetings the listing titles name as one body; each agenda's header names
+      # them all (found by reading every 2024-26 Wausau agenda header, Oct 23, 2026).
+      "wausau:980": [wausau-committee-of-the-whole, wausau-water-works]
+      "wausau:1254": [wausau-economic-development, wausau-finance]
+      "wausau:1279": [wausau-finance, wausau-capital-improvements-street-maintenance, wausau-water-works]
+      "wausau:1499": exclude        # the same Feb 13, 2024 agenda as wausau:1279, posted a second time
+      "wausau:1290": [wausau-finance, wausau-economic-development]
+      "wausau:1377": [wausau-finance, wausau-economic-development]
+      "wausau:1378": [wausau-finance, wausau-economic-development]
+      "wausau:1382": [wausau-finance, wausau-economic-development]
+      "wausau:1386": [wausau-finance, wausau-economic-development]
+      "wausau:1389": [wausau-finance, wausau-economic-development]
+      "wausau:1402": [wausau-finance, wausau-economic-development]
+      "wausau:1380": [wausau-finance, wausau-human-resources]
+      "wausau:1410": [wausau-finance, wausau-human-resources]
+      "wausau:1415": [wausau-finance, wausau-human-resources]
+      "wausau:1416": [wausau-finance, wausau-human-resources]
+      "wausau:1462": [wausau-human-resources, wausau-finance]
+      "wausau:1461": [wausau-human-resources, wausau-water-works]
+      "wausau:1388": [wausau-finance, wausau-public-health-safety]
+      "wausau:1390": [wausau-finance, wausau-water-works]
 
   wausau_sd:
     name: Wausau School District
@@ -156,7 +181,7 @@ jurisdictions:
     platform: agendacenter
     base: https://www.westonwi.gov
     exclude:
-      - "possible quorum"        # 19 quorum notices in categories 3, 5 and 6 (2024-26)
+      - "quorum"                 # quorum notices in categories 3, 5 and 6: "Notice of (Possible) Quorum ..."
     exclude_category_ids: [17]   # Election Notices
     bodies:
       - { key: weston-village-board, name: Village Board of Trustees, category_id: 3 }
@@ -185,6 +210,9 @@ jurisdictions:
           confirm: "Intergovernmental police (2024 on). Kronenwetter may post the same meetings." }
       - { key: mountain-bay-police-oversight, name: Mountain Bay Metropolitan Police Oversight Board, category_id: 28, custodian: Mountain Bay Metropolitan Police Department,
           confirm: "Intergovernmental." }
+      - { key: weston-etz, name: Joint Village & Town of Weston Extraterritorial Zoning Committee, category_id: 19,
+          custodian: unknown,
+          confirm: "A joint village-town body that meets with the Plan Commission. Report it, and who keeps its records?" }
       - { key: everest-metro-court-finance, name: Everest Metro Municipal Court Finance Committee,
           custodian: Everest Metro Municipal Court,
           confirm: "Intergovernmental; seen only in a joint meeting posted under category 12 (2024). Who keeps its records?" }
@@ -192,6 +220,28 @@ jurisdictions:
       # Posted under category 12; the agenda is a "Joint Meeting of the Everest Metropolitan Police
       # Department Joint Finance Committee and the Everest Metro Municipal Court Finance Committee".
       "weston:1556": [everest-metro-police-joint-finance, everest-metro-court-finance]
+      "weston:1569": [everest-metro-police-joint-finance, everest-metro-court-finance]
+      # "Joint Budget Workshop" (category 3): roll call lists the Board of Trustees and the
+      # Finance & Human Resources Committee, which adjourns partway through.
+      "weston:1960": [weston-village-board, weston-finance-hr]
+      "weston:1963": [weston-village-board, weston-finance-hr]
+      "weston:1970": [weston-village-board, weston-finance-hr]
+      "weston:1976": [weston-village-board, weston-finance-hr]
+      "weston:1983": [weston-village-board, weston-finance-hr]
+      # One SAFER joint meeting (Apr 14, 2026) posted under two categories.
+      "weston:1903": [safer-board, safer-fire-commission]
+      "weston:1904": exclude
+      # "Plan Commission and Joint Village & Town of Weston Extraterritorial Zoning Committee".
+      "weston:1693": [weston-plan-commission, weston-etz]
+      "weston:1702": [weston-plan-commission, weston-etz]
+      "weston:1712": [weston-plan-commission, weston-etz]
+      "weston:1720": [weston-plan-commission, weston-etz]
+      "weston:1738": [weston-plan-commission, weston-etz]
+      "weston:1776": [weston-plan-commission, weston-etz]
+      "weston:1805": [weston-plan-commission, weston-etz]
+      "weston:1828": [weston-plan-commission, weston-etz]
+      "weston:1841": [weston-plan-commission, weston-etz]
+      "weston:1870": [weston-plan-commission, weston-etz]
 
   kronenwetter:
     name: Village of Kronenwetter

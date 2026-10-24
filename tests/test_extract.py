@@ -65,3 +65,43 @@ def test_item_record():
     assert row["exemptions"] == ["e"] and row["cites_subsection_1"] is True and row["triage"] == "ok"
     assert row["purpose_text"] == "the sale of 424 Burns Street, Wausau" and row["minutes"] is None
     assert row["item_text"].startswith("Adjourn to Closed Session")
+
+
+def test_section_bodies_in_joint_meetings():
+    names = {"fin": "Finance Committee", "ed": "Economic Development Committee", "ww": "Wausau Water Works Commission"}
+    text = "\n".join([
+        "MEETING: Joint Finance Committee and Economic Development Committee",
+        "Finance Committee",
+        "1 Public comment.",
+        "4 Closed Session.",
+        "Adjourn to Closed Session pursuant to Wisconsin State Statute § 19.85(1)(e) for the purpose of buying 1 Elm St.",
+        "Joint Finance and Economic Development Committee agenda items",
+        "2 Closed Session.",
+        "Adjourn to Closed Session pursuant to Wisconsin State Statute § 19.85(1)(e) for the purpose of a term sheet.",
+        "3 Adjourn Wausau Water Works Commission",
+        "4 Closed Session pursuant to Section 19.85(1)(g) for the purpose of claims.",
+        "5 Adjournment.",
+    ])
+    found = extract.closed_items(text)
+    assert [extract.section_bodies(text, f.item_text, names) for f in found] == [["fin"], ["fin", "ed"], ["fin", "ed"]]
+    flat = "1 Call to order.\n2 Closed session pursuant to 19.85(1)(c) for the purpose of an evaluation.\n3 Adjourn."
+    assert extract.section_bodies(flat, extract.closed_items(flat)[0].item_text, names) == ["fin", "ed", "ww"]
+
+
+def test_quorum_notice_header():
+    notice = ("OFFICIAL NOTICE AND AGENDA\nMeeting of the: POSSIBLE QUORUM\nof the COMMON COUNCIL and/or POLICE AND FIRE COMMISSION\n"
+              "Date/Time: Tuesday, March 25, 2025, at 7:30 PM\n1 Firefighter Swearing-In Ceremony. No action will be taken.")
+    assert extract.quorum_notice(notice)
+    footer = ("OFFICIAL NOTICE AND AGENDA\nMeeting of the: FINANCE COMMITTEE\n1 Approve minutes.\n" + "x\n" * 20 +
+              "NOTICE: It is possible that a quorum of members of other committees may be in attendance.")
+    assert not extract.quorum_notice(footer)
+
+
+def test_uncited_wording_goes_to_review():
+    text = ("CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) "
+            "for consideration of employment, promotion, compensation or performance evaluation data - to wit interviewing "
+            "of Administrator Candidate AND conferring with legal counsel for the village who is rendering oral or written "
+            "advice concerning strategy to be adopted with respect to litigation in which it is involved.")
+    row = extract.item_record({"id": "x", "bodies": [], "meeting_date": ""}, extract.closed_items(text)[0], "html")
+    assert row["exemptions"] == ["c"] and extract.uncited_wording(text, ["c"]) == ["g"] and row["triage"] == "check"
+    assert extract.uncited_wording(text, ["c", "g"]) == []
