@@ -13,6 +13,13 @@ An adapter module exposes:
         may answer Unchanged when a HEAD request shows the file has not changed,
         instead of downloading it again.
 
+An adapter whose platform lists earlier versions of an agenda (AgendaCenter)
+also exposes:
+
+    fetch_previous_versions(meeting: Meeting, known_urls: set[str]) -> list[tuple[int, DocFile]]
+        Each earlier version not in `known_urls`, with the platform's archive id,
+        which orders the versions. fetch.py calls it once per listing stamp.
+
 All HTTP goes through polite.py. Text comes from documents.py (PDF text
 layer, OCR for scans). No adapter decides what counts as a closed session;
 that is extract.py's job.

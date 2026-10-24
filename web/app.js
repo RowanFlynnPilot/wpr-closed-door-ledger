@@ -1,4 +1,4 @@
-import { EXEMPTIONS, LETTERS, el, fmtDate, fmtDateTime, fmtInt, isBargaining, loadJSON, showError } from "./common.js";
+import { EXEMPTIONS, LETTERS, el, fmtDate, fmtDateTime, fmtInt, isBargaining, loadJSON, showError, todayCentral } from "./common.js";
 
 const PAGE = 50;
 const main = document.querySelector("main");
@@ -67,9 +67,13 @@ function itemRow(item, names) {
   if (item.archive_url) links.push(el("a", { href: item.archive_url }, "Archived copy"));
   const cited = isBargaining(item) ? "s. 19.86 (bargaining)"
     : item.exemptions.length ? item.exemptions.map((l) => `(${l})`).join(" ") : "No statute cited";
+  // A noticed session that hasn't happened yet: the notice says it's planned, not that it was held.
+  const today = todayCentral();
+  const when = item.meeting_date > today ? "Upcoming" : item.meeting_date === today ? "Today" : null;
   return el("li", { class: "item" },
     el("div", { class: "item-head" },
       el("span", { class: "item-date" }, fmtDate(item.meeting_date)),
+      when ? el("span", { class: "item-when" }, when) : null,
       el("span", { class: "item-body" }, item.bodies.map((b) => names[b]).join(" and ")),
       el("span", { class: "item-cites" }, cited)),
     el("p", { class: "item-subject" }, item.purpose_text ? item.purpose_text : el("em", {}, "The notice names no subject beyond the statute's wording.")),

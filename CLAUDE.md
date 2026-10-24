@@ -48,13 +48,14 @@ python archive_check.py --push         # after committing in archive/
 python audit.py --quarter 2026Q3       # archive/audit/2026-Q3/
 python handcheck.py --quarter 2026Q3   # archive/handcheck/2026-Q3/
 ```
-- **When documents are fetched:** a meeting whose start is in the last 90 days or later, or that has never been fetched. So an interrupted backfill resumes, and older meetings are fetched once.
+- **When documents are fetched:** a meeting whose start is in the last 90 days or later, or that has never been fetched. So an interrupted backfill resumes, and older meetings are fetched once. A Weston meeting's earlier versions are read once per listing stamp, whatever its date.
 - Jurisdictions run in parallel threads; `polite.py` serializes each host. An error in one jurisdiction lets the others finish, then the run fails.
 - Titles a jurisdiction excludes (quorum notices) are listed but their documents aren't fetched. Unmatched titles are fetched; the build then fails until `bodies.yaml` classifies them.
 
 **Adapter interface** (`adapters/base.py`; this replaces the earlier one-argument sketch):
 - `list_meetings(jurisdiction, config, since) -> list[Meeting]`: every listed meeting starting on or after `since`, including upcoming ones. `config` is the jurisdiction's `bodies.yaml` block.
 - `fetch_documents(meeting, known) -> Documents`: the current notice and minutes. `known` holds the latest archived version of each; an adapter may answer `Unchanged` after a HEAD request instead of downloading.
+- `fetch_previous_versions(meeting, known_urls) -> list[(archive_id, DocFile)]`, only where the platform lists earlier agenda versions (AgendaCenter): each one not yet archived.
 - HTML text puts each agenda item on one line, starting with its label. PDF pages are joined with `\f`.
 
 **Archive layout** (`store.py`): `archive/meetings/<jurisdiction>/<meeting_id>/meeting.json` (latest listing, first and last listed, every file version with `seen_at`), `<kind>-<sha12>.<pdf|html>` and `<kind>-<sha12>.txt`. Internal files go to `archive/data/`; the hand-check and audit to `archive/handcheck/` and `archive/audit/`.
@@ -107,9 +108,13 @@ python handcheck.py --quarter 2026Q3   # archive/handcheck/2026-Q3/
 - **AgendaCenter sends no Last-Modified.** Before re-downloading, the adapter compares the HEAD `Content-Length` and the listing's own "Posted/Amended" stamp with the archived version.
 - Every category on `/AgendaCenter` is listed, so a new category fails `bodies.match` instead of being missed. Five old categories (none used since 2023) aren't in `bodies.yaml`.
 - No start time is listed: starts are date-only.
-- 19 quorum notices sit in body categories; `exclude: possible quorum` drops them.
+- 19 quorum notices sit in body categories; the jurisdiction's `exclude: "quorum"` drops them.
 - Packets carry the previous meeting's minutes after the agenda, so extraction stops after the agenda's Adjourn page (see "Extraction").
-- Earlier agenda versions are listed at `/AgendaCenter/PreviousVersions/_MMDDYYYY-ID` (225 of 406 rows). Not used yet; they could backfill "latest version before the meeting".
+- **Earlier agenda versions** are listed at `/AgendaCenter/PreviousVersions/_MMDDYYYY-ID` (225 of 406 rows), each linking `/AgendaCenter/ViewFile/ArchivedAgenda/_MMDDYYYY-<archive id>`.
+  - The page dates none of them: every row repeats the meeting's own Posted stamp. Archive ids rise over time, so they order the versions, and all predate the current one.
+  - `fetch.py` reads them once per listing stamp (`previous_checked` in `meeting.json`), since an amendment moves the old current version onto that page and changes the stamp. Each is archived as a version with `origin: "previous"` and its `archive_id`, read like a notice (first 5 pages).
+  - To stay inside the 1 GB budget, an earlier version keeps its file only when its text mentions a closed session; every one keeps its text and sha256.
+  - Of the 225, only 4 had their current version stamped after the meeting (weston:1705, 1870, 1871, 1877; Oct 23, 2026), none with a closed session.
 
 **Municode (Kronenwetter):**
 - List `/meetings3` with an explicit date filter from `since` to today + 366 days (the default "To" is today + 30, which hides later meetings), following the pager link.
@@ -119,7 +124,7 @@ python handcheck.py --quarter 2026Q3   # archive/handcheck/2026-Q3/
 
 **Text.**
 - **Sources:** pdfplumber for PDFs; `beautifulsoup4` for BoardBook pages and Municode ADA HTML. Unescape HTML entities.
-- **Which version:** items come from the **latest notice version seen before the meeting started**. Later versions are archived but don't change the items. A date-only start (Weston, some BoardBook meetings) counts versions seen through the meeting day. When no version was seen before the meeting (the backfill), the earliest archived version is used.
+- **Which version:** items come from the **latest notice version seen before the meeting started**. Later versions are archived but don't change the items. A date-only start (Weston, some BoardBook meetings) counts versions seen through the meeting day. When no version was seen before the meeting (the backfill), the earliest version the ledger saw served is used, unless the platform stamps it after the meeting and lists earlier versions (Weston): then the newest earlier version.
 - **Unreadable documents:** a PDF that yields under 200 readable characters raises, naming the file. An HTML agenda raises only when empty (under 10 characters): real ones can hold a single item ("I. VERIFY SCHOOL BOARD ELECTION RESULTS").
 
 **Scanned documents (OCR).** Image-only PDFs are routine: 14 of 63 sampled Weston agendas (the intergovernmental police bodies' signed notices), and D.C. Everest's minutes.
@@ -242,15 +247,24 @@ Otherwise `triage` is `ok`. Nearly every notice names some subject, so the real 
 ```json
 { "wausau:130:3f9a1c2b7d4e": { "decision": "flagged", "note": "…", "editor": "SS", "date": "2026-11-02" } }
 ```
-- `decision` is `confirmed`, `flagged` or `withhold`. Editors judge against the *Buswell* factors and whether the exemption fits the subject.
+- `decision` is `confirmed`, `flagged`, `withhold` or `redact`. Editors judge against the *Buswell* factors and whether the exemption fits the subject.
 - The build **fails** on any review whose key matches no item.
 - `withhold` drops the item from the site and blanks its meeting's `notice_url` and archived-copy link. Use it, for example, for an agenda that named a student.
+- `redact` keeps the item but withholds wording, such as a private person's name in the notice: `{ "decision": "redact", "redact": ["Jane Doe"], "note": "…" }`.
+  - Each listed span is replaced with "[name withheld]" in the published `item_text`, `purpose_text` and `citation_raw`, and in the audit request.
+  - The meeting's archived copy isn't published (it holds the name); the link to the body's own posting stays.
+  - The build fails if a span isn't in the item's wording, or if `redact` appears on another decision. Internal files keep the wording.
+  - The note isn't published (only `confirmed` and `flagged` notes are).
 
 ## Archive rules
 - **Append-only, every version.** Archive each distinct file version (by sha256) with `seen_at` (UTC). **HTML pages are told apart by their agenda text:** BoardBook's page chrome changes on its own (copyright years, asset versions like `All.27.css`), so a page whose text matches an archived version is the same version.
 - A meeting a jurisdiction excludes is listed but not marked fetched, so if `bodies.yaml` later keeps it, the next run fetches its documents.
 - Files over 45 MB keep their text, sha256, size and URL, but not the file (one so far: Wausau event 1584's 51.6 MB minutes).
-- **`changed_after_meeting`** is set only when a meeting already had an archived notice version, and a *new* version whose **text differs** from the one before it is first seen on a later Central date than the meeting date. Backfilled history never sets it. The text test keeps a re-published file with identical wording (Wausau re-published everything Jan 26, 2026) from looking like a change.
+- **`changed_after_meeting`** is set in two cases:
+  - the ledger already held a notice version, and a *new* version whose **text differs** from the one before it is first seen on a later Central date than the meeting date;
+  - the platform stamps the current version after the meeting date and its text differs from the newest earlier version the platform lists (Weston).
+
+  Otherwise backfilled history never sets it. The text test keeps a re-published file with identical wording (Wausau re-published everything Jan 26, 2026) from looking like a change.
 - **Removals are shown neutrally** ("no longer on the body's site"). A meeting inside the listed window that the platform no longer lists gets `source_status: "removed"`; a file no longer served gets `file_status[kind]: "removed"` in `meeting.json`.
 - **Fail fast:**
   - Any HTTP error raises. No retries: a failed run is re-run, and the archive skips what it holds.
@@ -375,4 +389,4 @@ Each quarter, file the same simple request with each **custodian**: the open-ses
 - **Locally:** Windows, PowerShell 5.1, `python -m pip`, commands chained with semicolons. Tesseract for Windows comes from the UB Mannheim build, added to PATH.
 - **Principles:** One correct path, no fallbacks, fail fast. Single-responsibility functions.
 - **Workflow:** `.github/workflows/ledger.yml` runs daily on `cron: "17 11 * * *"` (11:17 UTC, early morning Central): test; `fetch.py --recent`; commit and push what was fetched even if a jurisdiction failed (so a notice version seen tonight is never lost); `build.py`; commit and push the built data; upload `site/` and deploy it to Pages only if the build passed; then fail the job if fetch or build failed. The archive is checked out with full history so `archive_check.py` measures what GitHub stores, and each push rebases first. It lives on the `workflow` branch until merged; schedules only run from the default branch.
-- **Site:** `web/` reuses the Records Ledger's tokens, masthead and footer. Values from the data are always set as text, never HTML. Preview with `.claude/launch.json` ("site": `http.server` on port 8790 over `site/`).
+- **Site:** `web/` reuses the Records Ledger's tokens, masthead and footer. Values from the data are always set as text, never HTML. An item whose meeting date is after today (Central) is marked "Upcoming", and one on today's date "Today": a notice says a session is planned, not that it was held. Preview with `.claude/launch.json` ("site": `http.server` on port 8790 over `site/`).

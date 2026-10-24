@@ -28,6 +28,11 @@ export function fmtDate(iso, opts = { month: "short", day: "numeric", year: "num
   return new Date(y, m - 1, d).toLocaleDateString("en-US", opts);
 }
 
+// Today's date in Central time, as "YYYY-MM-DD" (meeting dates are Central dates).
+export function todayCentral() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "America/Chicago" });
+}
+
 export function fmtDateTime(iso) {
   return new Date(iso).toLocaleString("en-US", {
     month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit",
