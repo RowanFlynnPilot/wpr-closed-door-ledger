@@ -122,6 +122,8 @@ def build_meeting(root: Path, config: dict, record: dict) -> tuple[dict, list[di
     items: list[dict] = []
     if version:
         text = (folder / version["text_file"]).read_text(encoding="utf-8")
+        if extract.quorum_notice(text):     # a quorum notice under a committee's title: not a meeting
+            return None
         if version["file"]:      # None when the file was too large to archive (store.MAX_FILE)
             meeting["notice_file"] = f"meetings/{record['jurisdiction']}/{record['meeting_id']}/{version['file']}"
         meeting["notices_reconvene"] = extract.notices_reconvene(text)

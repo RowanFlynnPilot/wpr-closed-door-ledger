@@ -86,3 +86,12 @@ def test_section_bodies_in_joint_meetings():
     assert [extract.section_bodies(text, f.item_text, names) for f in found] == [["fin"], ["fin", "ed"], ["fin", "ed"]]
     flat = "1 Call to order.\n2 Closed session pursuant to 19.85(1)(c) for the purpose of an evaluation.\n3 Adjourn."
     assert extract.section_bodies(flat, extract.closed_items(flat)[0].item_text, names) == ["fin", "ed", "ww"]
+
+
+def test_quorum_notice_header():
+    notice = ("OFFICIAL NOTICE AND AGENDA\nMeeting of the: POSSIBLE QUORUM\nof the COMMON COUNCIL and/or POLICE AND FIRE COMMISSION\n"
+              "Date/Time: Tuesday, March 25, 2025, at 7:30 PM\n1 Firefighter Swearing-In Ceremony. No action will be taken.")
+    assert extract.quorum_notice(notice)
+    footer = ("OFFICIAL NOTICE AND AGENDA\nMeeting of the: FINANCE COMMITTEE\n1 Approve minutes.\n" + "x\n" * 20 +
+              "NOTICE: It is possible that a quorum of members of other committees may be in attendance.")
+    assert not extract.quorum_notice(footer)

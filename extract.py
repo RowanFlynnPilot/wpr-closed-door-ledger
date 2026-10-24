@@ -233,6 +233,16 @@ def cites(text: str) -> bool:
     return bool(c.exemptions) or any(o.startswith("19.86") for o in c.other_citations)
 
 
+_QUORUM_HEADER = re.compile(r"\bmeeting(?:\s+of\s+the)?\s*:?\s*possible\s+quorum\b", re.I)
+
+
+def quorum_notice(text: str) -> bool:
+    """The agenda's own header says it is a possible-quorum notice ("Meeting of the: POSSIBLE
+    QUORUM of the COMMON COUNCIL and/or ..."), whatever the listing title says."""
+    first = agenda_pages(text)[0] if text else []
+    return bool(_QUORUM_HEADER.search(" ".join(first[:15])))
+
+
 def notices_reconvene(text: str) -> bool:
     """The agenda states the intent to reconvene in open session. Only the agenda's own
     pages count: a packet's bound-in earlier agendas and minutes don't."""

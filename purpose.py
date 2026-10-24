@@ -23,7 +23,7 @@ _CITATION = re.compile(
 )
 # Phrases after which a notice names its actual subject.
 _MARKER = re.compile(
-    r"(?:\b(?:for\s+the\s+purposes?\s+of|regarding|in\s+regards?\s+to|t\s?o\s+wit|specifically|to\s+discuss|re:|"
+    r"(?:\b(?:for\s+the\s+purposes?\s+of|regarding|in\s+regards?\s+to|t\s?o[\s-]+wit|specifically|to\s+discuss|re:|"
     r"including|discussing|related\s+to|relating\s+to|to\s+hold)|•|[–—](?=\s*[A-Z]))\s*[:\-–—•]?\s*",
     re.I,
 )
