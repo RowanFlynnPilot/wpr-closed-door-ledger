@@ -1,6 +1,10 @@
 # The nightly ledger run: re-check the last 90 days and upcoming meetings,
 # rebuild, push the archive, and deploy the site as a Pages artifact.
 # The Jan 2024 backfill ran once, locally; this never re-runs it.
+#
+# Whatever fetch.py archived is committed and pushed even when a jurisdiction
+# failed or the build fails (an unclassified title fails it by design), so a
+# notice version seen tonight is never lost. The job still fails at the end.
 name: ledger
 
 on:
@@ -19,15 +23,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    outputs:
+      built: ${{ steps.build.outcome }}
     steps:
       - uses: actions/checkout@v4
 
-      # The private archive is always checked out at archive/ (CLAUDE.md).
+      # The private archive is always checked out at archive/ (CLAUDE.md). Full
+      # history, so archive_check.py measures what GitHub stores, not one snapshot.
       - uses: actions/checkout@v4
         with:
           repository: RowanFlynnPilot/wpr-closed-door-archive
           token: ${{ secrets.ARCHIVE_TOKEN }}
           path: archive
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -43,30 +51,52 @@ jobs:
       - name: Test
         run: python -m pytest tests -q
 
-      - name: Fetch the last 90 days and upcoming meetings
-        run: python fetch.py --recent
-
-      - name: Build
-        run: python build.py
-
-      - name: Commit the archive
+      - name: Configure the archive's committer
         working-directory: archive
         run: |
           git config user.name "wpr-closed-door-ledger[bot]"
           git config user.email "actions@users.noreply.github.com"
-          git add -A
-          git diff --cached --quiet || git commit -q -m "Nightly run $(date -u +%Y-%m-%dT%H:%MZ)"
 
-      # No file over 50 MB and the repo under 1 GB, or stop (CLAUDE.md).
-      - name: Check limits and push the archive
-        run: python archive_check.py --push
+      - name: Fetch the last 90 days and upcoming meetings
+        id: fetch
+        continue-on-error: true
+        run: python fetch.py --recent
+
+      - name: Commit and push what was fetched
+        if: ${{ !cancelled() }}
+        run: |
+          git -C archive add -A
+          git -C archive diff --cached --quiet || git -C archive commit -q -m "Fetch $(date -u +%Y-%m-%dT%H:%MZ)"
+          git -C archive pull -q --rebase
+          python archive_check.py --push
+
+      - name: Build
+        id: build
+        continue-on-error: true
+        run: python build.py
+
+      - name: Commit and push the built data
+        if: ${{ steps.build.outcome == 'success' }}
+        run: |
+          git -C archive add -A
+          git -C archive diff --cached --quiet || git -C archive commit -q -m "Build $(date -u +%Y-%m-%dT%H:%MZ)"
+          git -C archive pull -q --rebase
+          python archive_check.py --push
 
       - uses: actions/upload-pages-artifact@v3
+        if: ${{ steps.build.outcome == 'success' }}
         with:
           path: site
 
+      - name: Fail if fetch or build failed
+        if: ${{ steps.fetch.outcome == 'failure' || steps.build.outcome == 'failure' }}
+        run: |
+          echo "fetch: ${{ steps.fetch.outcome }}, build: ${{ steps.build.outcome }}"
+          exit 1
+
   deploy:
     needs: build
+    if: ${{ needs.build.outputs.built == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       pages: write
