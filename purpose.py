@@ -24,7 +24,7 @@ _CITATION = re.compile(
 # Phrases after which a notice names its actual subject.
 _MARKER = re.compile(
     r"(?:\b(?:for\s+the\s+purposes?\s+of|regarding|in\s+regards?\s+to|to\s+wit|specifically|to\s+discuss|re:|"
-    r"including|discussing|related\s+to|relating\s+to|to\s+hold)|•)\s*[:\-–—•]?\s*",
+    r"including|discussing|related\s+to|relating\s+to|to\s+hold)|•|[–—](?=\s*[A-Z]))\s*[:\-–—•]?\s*",
     re.I,
 )
 # The start of another motion: a subject clause ends there (Kronenwetter puts
@@ -38,7 +38,11 @@ _PROCEDURAL = set("""
     consider consideration contemplate of motion motions move moving to into in continue continuing convene
     convening adjourn adjournment adjourning directly enter entering go recess closed session pursuant under
     per wis wisconsin stat stats statute statutes state sec section sections s ss meeting meetings regular special
+    following after before open prior
 """.split())
+# Statute letters in parentheses inside a clause ("(1)(c)") are dropped; longer
+# parentheses ("(Riverlife South)", "applicant(s)") are part of the subject.
+_SHORT_PAREN = re.compile(r"\(\s*(?:\d{1,2}|[a-h]{1,2}|cm)\s*\)", re.I)
 _NOT_A_SUBJECT = re.compile(r"^(?:board only|if necessary|if needed)$", re.I)
 # The statute's own wording, restated in the notice. A subject candidate is cut
 # where it begins: "To consider the employment, promotion, compensation or
@@ -48,7 +52,7 @@ _STATUTE_WORDING = re.compile(
     r"(?:to\s+)?have\s+a\s+substantial\s+adverse\s+effect|"
     r"employment,\s*promotion,\s*compensation|performance\s+evaluation\s+data|financial,\s*medical,\s*social|"
     r"deliberating\s+or\s+negotiating\s+the\s+purchas|conferring\s+with\s+legal\s+counsel|"
-    r"dismissal,\s*demotion,\s*licensing|crime\s+detection\s+or\s+prevention|quasi-judicial|"
+    r"dismissal,\s*demotion,\s*licensing|crime\s+detection\s+or\s+prevention|(?:judicial\s+or\s+)?quasi-judicial\s+trial|"
     r"(?:deliberating\s+(?:concerning\s+|on\s+)?)?a\s+case\s+which\s+was\s+the\s+subject|purchasing\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|"
     r"competitive\s+or\s+bargaining\s+reasons|personal\s+histories|preliminary\s+consideration\s+of\s+specific|"
     r"requests?\s+for\s+confidential\s+(?:written\s+)?advice|probation,?\s+extended\s+supervision",
@@ -62,14 +66,15 @@ def _subject(candidate: str) -> str:
     found = _STATUTE_WORDING.search(candidate)
     if found:
         candidate = _clean(candidate[: found.start()])
-    candidate = re.sub(r"(?i)\s+(?:and|or)$", "", candidate)
+    candidate = _clean(re.sub(r"(?i)\s+(?:and|or)$", "", candidate))
     meaningful = [w for w in re.findall(r"[\w'’/-]+", candidate.lower()) if w not in _FILLER]
     return candidate if len(meaningful) >= 2 or (meaningful and not found) else ""
 
 
 def _names_something(text: str) -> bool:
     words = re.findall(r"[A-Za-z']+", text)
-    return any(w.lower() not in _PROCEDURAL and not re.fullmatch(r"[IVXLC]+|[A-Za-z]", w) for w in words)
+    return any(w.lower() not in _PROCEDURAL and not w.lower().startswith("purs")     # "PURSUSANT" (Kronenwetter)
+               and not re.fullmatch(r"[IVXLC]+|[A-Za-z]", w) for w in words)
 
 
 def _clean(text: str) -> str:
@@ -105,10 +110,11 @@ def purpose_text(item_text: str) -> str | None:
             continue
         rest = item_text[marker.end():]
         stops = [m.start() for m in (_CITATION.search(rest), re.search("•", rest), _MOTION_START.search(rest),
-                                     re.search(r"(?<!\b[A-Z])\.\s+[A-Z]", rest)) if m]   # or the sentence's end (not "T. Winters")
+                                     re.search(r"(?<!\b[A-Z])\.\s+[A-Z]", rest),   # the sentence's end (not "T. Winters")
+                                     re.search(r"^[^(]*?\)", rest)) if m]           # the parenthesis it sits in
         end = min(stops) if stops else len(rest)
         covered = marker.end() + end
-        clause = _clean(re.sub(r"\([^)]*\)", " ", rest[:end]))
+        clause = _clean(_SHORT_PAREN.sub(" ", rest[:end]))
         while (opening := _MARKER.match(clause)) and opening.end():
             clause = _clean(clause[opening.end():])        # "specifically, to discuss the ..."
         clause = re.sub(r"(?i)^and\s+(?:consider|discuss)\s+", "", clause)   # "to discuss and consider the ..."
@@ -133,8 +139,10 @@ def purpose_text(item_text: str) -> str | None:
             tail = _subject(_clean(rest[: min(stops)] if stops else rest))
             if tail and _names_something(tail):
                 parts.append(tail)
+    # A part already contained in another ("loss of personal property" inside
+    # "Inquiry regarding loss of personal property") is not a second subject.
     seen: list[str] = []
     for part in parts:
-        if part and part not in seen:
+        if part and part not in seen and not any(part != other and part in other for other in parts):
             seen.append(part)
     return "; ".join(seen)

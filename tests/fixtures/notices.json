@@ -514,6 +514,110 @@
      "purpose": ""
     }
    ]
+  },
+  {
+   "id": "dc_everest-623761",
+   "jurisdiction": "dc_everest",
+   "source": "BoardBook 1315 meeting 623761",
+   "note": "'Following the Open Meeting' is procedure; a marker inside parentheses stops at ')'; no duplicate part. (blind check, round 3)",
+   "text": "1. The Board Will Consider Adjournment to Closed Session Following the Open Meeting Pursuant to W.S.S. 19.85(1)(f) - to consider investigation of charges against specific persons except where par. (b) applies, which if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations. (Inquiry regarding loss of personal property.) The Board will adjourn from Closed Session.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "f"
+     ],
+     "starts": "The Board Will Consider Adjournment to C",
+     "purpose": "Inquiry regarding loss of personal property"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-2c4c71c4784d4d74addba4dc636",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode 2c4c71c4; employees' names replaced",
+   "note": "A second motion's subject after an en dash ('–Review of ...'). (blind check, round 3)",
+   "text": "1. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit Wage Compensation for added duties: Pat Doe, Lee Roe, Kim Poe Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility –Review of Village Clerk Resumes",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "Wage Compensation for added duties: Pat Doe, Lee Roe, Kim Poe; Review of Village Clerk Resumes"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-62b19366031b484890e5be2b773",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode 62b19366",
+   "note": "Misspelled 'PURSUSANT' with the dotless 1985(1)(E) is still procedure. (blind check, round 3)",
+   "text": "1. CLOSED SESSION CONSIDERATION OF MOTION TO CONVENE INTO CLOSED SESSION PURSUSANT TO WIS.STAT.1985(1)(E); FOR CONDUCTING OTHER SPECIFIED PUBLIC BUSINESS, WHENEVER COMPETITIVE OR BARGAINING REASONS REQUIRE A CLOSED SESSION - TO WIT LEASE AND DEVELOPEMENT AGREEMENT FOR POLZER HOLDINGS, LLC.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "CLOSED SESSION CONSIDERATION OF MOTION T",
+     "purpose": "LEASE AND DEVELOPEMENT AGREEMENT FOR POLZER HOLDINGS, LLC"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-724381",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 724381",
+   "note": "The (a) subject 'quasi-judicial hearing before the board' is not statute wording; no ';;'. (blind check, round 3)",
+   "text": "1. Convene into closed session pursuant to Wis. Stat. 19.85(1)(b) for the board to receive evidence concerning allegations regarding employee conduct and administrative recommendation for the employee’s termination from employment; and pursuant to Wis. Stat. 19.85(1)(a) to deliberate regarding the evidence received during the quasi-judicial hearing before the board. The Board may also consider an employee resignation agreement.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "b",
+      "a"
+     ],
+     "starts": "Convene into closed session pursuant to ",
+     "purpose": "employee conduct and administrative recommendation for the employee’s termination from employment; the evidence received during the quasi-judicial hearing before the board"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-f432750fb1d34fbcb533fdcb377",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode f432750f",
+   "note": "'applicant(s)' keeps its '(s)'. (blind check, round 3)",
+   "text": "1. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85(1)(f) to consider financial, medical, social or personal histories or disciplinary data of specific persons, preliminary consideration of specific personnel problems or the investigation of charges against specific persons except where par. (b) applies which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations; and pursuant to Wis. Stat. 19.85(1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit interview Fire Department applicant(s).",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "f",
+      "c"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "interview Fire Department applicant(s)"
+    }
+   ]
+  },
+  {
+   "id": "wausau-2404",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 2404",
+   "note": "A project name in parentheses stays part of the subject. (blind check, round 3)",
+   "text": "1. Closed Session. Adjourn to Closed Session pursuant to Wisconsin State Statute §19.85(1)(g) for conferring with legal counsel for the governmental body who is rendering oral or written advice concerning strategy to be adopted by the body with respect to litigation in which it is or is likely to become involved, regarding the Development Agreement with Wangard for Redevelopment of 920 North 1st Street & 15 Fulton (Riverlife South)",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "Closed Session. Adjourn to Closed Sessio",
+     "purpose": "the Development Agreement with Wangard for Redevelopment of 920 North 1st Street & 15 Fulton (Riverlife South)"
+    }
+   ]
   }
  ]
 }

@@ -88,6 +88,9 @@ jurisdictions:
       # Listed as "CANCELED-Common Council Retreat"; the agenda's header reads
       # "MEETING: Committee of the Whole" (2026). Sites win: the agenda names the body.
       "wausau:2356": wausau-committee-of-the-whole
+      # Listed as "Committee Of The Whole Special Meeting"; the agenda is a possible-quorum
+      # notice for a firefighter swearing-in ceremony, not a meeting of any body (2024).
+      "wausau:981": exclude
 
   wausau_sd:
     name: Wausau School District
