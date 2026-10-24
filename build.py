@@ -39,7 +39,7 @@ PUBLIC_ITEM_FIELDS = ["id", "meeting_id", "bodies", "meeting_date", "item_text",
 # The minutes rules (minutes.py) are published only once the Q3 2026 hand-check
 # has validated them against what editors read in the minutes.
 PUBLISH_MINUTES = False
-PUBLIC_MEETING_FIELDS = ["id", "bodies", "jurisdiction", "meeting_date", "canceled", "notice_url",
+PUBLIC_MEETING_FIELDS = ["id", "bodies", "jurisdiction", "meeting_date", "canceled", "notice_url", "notice_versions",
                          "source_status", "closed_item_count", "minutes_url"]
 
 
@@ -211,7 +211,11 @@ def public_projection(config: dict, meetings: list[dict], items: list[dict], rev
         public_meetings.append({k: row[k] for k in PUBLIC_MEETING_FIELDS})
     public_bodies = [{"key": b["key"], "name": b["name"], "jurisdiction": key, "jurisdiction_name": j["name"]}
                      for key, j in config["jurisdictions"].items() for b in j["bodies"] if b["key"] not in hidden]
-    return {"closed_sessions": public_items, "meetings": public_meetings, "bodies": public_bodies}
+    covered = sorted({m["jurisdiction"] for m in public_meetings})
+    meta = {"built_at": store.now_utc(), "window_start": str(config["window_start"]),
+            "jurisdictions": [config["jurisdictions"][j]["name"] for j in covered],
+            "unpublished_bodies": len(hidden), "minutes_published": PUBLISH_MINUTES}
+    return {"closed_sessions": public_items, "meetings": public_meetings, "bodies": public_bodies, "meta": meta}
 
 
 def _csv(rows: list[dict], fields: list[str]) -> str:
@@ -241,6 +245,8 @@ def write_site(site: Path, root: Path, projection: dict) -> None:
     (data / "closed_sessions.csv").write_text(_csv(projection["closed_sessions"], PUBLIC_ITEM_FIELDS), encoding="utf-8")
     (data / "meetings.csv").write_text(_csv(projection["meetings"], PUBLIC_MEETING_FIELDS), encoding="utf-8")
     (data / "bodies.json").write_text(_json(projection["bodies"]), encoding="utf-8")
+    (data / "meta.json").write_text(_json(projection["meta"]), encoding="utf-8")
+    shutil.copyfile(ROOT / "bodies.yaml", site / "bodies.yaml")
     for path in sorted({i["archive_url"] for i in projection["closed_sessions"] if i["archive_url"]}):
         target = site / path
         target.parent.mkdir(parents=True, exist_ok=True)

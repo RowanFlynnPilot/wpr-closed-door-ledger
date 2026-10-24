@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Closed Door Ledger — Wausau Pilot &amp; Review</title>
+    <meta name="description" content="Every closed session central Wisconsin governmental bodies noticed in their online agendas since January 2024: the exemption each notice cites and its exact wording." />
+    <link rel="icon" href="wpr-badge.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Public+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="masthead">
+        <a class="brand" href="https://wausaupilotandreview.com" target="_blank" rel="noreferrer">
+          <img src="wpr-badge.jpg" alt="" width="54" height="54" />
+          <span class="brand-wordmark">Wausau Pilot <span class="amp">&amp;</span> Review</span>
+        </a>
+        <p class="tagline">Where Locals Look First For News</p>
+        <div class="rule-double" aria-hidden="true"></div>
+        <p class="eyebrow">A newsroom data project</p>
+        <h1>The Closed Door Ledger</h1>
+        <p class="dek">
+          Every closed session that central Wisconsin governmental bodies noticed in their online agendas,
+          the exemption each notice cites under Wis. Stat. § 19.85(1), and the notice's exact wording.
+        </p>
+        <p class="updated" id="updated"></p>
+        <nav class="page-nav" aria-label="On this page">
+          <a href="#bodies">Bodies</a>
+          <a href="#exemptions">Exemptions cited</a>
+          <a href="#items">Every notice</a>
+          <a href="#downloads">Download the data</a>
+          <a href="methodology.html">Methodology</a>
+        </nav>
+      </header>
+
+      <section class="lead" aria-labelledby="lead-h">
+        <h2 id="lead-h" class="visually-hidden">What the counts mean</h2>
+        <div class="lead-figures" id="figures"></div>
+        <p class="lead-note">
+          Every count is of closed sessions <strong>noticed in the body's online agenda</strong>. A posted agenda
+          isn't necessarily the legal notice: s. 19.84(1) is also met by physical posting and by telling the
+          news media. And a session that was noticed may never have been held. Coverage:
+          <span id="coverage">the bodies listed in <a href="bodies.yaml">bodies.yaml</a></span>.
+        </p>
+      </section>
+
+      <section id="bodies" aria-labelledby="bodies-h">
+        <h2 id="bodies-h">Bodies</h2>
+        <p class="section-dek">
+          Each committee, commission and board is its own governmental body under s. 19.82(1), so each has its
+          own row. Grouped by jurisdiction and listed alphabetically; nothing is ranked.
+        </p>
+        <div class="table-wrap">
+          <table class="bodies">
+            <caption class="visually-hidden">Meetings and noticed closed sessions per governmental body</caption>
+            <thead>
+              <tr>
+                <th scope="col">Body</th>
+                <th scope="col" class="num">Meetings with an online agenda</th>
+                <th scope="col" class="num">Meetings noticing a closed session</th>
+                <th scope="col" class="num">Closed-session items</th>
+                <th scope="col">Exemptions cited (items)</th>
+              </tr>
+            </thead>
+            <tbody id="body-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="exemptions" aria-labelledby="exemptions-h">
+        <h2 id="exemptions-h">Exemptions cited</h2>
+        <p class="section-dek" id="mix-dek">
+          How often each s. 19.85(1) exemption is cited. An item citing two exemptions counts once for each.
+        </p>
+        <div class="mix" id="mix"></div>
+        <p class="mix-note" id="mix-note"></p>
+      </section>
+
+      <section id="items" aria-labelledby="items-h">
+        <h2 id="items-h">Every notice</h2>
+        <p class="section-dek">
+          One row per closed-session item, newest first, in the notice's own words. Each links to the agenda on
+          the body's site and to the ledger's archived copy, which is kept even if the body later changes or
+          removes its agenda.
+        </p>
+        <div class="toolbar">
+          <label for="q">Search</label>
+          <input id="q" type="search" placeholder="Words in the notice" autocomplete="off" />
+          <label for="body-filter">Body</label>
+          <select id="body-filter"><option value="">All bodies</option></select>
+          <label for="ex-filter">Exemption</label>
+          <select id="ex-filter"><option value="">Any</option></select>
+          <span class="shown" id="shown" aria-live="polite"></span>
+        </div>
+        <ol class="items" id="item-list"></ol>
+        <button type="button" class="more" id="more" hidden>Show more</button>
+      </section>
+
+      <section id="downloads" aria-labelledby="downloads-h">
+        <h2 id="downloads-h">Download the data</h2>
+        <p class="section-dek">
+          Published under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>: credit
+          Wausau Pilot &amp; Review. Rebuilt every night from the bodies' own sites.
+        </p>
+        <div class="downloads">
+          <div class="download">
+            <h3>Closed-session items</h3>
+            <p>One row per noticed item: body, meeting date, exact wording, citation as written, exemption letters, the notice's own subject, links.</p>
+            <a href="data/closed_sessions.csv" download>closed_sessions.csv</a><a href="data/closed_sessions.json">.json</a>
+          </div>
+          <div class="download">
+            <h3>Meetings</h3>
+            <p>One row per meeting with an agenda in the window: bodies, date, whether it was canceled, its closed-session item count.</p>
+            <a href="data/meetings.csv" download>meetings.csv</a><a href="data/meetings.json">.json</a>
+          </div>
+          <div class="download">
+            <h3>Bodies covered</h3>
+            <p>Every body the ledger covers and how its meetings are matched. Other newsrooms can add bodies here.</p>
+            <a href="bodies.yaml">bodies.yaml</a><a href="data/bodies.json">bodies.json</a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <img src="wpr-badge.jpg" alt="" width="44" height="44" />
+        <div>
+          <p>Data: the agendas each body posts on its own site (CivicClerk, BoardBook, AgendaCenter, Municode), read nightly. Scanned agendas are read with OCR and checked by an editor. Rules: <a href="methodology.html">methodology</a>.</p>
+          <p>The ledger states what a notice says and what it cites. Any flag about a notice is an editor's decision, made after the body was asked for comment.</p>
+          <p>Code MIT, data CC BY 4.0 · <a href="https://github.com/RowanFlynnPilot/wpr-closed-door-ledger">Source on GitHub</a></p>
+          <p><strong>Wausau Pilot &amp; Review</strong> · 715-301-5539</p>
+        </div>
+      </footer>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
