@@ -36,6 +36,7 @@ import polite
 from adapters.base import DocFile, Documents, KnownFile, Meeting, Unchanged
 
 NOTICE_PAGES = 5
+DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 
 _YEAR_LINK = re.compile(r"changeYear\((\d{4}),\s*(\d+)\s*,")
 _ROW_ANCHOR = re.compile(r"_(\d{2})(\d{2})(\d{4})-(\d+)")
@@ -155,9 +156,18 @@ def packet_unchanged(url: str, stamp: str, known: KnownFile) -> bool:
 
 
 def fetch_minutes(url: str) -> DocFile:
-    """Minutes are small and get revised, so they are always downloaded; sha256 tells versions apart."""
+    """Minutes are small and get revised, so they are always downloaded; sha256 tells versions apart.
+
+    Weston posts most minutes as PDF and a few as Word files (June 8, 2026)."""
     response = polite.get(url)
-    content = pdf_content(response)
+    content = response.content
+    if response.headers.get("Content-Type", "").startswith(DOCX):
+        return DocFile(
+            kind="minutes", url=url, content=content, extension="docx",
+            sha256=documents.sha256(content), text=documents.docx_text(content, url), text_source="text_layer",
+            size=len(content), last_modified=response.headers.get("Last-Modified"),
+        )
+    pdf_content_type(response)
     text = documents.pdf_text(content, url)
     return DocFile(
         kind="minutes", url=url, content=content, extension="pdf",

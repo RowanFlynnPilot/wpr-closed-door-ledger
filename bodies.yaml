@@ -85,6 +85,12 @@ jurisdictions:
       # Titled "Human Resources Committee Regular Meeting"; the agenda is a joint
       # Human Resources Committee and Water Works Commission meeting (Nov 2024).
       "wausau:1463": [wausau-human-resources, wausau-water-works]
+      # Listed as "CANCELED-Common Council Retreat"; the agenda's header reads
+      # "MEETING: Committee of the Whole" (2026). Sites win: the agenda names the body.
+      "wausau:2356": wausau-committee-of-the-whole
+      # Listed as "Committee Of The Whole Special Meeting"; the agenda is a possible-quorum
+      # notice for a firefighter swearing-in ceremony, not a meeting of any body (2024).
+      "wausau:981": exclude
 
   wausau_sd:
     name: Wausau School District
@@ -179,7 +185,13 @@ jurisdictions:
           confirm: "Intergovernmental police (2024 on). Kronenwetter may post the same meetings." }
       - { key: mountain-bay-police-oversight, name: Mountain Bay Metropolitan Police Oversight Board, category_id: 28, custodian: Mountain Bay Metropolitan Police Department,
           confirm: "Intergovernmental." }
-    overrides: {}
+      - { key: everest-metro-court-finance, name: Everest Metro Municipal Court Finance Committee,
+          custodian: Everest Metro Municipal Court,
+          confirm: "Intergovernmental; seen only in a joint meeting posted under category 12 (2024). Who keeps its records?" }
+    overrides:
+      # Posted under category 12; the agenda is a "Joint Meeting of the Everest Metropolitan Police
+      # Department Joint Finance Committee and the Everest Metro Municipal Court Finance Committee".
+      "weston:1556": [everest-metro-police-joint-finance, everest-metro-court-finance]
 
   kronenwetter:
     name: Village of Kronenwetter

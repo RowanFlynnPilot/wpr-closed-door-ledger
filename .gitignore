@@ -14,3 +14,7 @@ web/dist/
 web/node_modules/
 
 .env
+
+# Local previews
+screenshots/
+.claude/launch.json

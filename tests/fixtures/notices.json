@@ -5,9 +5,9 @@
    "id": "wausau-792",
    "jurisdiction": "wausau",
    "source": "CivicClerk event 792 (Board of Public Works), May 6, 2025",
-   "note": "Numbered items, two closed sessions, (d) without (1); reconvene item has no citation.",
+   "note": "Numbered items, two closed sessions, (d) without (1); reconvene item has no citation. \"RECONVENE MEETING INTO OPEN SESSION\" states the intent to reconvene (blind check, round 1).",
    "text": "AGENDA ITEMS FOR CONSIDERATION (All items listed may be acted upon)\n1. Approve minutes of the April 29, 2025 meeting.\n2. 2025 Street Construction Project \"A\" - Randolph Street & Cherry Street, Haas Sons, Inc., Pay\nEstimate #1.\n3. 2024 Jefferson Parking Ramp Stairwell Cleaning & Coating Project, Advanced Coating Solutions,\nFinal Payment.\n4. Alexander-Airport Park Pickleball Court Construction: S.D. Ellenbecker Inc., Pay Estimate #1.\n5. CLOSED SESSION pursuant to Section 19.85(d), Wis. Stats., for the purpose of considering and\ndeliberating on pre-qualification statements for 2025 Street Sealcoating Project.\n6. CLOSED SESSION pursuant to Section 19.85(1)(g), Wis. Stats., for the purpose of deliberating on\nclaims.\n7. RECONVENE MEETING INTO OPEN SESSION for the purpose of acting upon closed session\nitem, if necessary.\nERIC LINDMAN, PE",
-   "notices_reconvene": false,
+   "notices_reconvene": true,
    "items": [
     {
      "exemptions": [
@@ -103,13 +103,14 @@
    "id": "wausau_sd-639532",
    "jurisdiction": "wausau_sd",
    "source": "BoardBook 1360 meeting 639532, June 10, 2024",
-   "note": "Bargaining under s. 19.86; the closed-session note is a footnote in the ADJOURNMENT row.",
+   "note": "Bargaining under s. 19.86; the closed-session note is a footnote in the ADJOURNMENT row. The footnote is the item; its subject is the negotiations item (blind check, round 1).",
    "text": "I. INTRODUCTIONS\nII. INITIAL NEGOTIATIONS MEETING BETWEEN REPRESENTATIVES OF THE WAUSAU BOARD OF EDUCATION AND THE WAUSAU EDUCATION ASSOCIATION TO EXCHANGE INITIAL PROPOSALS IN WRITING FOR THE 2024-25 SCHOOL YEAR AND PURSUANT TO SECTIONS 19.86 AND 111.70(4)(CM)(2)\nIII. ADJOURNMENT* * The Parties may continue negotiations in closed session pursuant to ss. 19.86 and 111.70 (4)(cm).",
    "notices_reconvene": false,
    "items": [
     {
      "exemptions": [],
-     "starts": "ADJOURNMENT* * The Parties may continue"
+     "starts": "The Parties may continue negotiations in",
+     "purpose_starts": "INITIAL NEGOTIATIONS MEETING BETWEEN"
     }
    ]
   },
@@ -159,7 +160,8 @@
      "exemptions": [
       "c"
      ],
-     "starts": "CLOSED SESSION"
+     "starts": "CLOSED SESSION",
+     "purpose": "Interviewing Village Clerk Candidates"
     }
    ]
   },
@@ -230,6 +232,390 @@
       "f"
      ],
      "starts": "CLOSED SESSION pursuant to Wis. Stat. 19."
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-732366",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 732366, Feb 23, 2026",
+   "note": "An amendment note 'CLOSED SESSION REMOVED' is not a closed session (blind check, round 1).",
+   "text": "X. Referendum Budget Update Description: Estimated Time to Present: 10 Minutes As the April 2022 referendum funded facility improvements continue to develop, the construction and budget updates will routinely be presented until projects are completed.\nXI. ADJOURN AMENDED: CLOSED SESSION REMOVED: FEBRUARY 20, 2026, AT 1:30 PM *** Following the adjournment of the meeting, the public is welcome to join the Board and Administration on a tour of the recent updates to Wausau West High School and the Planetarium. A quorum of the Board will be present; however, no official Board action will occur. ***",
+   "notices_reconvene": false,
+   "items": []
+  },
+  {
+   "id": "wausau_sd-628365",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 628365, Apr 8, 2024",
+   "note": "X.A only restates the statute before 'Wis. Stat. sec.': no subject (blind check, round 1).",
+   "text": "X. REQUEST FOR CLOSED SESSION PURSUANT TO STATE STATUTES\nX.A. To consider the employment, promotion, compensation or performance evaluation data of an employee pursuant to Wis. Stat. sec. 19.85(1)(c)\nX.B. Consideration of contracts for Preliminary Notice of Non-renewal ss. 19.85(1)(c)\nX.C. Reconvene in Open Session, to take further action if necessary and appropriate",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "To consider the employment, promotion, co",
+     "purpose": ""
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Consideration of contracts for Prelimina",
+     "purpose": "Consideration of contracts for Preliminary Notice of Non-renewal"
+    }
+   ]
+  },
+  {
+   "id": "wausau-2148",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 2148 (Police & Fire Commission), June 22, 2026; complainants' initials replaced",
+   "note": "Subject after the (f) wording, introduced by 'related to'; 'Reconvene meeting into open session' (blind check, round 1).",
+   "text": "4 Closed Session.\nConvene Meeting into Closed Session pursuant to 19.85(1)(f) for consideration of\nfinancial, medical, social, or personal histories or disciplinary data of specific persons,\npreliminary consideration of specific personnel problems and/or the investigation of\ncharges against specific persons, which, if discussed in public, would be likely to have a\nsubstantial adverse effect upon the reputation of any person referred to in such\ncomplaint, for consideration and deliberation related to three Citizen Complaints related\nto the Police Department made by A.B. and C.D. and one Citizen Complaint related to\nthe Fire Department made by E.F.\n5 Open Session.\nReconvene meeting into open session for the purpose of potential action upon closed\nsession items.\n6 Discussion and possible action.",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "f"
+     ],
+     "starts": "Closed Session. Convene Meeting into Clos",
+     "purpose": "three Citizen Complaints related to the Police Department made by A.B. and C.D. and one Citizen Complaint related to the Fire Department made by E.F"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-75887897",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode 75887897bf254d12b99a9390f2741ee7, Aug 19, 2025",
+   "note": "Two motions in one item: each 'to wit' subject ends where the next motion begins (blind check, round 1).",
+   "text": "2. ANNOUNCEMENT OF CLOSED SESSION\n3. PUBLIC COMMENT Please be advised per State Statute Section 19.84(2), information will be received from the public. It is the policy of this Village that Public Comment will take no longer than 15 minutes with a three-minute time period, per person, with time extension per the Chief Presiding Officer’s discretion. Be further advised that there may be limited discussion on the information received, however, no action will be taken under public comments.\n4. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit Administrator Interviews Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)(e) for consideration of deliberation or negotiating the purchase of public properties, the investing of public funds- to wit Potential Acquisition of Property",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c",
+      "e"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "Administrator Interviews; Potential Acquisition of Property"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-685216",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 685216, Apr 23, 2025",
+   "note": "A subject written before the citation is kept whole, 'Meet with Attorney' included (blind check, round 1).",
+   "text": "II. Request for Closed Session Pursuant to State Statutes\nII.A. Meet with Attorney to Discuss Sale of Property ss. 19.85(1)(e)\nII.B. Pursuant to Section 19.85(1)(c), Wis. Stats., to consider employment, promotion, compensation, or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility, specifically, to discuss the employment of a member of the teaching staff.\nII.C. Reconvene in Open Session, to take further action if necessary and appropriate",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "Meet with Attorney to Discuss Sale of Pro",
+     "purpose": "Meet with Attorney to Discuss Sale of Property"
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Pursuant to Section 19.85(1)(c), Wis. Sta",
+     "purpose": "the employment of a member of the teaching staff"
+    }
+   ]
+  },
+  {
+   "id": "dc_everest-738238",
+   "jurisdiction": "dc_everest",
+   "source": "BoardBook 1315 meeting 738238 (custom PDF agenda), Apr 15, 2026",
+   "note": "No space after the item numerals ('III.The Board'); the preamble must not join the item (blind check, round 2).",
+   "text": "– A G E N D A –\nUpon request to the Executive Assistant to the Superintendent, submitted twenty-four (24) hours in advance, the\nDistrict shall make reasonable accommodation including the provision of informational material in an\nalternative format for a disabled person to be able to attend this meeting.\nI.Call to Order\nII.Roll Call\nIII.The Board will consider adjournment to Closed Session pursuant to W.S.S. 19.85(1)(c) for considering\nemployment, promotion, compensation or performance evaluation data of any public employee over which\nthe governmental body has jurisdiction or exercises responsibility. (Employee Compensation and Benefits)",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "The Board will consider adjournment to Cl",
+     "purpose": "Employee Compensation and Benefits"
+    }
+   ]
+  },
+  {
+   "id": "dc_everest-768009",
+   "jurisdiction": "dc_everest",
+   "source": "BoardBook 1315 meeting 768009",
+   "note": "'The Board will return to open session' states the intent to reconvene (blind check, round 2).",
+   "text": "I. Call to Order\nII. Roll Call\nIII. Pledge of Allegiance\nIV. Approval of Agenda\nV. Public Comment\nVI. Consent Agenda\nVI.A. Approval of Minutes\nVI.B. Certified Staff Recommended Employment/Resignations/Contract Adjustments\nVI.C. Treasurer's Report - General/Other Fund Bills\nVI.D. Balance Sheet\nVI.E. Budget Transfers\nVI.F. Budget Revisions\nVI.G. Grant Application(s)/Budget(s) Approval\nVI.H. Fundraising Requests\nVI.I. Gift/Bequests\nVI.I.1. Football Gridiron Donation\nVI.J. Bus Accident Report\nVI.K. Senior High Early College Credit and Start College Now Requests\nVII. Non-Certified Staff Employment Changes (Informational Only)\nVIII. Reports/Considerations\nVIII.A. WASB Legislative Network Member\nVIII.B. Student Representative\nVIII.C. Superintendent\nVIII.C.1. Third Friday\nVIII.C.2. Certified Staff Compensation\nVIII.C.3. Facilities Study Update\nVIII.C.4. 2027-2028 Calendar Planning\nVIII.C.5. Qmalitiv\nVIII.C.6. Winter Clothing List\nVIII.C.7. District Update\nIX. Unfinished Business\nIX.A. Connections, Belonging, and Inclusion - Riverside Elementary\nX. New Business\nX.A. Approval of Budget and Tax Levy\nX.B. Administrator Continuous Improvement Plans\nX.C. WIAA Membership\nX.D. Report on Student Device Usage\nX.E. First Reading of Policies\nX.E.1. po0144.5 Board Member Behavior and Code of Conduct\nX.E.2. po1422 Nondiscrimination, Equal Employment Opportunity, and Anti-Harassment\nX.E.3. po1422.02 Nondiscrimination Based on Genetic Information of the Employee\nX.E.4. po1662 Employee Anti-Harassment\nX.E.5. po2210 Curriculum Development\nX.E.6. po2260 Nondiscrimination and Access to Equal Educational Opportunity\nX.E.7. po2266 Nondiscrimination on the Basis of Sex in Education Programs or Activities\nX.E.8. po2414 Human Growth and Development\nX.E.9. po2421 Career-Technical Education Program\nX.E.10. po2430 District-Sponsored Clubs and Activities\nX.E.11. po2461 Recording of IEP Team Meetings\nX.E.12. po2510 Adoption of Textbooks/Primary Curricular Resources\nX.E.13. po2521 Selection of Supplemental Instructional Materials/Curricular Resources and Equipment\nX.E.14. po2623 Student Assessment and Grading\nX.E.15. po3122 Nondiscrimination, Equal Employment Opportunity, and Anti-Harassment\nX.E.16. po3122.02 Nondiscrimination Based on Genetic Information of the Employee\nX.E.17. po3130 Assignment and Transfer\nX.E.18. po3242 Professional Growth Requirements\nX.E.19. po3362 Employee Harassment\nX.E.20. po4122 Nondiscrimination, Equal Employment Opportunity, and Anti-Harassment\nX.E.21. po4122.02 Nondiscrimination Based on Genetic Information of the Employee\nX.E.22. po4362 Employee Anti-Harassment\nX.E.23. po5120 Assignment Within District\nX.E.24. po5136 Personal Communication Devices\nX.E.25. po5310 Health Services\nX.E.26. po5451.01 Wisconsin Academic Excellence Scholarship\nX.E.27. po5505 Academic Honesty\nX.E.28. po5511 Dress and Appearance\nX.E.29. po5512 Use of Tobacco and Nicotine by Students\nX.E.30. po5514 Use of Personal Transportation Devices\nX.E.31. po5516 Student Hazing\nX.E.32. po5517 Student Anti-Harassment\nX.E.33. po6325 Procurement - Federal Grants/Funds\nX.E.34. po7440.02 Smart Sensor and Monitoring Technology\nX.E.35. po7440.03 Small Unmanned Aircraft Systems (Drones)\nX.E.36. po7540 Technology\nX.E.37. po7540.03 Student Technology Acceptable Use and Safety\nX.E.38. po7540.04 Staff Technology Acceptable Use and Safety\nX.E.39. po8310 Public Records\nX.E.40. po8315 Perservation of Records and Litigation Holds\nX.E.41. po8325 Receipt of Legal Documents by District Employees\nX.E.42. po8330 Student Records\nX.E.43. po8330.01 Unauthorized Acquisition of Student Personal Information\nX.E.44. po8410 Crisis Intervention\nX.E.45. po8600 Transportation\nX.E.46. po8913 Section 504/ADA Prohibition Against Disability Discrimination in Employment\nX.F. Commitments to attend the State Education Convention (January 19-22).\nXI. Petitions and Communications\nXI.A. Thank you from T. Sondelski for Memorial Tribute\nXI.B. Thank you from A. Natzke for Memorial Tribute\nXII. Future Meeting Dates\nXII.A. School Board Retreat November 9, 2026, at 5:00 p.m. D.C. Everest Administration Building 6100 Alderson Street Weston, WI 54476 Regular Board Meeting November 18, 2026, at 6:30 p.m. D.C. Everest Administration Building 6100 Alderson Street Weston, WI 54476 Regular Board Meeting December 16, 2026, at 6:30 p.m. D.C. Everest Administration Building 6100 Alderson Street Weston, WI 54476\nXIII. The Board will consider adjournment to Closed Session pursuant to W.S.S. 19.85 (1) (a) for deliberating concerning a case which was the subject of any judicial or quasi-judicial trial or hearing (Junior High Student Expulsion) and (g) conferring with legal counsel for the governmental body who is rendering oral or written advice concerning strategy to be adopted by the body with respect concerning strategy to be adopted by the body with respect to litigation in which it is or is likely to become involved. (Social Media MDL)\nXIV. The Board will return to open session for consideration of legal action.\nXV. Adjourn",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "a",
+      "g"
+     ],
+     "starts": "The Board will consider adjournment to C",
+     "purpose": "Junior High Student Expulsion; Social Media MDL"
+    }
+   ]
+  },
+  {
+   "id": "weston-1911",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1911",
+   "note": "The source misspells 'RECONVEVE into Open Session'; it still states the intent (blind check, round 2).",
+   "text": "Everest Metropolitan Police Department Joint Finance Committee\nMeeting Agenda\n_________________________________________________________________________________________________________\nDATE: April 30, 2026 PLEASE NOTE: ACTION MAY\nBE TAKEN ON ANY ITEM ON\nTIME: 2:00pm THE AGENDA\nLOCATION: Village of Weston Municipal Center\nVillage Board Room\n4747 Camp Phillips Road\nWeston, WI 54476\nI. CALL TO ORDER\nA. Roll Call,\n-Mark Maloney\n-Barbara Ermeling\n-Hooshang Zeyghami\n-Kari Carrol\n-Kevin Fabel\n-Kregg Hoehn\n-Jim King\nB. Approval of EMPD Joint Finance Committee Minutes from December 2, 2025.\nII. OLD BUSINESS -EMPD\nA. Consideration of Motion to adjourn into Closed Session pursuant to Wis. Stat.\n19.85(1)(g) Conferring with legal counsel for the governmental body who is rendering\noral or written advice concerning strategy to be adopted by the body with respect to\nlitigation in which it is or is likely to become involved, including discussion and update\non current litigation process for prior employee and how to proceed forward.\nB. RECONVEVE into Open Session, to take any action on Closed Session items if necessary.\nIII. NEW BUSINESS -EMPD\nA. Discussion and possible action acknowledging the 2025 audit.\nB. Discussion and possible action regarding an update on EMPD financial status, including\nfinal reconciliation of funds at dissolution.\nIV. ADJOURN:\nAny person planning to attend this meeting who needs some type of special\naccommodation to participate should telephone 715-359-4202.\nCopy: City Clerk\nVillage Clerk\nTown Clerk Emailed: 4/29/2026 Time: 10:15am",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "Consideration of Motion to adjourn into ",
+     "purpose": "discussion and update on current litigation process for prior employee and how to proceed forward"
+    }
+   ]
+  },
+  {
+   "id": "weston-1692",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1692, Oct 7, 2024 (packet; later pages bind the Sep 23 agenda)",
+   "note": "Reconvene wording in a bound-in earlier agenda doesn't count (blind check, round 2).",
+   "text": "VILLAGE OF WESTON, MARATHON COUNTY, WISCONSIN\nATTENTION – NOTICE OF PUBLIC MEETING\nMeeting: BOARD BUDGET WORKSHOP MEETING\nDate: October 7, 2024 @ 6:00 p.m. or following CLPS\nLocation: Weston Municipal Center, 4747 Camp Phillips Rd, Weston\nMembers: Mark Maloney[P], Steve Cronin[VP] , Barbara Ermeling, Jim\nPinsonneault, Jamie Weiland, and Hooshang Zeyghami\nRSVP: Jessica Trautman, Director of Finance\njtrautman@westonwi.gov\n(715) 359-6114\nTrustees should indicate if you will, or will not, be attending so we may\ndetermine in advance if there will be a quorum by sending an RSVP to the\nassigned staff advisor(s).\nPLEASE NOTE THE FOLLOWING INFORMATION:\nThis notice was posted at the Municipal Center on 9/30/2024. Wisconsin State Statutes\nrequire all agendas for Board, Commission, and meetings be posted in final form, 24\nhours prior to the meeting. Any posted agenda is subject to change up until 24 hours\nprior to the date and time of the meeting.\nA quorum of members from other Village governmental bodies (boards, commissions, and\ncommittees) may attend the above-noticed meeting to gather information. Should a\nquorum of other government bodies be present, this would constitute a meeting pursuant\nto State ex rel. Badke v. Greendale Village Bd., 173 Wis.2d 553,494 N.W.2d 408 (1993).\nAny person who has a qualifying disability, as defined by the Americans with Disabilities\nAct, requiring that meeting or material to be in an accessible location or format, must\ncontact the Weston Municipal Center at 715-359-6114, so any necessary arrangements\ncan be made to accommodate each request.\fVILLAGE OF WESTON, MARATHON COUNTY, WISCONSIN\nSPECIAL MEETING AGENDA OF THE BOARD OF TRUSTEES\nWeston Municipal Center Board Room\n4747 Camp Phillips Road, Weston, WI 54476\nMonday, October 7, 2024 @ 6:00 p.m., or following\nCommunity Life and Public Safety Committee Meeting\nBUDGET WORKSHOP\nA quorum of members from other Village governmental bodies (boards, commissions, and\ncommittees) may attend the above-noticed meeting to gather information. If a quorum of other\ngovernment bodies are present this would constitute a meeting pursuant to “State of\nWisconsin ex rel. Badke v. Greendale Village Bd., 173 Wis.2d 553,494 N.W.2d 408 (1993)”.\nTherefore, no official actions other than those of the BOARD OF TRUSTEES shall take place.\nAny interested persons may attend the meeting via the Zoom link listed below.\nJoin Zoom Meeting: Join Zoom Meeting by Phone:\nhttps://zoom.us/j/5445915099 +1 312 626 6799 US (Chicago)\nMeeting ID: 544 591 5099\nAGENDA ITEMS\n1. Special Board of Trustees Meeting called to order by President Maloney\n2. Pledge Allegiance to the Flag\n3. Roll Call by Recording Secretary for Board of Trustees\na. Maloney{p}, Cronin{vp}, Ermeling, Pinsonneault, Weiland, Zeyghami, and Vacant\nPUBLIC COMMENTS\nMINUTES FROM PREVIOUS MEETINGS\n4. Approval of September 23, 2024, Special Board Budget Workshop Meeting\nUNFINISHED BUSINESS\n5. Review and discussion of 2025 budget\n- Presentation by Greg Johnson, Ehlers Senior Municipal Advisor, 2024-2025\nPreliminary Financing Plan\n- Capital Improvement Plan\n- Capital Funds (2025 budget)\n- Debt Service\n- Any follow-up questions on Utilities\n- Any Benefits Renewal Update\nOLD BUSINESS\n6. Discussion and/or action on benefits renewal budget amount\n7. Discussion and/or action on 2025 Staff Compensation Increases\n8. Discussion and/or action on 2025 Merit/Market reserve\nSPECIAL BOARD OF TRUSTEES MEETING AGENDA\nPrepared by: Jessica Trautman, Director of Finance\fVILLAGE OF WESTON, WISCONSIN\nOFFICIAL MEETING AGENDA OF THE BOARD OF TRUSTEES\nNEW BUSINESS\n9. Discussion and/or action on Cloud Permit\nREMARKS FROM TRUSTEES\nREMARKS FROM THE PRESIDENT\nTOPICS FOR FUTURE MEETINGS\n- 2025 budget timeline:\n- October 21st – Circle back to previously undecided items and finalization\nFUTURE MEETING\nNext meeting date(s):\n- Monday, October 21st, 2024, at 5:00 p.m., or following Tourism\nADJOURN\nIn accordance with the requirements of Title II of the Americans with Disabilities Act of 1990 (ADA), the Village will not discriminate against qualified individuals with disabilities on\nthe basis of disability in its services, programs or activities. If you need assistance or reasonable accommodations in participating in this meeting or event due to a disability as\ndefined under the ADA, please call the Village Clerk at 715-359-6114 or clerks@westonwi.gov to discuss your accessibility needs. We ask your request be provided a minimum of 72\nhours before the scheduled event or meeting. If a request is made less than 72 hours before the event the Village will make a good faith effort to accommodate your request.\nThis Notice was posted at the Village Municipal Center, on www.westonwi.gov and transmitted to media partners on ________________.\nSPECIAL BOARD OF TRUSTEES MEETING AGENDA\nPrepared by: Jessica Trautman, Director of Finance\fVILLAGE OF WESTON, MARATHON COUNTY, WISCONSIN\nSPECIAL MEETING AGENDA OF THE BOARD OF TRUSTEES\nWeston Municipal Center Board Room\n4747 Camp Phillips Road, Weston, WI 54476\nMonday, September 23, 2024, immediately following 5:00 p.m.\nParks Committee Meeting\nBUDGET WORKSHOP\nA quorum of members from other Village governmental bodies (boards, commissions, and\ncommittees) may attend the above-noticed meeting to gather information. If a quorum of other\ngovernment bodies are present this would constitute a meeting pursuant to “State of\nWisconsin ex rel. Badke v. Greendale Village Bd., 173 Wis.2d 553,494 N.W.2d 408 (1993)”.\nTherefore, no official actions other than those of the BOARD OF TRUSTEES shall take place.\nAny interested persons may attend the meeting via the Zoom link listed below.\nJoin Zoom Meeting: Join Zoom Meeting by Phone:\nhttps://zoom.us/j/5445915099 +1 312 626 6799 US (Chicago)\nMeeting ID: 544 591 5099\nAGENDA ITEMS\n1. Special Board of Trustees Meeting called to order by President Maloney\n2. Pledge Allegiance to the Flag\n3. Roll Call by Recording Secretary for Board of Trustees\na. Maloney{p}, Cronin{vp}, Ermeling, Pinsonneault, Weiland, Zeyghami, and Vacant\nPUBLIC COMMENTS\nMINUTES FROM PREVIOUS MEETINGS\n4. Approval of September 16, 2024, Special Board Budget Workshop Meeting\nUNFINISHED BUSINESS\n5. Review and discussion of 2025 budget\n- All Other Funds except Utilities\n- Utilities\n- Benefits Renewal Update\nNEW BUSINESS\n6. Discussion and/or action on benefits renewal budget amount\n7. Discussion and/or action on 2025 Staff Compensation Increases\n8. Discussion and/or action on 2025 Merit/Market reserve\n9. Discussion and/or action on Trustee Compensation Increases and Committee &\nCommission members Stipend Payment Increases\n10. Discussion and update on Village Board Trustee Vacancy application process\nSPECIAL BOARD OF TRUSTEES MEETING AGENDA\nPrepared by: Jessica Trautman, Director of Finance\fVILLAGE OF WESTON, WISCONSIN\nOFFICIAL MEETING AGENDA OF THE BOARD OF TRUSTEES\nMOTION TO MOVE TO CLOSED SESSION Pursuant to Wis. Stat. § 19.85(1)(c) to consider\nemployment, promotion, compensation, or performance evaluation data of any public employee\nover which the governmental body has jurisdiction or exercises responsibility to wit: process for\nthe Administrator’s upcoming one-year evaluation\nRECONVENE TO OPEN SESSION\nPOSSIBLE ACTION ON CLOSED SESSION ITEMS\n• Process for the Administrator’s upcoming one-year evaluation\nREMARKS FROM TRUSTEES\nREMARKS FROM THE PRESIDENT\nTOPICS FOR FUTURE MEETINGS\n- 2025 budget timeline:\n- October 7th – Utilities & Debt Service\n- October 21st – Circle back to previously undecided items and finalization\nFUTURE MEETING\nNext meeting date(s):\n- Monday, October 7th, 2024, at 5:00 p.m., immediately following CLPS\nADJOURN\nIn accordance with the requirements of Title II of the Americans with Disabilities Act of 1990 (ADA), the Village will not discriminate against qualified individuals with disabilities on\nthe basis of disability in its services, programs or activities. If you need assistance or reasonable accommodations in participating in this meeting or event due to a disability as\ndefined under the ADA, please call the Village Clerk at 715-359-6114 or clerks@westonwi.gov to discuss your accessibility needs. We ask your request be provided a minimum of 72\nhours before the scheduled event or meeting. If a request is made less than 72 hours before the event the Village will make a good faith effort to accommodate your request.\nThis Notice was posted at the Village Municipal Center, on www.westonwi.gov and transmitted to media partners on ________________.\nSPECIAL BOARD OF TRUSTEES MEETING AGENDA\nPrepared by: Jessica Trautman, Director of Finance",
+   "notices_reconvene": false,
+   "items": []
+  },
+  {
+   "id": "weston-1566",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1566",
+   "note": "Procedural words before the citation are not a subject; a subject after the citation with no marker is (blind check, round 2).",
+   "text": "VILLAGE OF WESTON, MARATHON COUNTY, WISCONSIN\nMEETING AGENDA OF THE HUMAN RESOURCES COMMITTEE\nWeston Municipal Center Board Room\n4747 Camp Phillips Rd, Weston, WI 54476\nMonday, February 19, 2024 @ 5:00 p.m.\nA quorum of members from other Village governmental bodies (boards, commissions, and committees) may attend the\nabove-noticed meeting to gather information. Should a quorum of other government bodies be present, this would\nconstitute a meeting pursuant to State ex rel. Badke v. Greendale Village Bd., 173 Wis.2d 553,494 N.W.2d 408 (1993).\nWisconsin State Statutes require all agendas for Committee, Commission, or Board meetings be posted in final form, 24\nhours prior to the meeting. Any posted agenda is subject to change up until 24 hours prior to the date and time of the\nmeeting. No officials’ actions other than those of the Human Resources Committee shall take place.\nATTENDEES MAY ALSO PARTICIPATE VIA ZOOM\nJoin Zoom Meeting: Join Zoom Meeting by Phone:\nhttps://zoom.us/j/5445915099 +1 312 626 6799 US (Chicago)\nMeeting ID: 544 591 5099\nAGENDA ITEMS\n1. Call to Order & Welcome by Chairperson Hartinger\n2. Pledge Allegiance to the Flag\n3. Roll Call by Clerk\nHuman Resources Committee: Weiland, Hartinger, Hackbarth, Dirks-\nLuebbe, and Hegg, Meinel.\n4. Approval of Human Resources Committee Meeting Minutes of October 2,\n2023\n5. Public comments\na. Acknowledge Resignation of Committee Member Arndt\nNEW BUSINESS\n6. Discussion and/or possible action on recommendation to the Village Board on\namendments to Public Works Job Description(s):\nDirector of Public Works\no\nFleet Foreman\no\nMechanic\no\n7. Discussion and/or possible action on recommendation to the Village Board on\nproposed job description and funding for new Staff Engineer position in Public\nWorks department\nHuman Resources Committee Meeting Agenda\nPrepared by: Sarah Chibeya, Deputy Clerk\f8. Changes to the Human Resources Policy\na. Removal of Employee Resources Manager references\n9. Other Current Developments/Changes in Human Resources Matters\n10. Acknowledge recent staff resignation notices:\na. Trevor Skerven, Utility Senior Operator\n11. Acknowledge completion of 2023 evaluations for all staff\n12. MOVE TO CLOSED SESSION PER §19.85(1)(c)\nMove to closed session to consider employment, promotion, compensation, or\nperformance evaluation data of any public employee over which the\ngovernmental body has jurisdiction or exercises responsibility to wit –\nrecommended 2024 market adjustment compensation changes for\ncompetitiveness and recommended merit adjustment compensation changes\nfor performance\nCONTINUE IN CLOSED SESSION PURSUANT TO §19.85(1)(c)\nReclassification Review Procedure from Public Works Maintainer to Public\nWorks Operator\nRECONVENE TO OPEN SESSION\nPOSSIBLE ACTION ON CLOSED SESSION ITEMS\nREMARKS FROM COMMITTEE MEMBERS\nREMARKS FROM CHAIR\nFUTURE ITEMS\nNext meeting date:\nADJOURN\nIn accordance with the requirements of Title II of the Americans with Disabilities Act of 1990 (ADA), the Village will not discriminate against qualified individuals with\ndisabilities on the basis of disability in its services, programs or activities. If you need assistance or reasonable accommodations in participating in this meeting or\nevent due to a disability as defined under the ADA, please call the Village Clerk at 715-359-6114 or clerks@westonwi.gov to discuss your accessibility needs. We ask\nyour request be provided a minimum of 72 hours before the scheduled event or meeting. If a request is made less than 72 hours before the event the Village will make\na good faith effort to accommodate your request.\nThis Notice was posted at the Village Municipal Center, on www.westonwi.gov and transmitted to media partners on 2-12-2024\nHuman Resources Committee Meeting Agenda\nPrepared by: Sarah Chibeya, Deputy Clerk\fVILLAGE OF WESTON, MARATHON COUNTY, WISCONSIN\nMEETING AGENDA OF THE HUMAN RESOURCES COMMITTEE\nWeston Municipal Center Board Room\n4747 Camp Phillips Rd, Weston, WI 54476\nMonday October 2, 2023 @ 5:00 p.m.\n1. Call to Order & Welcome by Chairperson Weiland.\nThe meeting was called to order by Chairperson Weiland at 5:07 p.m.\n2. Pledge Allegiance to the Flag\n3. Roll Call by Clerk\nHuman Resources Committee Present\nHartinger, Jasper Yes- Zoom\nWeiland, Jamie Yes\nHackbarth, Linda Excused\nDirks-Luebbe, Micki Yes- Zoom\nHegg, Robin Yes\nMeinel, Steve Excused\nArndt, Jay Excused\n4. Approval of Human Resources Committee Meeting Minutes of\nSeptember 5, 2023\nMotion by Hartinger, second by Dirks-Luebbe to approve the meeting\nminutes from September 5, 2023.\nYes Vote: 4 No Votes: 0 Abstain: 0 Not Voting: 3 Result: Pass\nHuman Resource Member Voting\nHartinger, Jasper Yes\nWeiland, Jamie Yes\nHackbarth, Linda -----\nDirks-Luebbe, Micki Yes\nHegg, Robin Yes\nMeinel, Steve -----\nArndt, Jay -----\n5. Public comments\nNone.\nHuman Resources Committee Meeting Agenda\nPrepared by: Sarah Chibeya, Deputy Clerk\fNEW BUSINESS\n6. Approval of Wage and Compensation Study from Public Administration\nAssociates for Directors, Deputy Directors, and Superintendents.\nInterim Administrator Wodalski gave a brief update on the compensation study\nthat was in the packet. Hegg agrees with the methodology, she questioned how\nit compares to the current pay scale and what is the fiscal impact. Wodalski\nshowed Exhibit A in the packet. Hartinger asked if we approved the study, that\ndoes not mean we are approving wages this would be up to the finance\ncommittee and board. Wodalski said Yes. The committee agreed with this.\nMotion by Hegg, second by Hartinger to approve the Wage and\nCompensation Study from Public Administration Associates for\nDirectors, Deputy Directors, and Superintendents.\nYes Vote: 4 No Votes: 0 Abstain: 0 Not Voting: 3 Result: Pass\nHuman Resource Member Voting\nHartinger, Jasper Yes\nWeiland, Jamie Yes\nHackbarth, Linda -----\nDirks-Luebbe, Micki Yes\nHegg, Robin Yes\nMeinel, Steve -----\nArndt, Jay -----\n7. Discussion and/or Action on Job Descriptions for “Accounts Payable,\nPayroll, and Human Resources Specialist” and “Director of GIS and\nTechnology” as recommended by Public Administration Associates\nInterim Administrator Wodalski spoke briefly about these positions. The roles\nhave been evolving over the years and need to be updated to reflect the\ncurrent roles and responsibilities of these individuals.\nMotion by Hegg, second by Dirks-Luebbe to approve the Job\nDescriptions for “Accounts Payable, Payroll, and Human Resources\nSpecialist” and “Director of GIS and Technology” as recommended by\nPublic Administration Associates\nYes Vote: 4 No Votes: 0 Abstain: 0 Not Voting: 3 Result: Pass\nHuman Resource Member Voting\nHartinger, Jasper Yes\nWeiland, Jamie Yes\nHuman Resources Committee Meeting Agenda\nPrepared by: Sarah Chibeya, Deputy Clerk\fHackbarth, Linda -----\nDirks-Luebbe, Micki Yes\nHegg, Robin Yes\nMeinel, Steve -----\nArndt, Jay -----\n8. Recommend adoption of changes to 2023 Pay Grid/Pay Plan as\npresented in the Compensation Report from Public Administration\nAssociates for Directors, Deputy Directors, and Superintendents\nInterim Administrator Trautman said this is updating the wages from the most\nrecent study, we are looking to take this to the Board for approval 2023\npay/grid plan. Interim Administrator Wodalski said a future meeting will have\nthe recommended pay changes.\nMotion by Hartinger, second by Hegg to approve the adoption of\nchanges to the 2023 Pay Grid/Pay Plan as presented in the\nCompensation Report from Public Administration Associates for\nDirectors, Deputy Directors, and Superintendents\nYes Vote: 4 No Votes: 0 Abstain: 0 Not Voting: 3 Result: Pass\nHuman Resource Member Voting\nHartinger, Jasper Yes\nWeiland, Jamie Yes\nHackbarth, Linda -----\nDirks-Luebbe, Micki Yes\nHegg, Robin Yes\nMeinel, Steve -----\nArndt, Jay -----\n9. Recommend adoption of 2024 Village Pay Grid/Pay Plan as presented by\nthe Interim Administrators.\nInterim Administrator Trautman briefly spoke about the CPI report she\nreceived from the state this month, Trautman said it was 5.4%, she felt that a\nCPI of 4% is reasonable to keep in line with the matrix so we don’t get behind\nagain. Dirks-Luebbe asked when the village looks at CPI, Trautman said we\nlook at CPI this time of year because of the budget. Trautman said this is only\napproving the pay grid moving forward, we can adjust as needed. The\ncommittee is not comfortable with 4%, Trautman said the committee can\nadjust the amount given to the board for recommendation.\nMotion by Hegg, second by Hartinger to adopt the recommendation of\n3% CPI for the 2024 Village Pay Grid/Pay Plan.\nHuman Resources Committee Meeting Agenda\nPrepared by: Sarah Chibeya, Deputy Clerk",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "MOVE TO CLOSED SESSION PER §19.85(1)(c) ",
+     "purpose": "recommended 2024 market adjustment compensation changes for competitiveness and recommended merit adjustment compensation changes for performance"
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "CONTINUE IN CLOSED SESSION PURSUANT TO §",
+     "purpose": "Reclassification Review Procedure from Public Works Maintainer to Public Works Operator"
+    }
+   ]
+  },
+  {
+   "id": "weston-1861",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1861",
+   "note": "'MOTION TO MOVE TO' is not part of the subject (blind check, round 2).",
+   "text": "Village of Weston, Wisconsin\nATTENTION – NOTICE OF PUBLIC MEETING\nMeeting of: FINANCE & HUMAN RESOURCE COMMITTEE (F&HR)\nMembers: Ermeling [C], Farar, Vacant, Lopes-Serrao [VC], Meinel, Olson & Soper\nDate/Time: Monday, January 19, 2026 @ 5:00 p.m.\nLocation: Weston Municipal Center (4747 Camp Phillips Rd) – Board Room\nAgenda: The agenda packet will be emailed out 3 days prior to the meeting and\nposted on the Village website at www.westonwi.gov.\nAttendance: All Village officials are encouraged to attend. Trustees, committee\nmembers and Department Directors, please indicate if you will, or will not,\nbe attending so we may determine in advance if there will be a quorum.\nQuestions: Jessica Trautman\njtrautman@westonwi.gov\n715-359-6114\nPLEASE NOTE THE FOLLOWING\nThis notice was posted at the Municipal Center and was e-mailed to local media outlets\n(Print, TV, and Radio) on 1/12/26 @ 8:55 a.m.\nA quorum of members from other Village governmental bodies (boards, commissions, and committees)\nmay attend the above noticed meeting to gather information. No actions to be taken by any other board,\ncommission, or committee of the Village, aside from the Finance & Human Resource Committee. Should a\nquorum of other government bodies be present, this would constitute a meeting pursuant to State ex rel.\nBadke v. Greendale Village Bd., 173 Wis.2d 553,494 N.W.2d 408 (1993).\nWisconsin State Statutes require all agendas for Committee, Commission, or Board meetings be posted in\nfinal form, 24 hours prior to the meeting. Any posted agenda is subject to change up until 24 hours prior to\nthe date and time of the meeting.\nAny person who has a qualifying disability, as defined by the Americans with Disabilities Act, requiring that\nmeeting or material be in an accessible location or format, must contact the Weston Municipal Center\nat 715-359-6114, so any necessary arrangements can be made to accommodate each request.\fVILLAGE OF WESTON, WISCONSIN\nOFFICIAL MEETING AGENDA OF THE FINANCE & HUMAN RESOURCE COMMITTEE\nWeston Municipal Center Board Room\n4747 Camp Phillips Road, Weston, WI 54476\nTO THE HONORABLE TRUSTEE ERMELING AND SIX (6) APPOINTED MEMBERS OF THE FINANCE & HUMAN\nRESOURCE COMMITTEE: The following items were listed on the agenda in the Village Clerk’s Office, in\naccordance with Chapter 2 of the Village’s Municipal Code and will be ready for your consideration at the meeting\nof the Finance and Human Resource Committee on Monday, January 19, 2026, at 5:00 p.m., in the Board Room,\nat the Weston Municipal Center, 4747 Camp Phillips Road, Weston, WI 54476.\nA quorum of members from other Village governmental bodies (boards, commissions, and\ncommittees) may/might attend the above-noticed meeting to gather information. If a quorum of\nother government bodies is present, this would constitute a meeting pursuant to State ex rel. Badke\nv. Greendale Village Bd., 173 Wis.2d 553,494 N.W.2d 408 (1993). No official actions other than\nthose of the Board of Trustees and Finance Committee shall take place.\nWisconsin State Statutes require all agendas for Committee, Commission, or Board meetings be posted in final\nform, 24 hours prior to the meeting. Any posted agenda is subject to change up until 24 hours prior to the date\nand time of the meeting. All items listed on this agenda may be acted upon by the Finance & Human Resource\nCommittee.\nJoin Zoom Meeting by Computer: Join Zoom Meeting by Phone:\nhttps://zoom.us/j/5445915099 +1 312 626 6799 US (Chicago)\nMeeting ID: 544 591 5099\nAGENDA ITEMS.\n1. Finance & HR Committee Call to Order & Welcome by Chairperson Ermeling.\n2. Pledge of Allegiance to the Flag.\n3. Roll Call by Recording Secretary.\nErmeling [C], Farar, Lopes-Serrao [VC], Meinel, Olson, Soper, Vacant\nPUBLIC COMMENTS.\nMINUTES FROM PREVIOUS MEETING.\n4. Approval of Minutes from Previous Finance & HR Meeting: December 15, 2025\nACKNOWLEDGE WORK PRODUCT TRANSMITTALS.\n5. DRAFT December Budget Status Report\n6. TIF 1 and TIF 2 Detail Reports for December\n7. Legal Details for December\nEDUCATIONAL PRESENTATIONS & REPORTS.\n8. Acknowledge recent staff transitions\n9. Acknowledge completion of 2025 evaluations for all staff\nOLD BUSINESS.\nFinance & Human Resource Committee Meeting – Agenda 1/19/26\nPrepared by: Finance Department\fNEW BUSINESS.\n10. Discussion and/or action on Request for Education Expense Reimbursement for\nDeputy Clerk/Administrative Support Specialist\nMOTION TO MOVE TO CLOSED SESSION Pursuant to Wis. Stat. §19.85(1)(c) to consider\nemployment, promotion, compensation, or performance evaluation data of any public employee\nover which the governmental body has jurisdiction or exercises responsibility to wit –\n• Recommended 2026 market adjustment compensation changes for competitiveness and\nrecommended merit adjustment compensation changes for performance\n• Reclassification Review Procedure from Public Works Maintainer to Public Works Operator\n• Reclassification Review Procedure from Utility Maintainer to Utility Operator\n• Reclassification Review Procedure from Public Works Operator to Senior Public Works\nOperator\nRECONVENE TO OPEN SESSION\nPOSSIBLE ACTION ON CLOSED SESSION ITEMS\n• Recommendation to Village Board on 2026 market adjustment compensation changes for\ncompetitiveness and recommended merit adjustment compensation changes for\nperformance\n• Recommendation to Village Board on Reclassification Review Procedure from Public Works\nMaintainer to Public Works Operator\n• Recommendation to Village Board on Reclassification Review Procedure from Utility\nMaintainer to Utility Operator\n• Recommendation to Village Board on Reclassification Review Procedure from Public Works\nOperator to Senior Public Works Operator\nREMARKS FROM STAFF.\nREMARKS FROM COMMITTEE MEMBERS.\nREMARKS FROM CHAIR.\nFUTURE ITEMS.\nNext Meeting Date(s):\n− February 16, 2026, at 4:30 p.m.\nADJOURNMENT.\nFinance & Human Resource Committee Meeting – Agenda 1/19/26\nPrepared by: Finance Department\fVILLAGE OF WESTON, WISCONSIN\nFINANCE & HUMAN RESOURCE COMMITTEE MEETING MINUTES\nDecember 15, 2025, at 4:30 p.m.\nADGENDA ITEMS.\n1. Finance & HR Committee Call to Order & Welcome by Chairperson Ermeling.\nMeeting called to order at 4:30 p.m. by Committee Chairperson Ermeling.\n2. Pledge of Allegiance to the Flag.\nT\n3. Roll Call by Recording Secretary.\nRoll call indicated 6 members present and 1 member absent.\nMember Present\nF\nErmeling, Barbara YES\nFarar, Dennis ABSENT\nHackbarth, Linda YES\nLopes-Serrao, Luis YES\nA\nMeinel, Steve YES\nOlson, Brent YES\nSoper, Eben YES\nR\nPUBLIC COMMENTS.\nLisa Beck, 1808 Cortez Lane. Beck asked if the Village does budget priorities each year,\nfor example, build infrastructure for 2027. Trautman, Finance Director, explained that\nthe finance department has a five-year CIP plan, which normally begins annually in July.\nAlso, she would like the committee to address where the funds go after a TIF closes and\nD\nquestion if there is an additional $4,800 cost to the Polco, agenda item #8.\nMINUTES FROM PREVIOUS MEETING.\n4. a. Approval of minutes from previous Finance & HR meeting: October 20, 2025.\nb. Approvalof minutes from previous Finance & HR meeting: November 17, 2025.\nTrautman commented that future minutes will be more inclusive and general in terms of\ncomments.\nMotion by Lopes-Serrao, second by Meinel, to approve both minutes. Motion carried 6-0.\nACKNOWLEDGE WORK PRODUCT TRANSMITTALS.\n5. November Budget Status Report\n6. TIF 1 and TIF 2 Detail Reports for November\n7. Legal Details for November\nMotion by Olson, second by Meinel, to acknowledge the work product transmittals 5, 6, 7.\nMotion carried 6-0.\nF&HR_ MMINUTES_251215 pg. 1\nSong Lao/Pam Brehm, Recording Secretary\fEDUCATION PRESENTATIONS & REPORTS.\nOLD BUSINESS.\n8. Discussion and/or possible action on the National Employee Survey Report of Results\nadministered through Polco.\nGebert, Village Administrator, stated that this is a one-time cost of $4,500 for a two-year\nagreement. There was discussion regarding the lower benchmark results.\nMotion by Hackbarth, second by Lopes-Serrao, to acknowledge the National Employee\nSurvey Report of Results. Motion carried 6-0.\nNEW BUSINESS. T\n9. Discussion and/or possible action on Deputy Clerk/Administrative Assistant position\noptions.\nDiscussion was held regarding the pay range, covered hours, and benefits of a part-time\nF\nvs a full-time position. Staff would like to post this position to be open to part-time and\nfull-time candidates.\nMotion by Hackbarth, second by Olson, to recommend to the Board of Trustees the\nflexibility of a Part-Time Deputy CAlerk/Administrative Support Specialist Position\nDescription. Motion carried 6-0.\n10. Discussion and/or possible action on 2025 Budget Amendments.\nR\nTrautman presented the proposed budget amendments and talked about the\nexpenditure restraints.\nMotion by Olson, second by Hackbarth, to recommend to the Board of Trustees the\nrecommended 2025 Budget Amendments as presented. Motion carried 6-0.\nD\nREMARKS FROM STAFF.\nGebert reminded members and residents about the transition container pick/drop off\nand that the Public Safety parking lot is currently being used by Harter for their\ncontainers.\nREMARKS FROM COMMITTEE MEMBERS.\nHackbarth announced that although she enjoyed serving on the committee, this would\nbe her last Finance & HR meeting.\nMeinel wishes Hackbarth the best.\nREMARKS FROM CHAIR.\nFUTURE ITEMS.\nNext meeting date(s):\n-January 19, 2026, 5 p.m. or immediately following Tourism\n-February 16, 2026 @ 4:30 p.m.\nF&HR_ MMINUTES_251215 pg. 2\nSong Lao/Pam Brehm, Recording Secretary",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "MOTION TO MOVE TO CLOSED SESSION Pursuan",
+     "purpose": "Recommended 2026 market adjustment compensation changes for competitiveness and recommended merit adjustment compensation changes for performance; Reclassification Review Procedure from Public Works Maintainer to Public Works Operator; Reclassification Review Procedure from Utility Maintainer to Utility Operator; Reclassification Review Procedure from Public Works Operator to Senior Public Works Operator"
+    }
+   ]
+  },
+  {
+   "id": "weston-1857",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1857 (S.A.F.E.R.)",
+   "note": "Cites s. 19.81(1)(c), not s. 19.85: no_citation, but the citation as written and the subject are kept (blind check, round 2).",
+   "text": "Revised\nSouth Area Fire & Emergency Response District\nOFFICIAL MEETING AGENDA OF THE BOARD OF DIRECTORS\nThis meeting of the SAFER Board of Directors, composed of a Quorum of members, will convene at SAFER Station #1\nTraining Room, 224225 Hummingbird Rd., Rib Mountain, WI. on Tuesday, January 13, 2026, at 17:30.\nAny interested person may attend the meeting via Microsoft Teams.\nMeeting ID: 241 987 986 907 39 Passcode: gQ2Tj34J\nA. Opening of Session.\n1. Meeting to be called to order by Chairman Maloney at 17:30.\n2. Pledge of Allegiance to the Flag.\n3. Administrative Assistant will take attendance and roll call.\nB. Correspondence/Comments from the public on issues or matters which the SAFER Board of Directors has oversight\nover.\nC. Consent Items\n(The Consent agenda contains routine items and will be enacted by one motion without separate discussion unless\na body member requests an item be removed for separate consideration and vote.)\n4. Approval of prior meeting minutes – October 8, 2025 and November 3, 2025.\n5. Approval of expenditures and receipts – October, November, and December 2025.\nD. Business Items\n6. Discussion and possible action on 2026 SAFER Board of Directors Meeting Schedule.\n7. Discussion and possible action on Purchase of Zoll Cardiac Monitor.\n8. Discussion and possible action on Task Force One Membership.\n9. Discussion and possible action on Addition of Six Full-Time Firefighters Starting July 1, 2027.\n10. End of Year Budget review.\n11. Attorney Referral.\nE. Staff Reports\n12. Report from Fire Chief.\n13. Report from Deputy Fire Chief.\nF. Remarks from the Board of Directors to set the next meeting date, as well as discuss items for the next meeting\nagenda.\nG. Business Items\n14. Consideration of motion to adjourn into closed session pursuant to Wis. Stat. § 19.81(1)(c) for considering\nemployment, promotion, compensation, or performance evaluation data of any public employee over which the\ngovernmental body has jurisdiction or exercises responsibility, to wit: 2025 annual review of the Fire Chief.\n15. Motion to reconvene to open session.\n16. Discussion and possible action on closed session item.\nH. Adjourn\nThis notice is posted at the Rib Mountain and Weston Municipal Centers, and on SAFER District’s website at www.saferfd.com, and was emailed\nto local media outlets at least 24 hours prior to above scheduled meeting. A quorum of members from other SAFER District, Village of Rib\nMountain, and Village of Weston governmental bodies (boards, commissions, and committees) may attend the above noticed meeting to gather\ninformation. No actions will be taken by any other board, commission, or committee of SAFER / Village / Village, aside from the SAFER Board of\nDirectors. Should a quorum of other government bodies be present, this would constitute a meeting pursuant to State ex rel. Badke v. Greendale\nVillage Bd., 173 Wis.2d 553,494 N.W.2d 408 (1993). Wisconsin State Statutes require all agendas for public meetings be posted in final form, 24",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [],
+     "starts": "Consideration of motion to adjourn into ",
+     "purpose": "2025 annual review of the Fire Chief",
+     "no_citation": true
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-675370",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 675370",
+   "note": "'The Board of Education will entertain a motion to convene' is procedure, not a subject (blind check, round 2).",
+   "text": "I. Call To Order\nII. The Board of Education will entertain a motion to convene in closed session, pursuant to s. 19.85(1)(a), (f), and (g), as appropriate, as well as s. 118.125 of the Wisconsin Statutes to hold a pupil expulsion hearing. The Board may deliberate privately at the conclusion of the expulsion hearing. The Board may take action in closed session, if necessary and/or appropriate. Following the closed session, the Board will entertain a motion to reconvene into open session, and may take further action if necessary and/or appropriate. Thereafter, the Board will entertain a motion to adjourn the meeting.\nIII. Adjournment",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "a",
+      "f",
+      "g"
+     ],
+     "starts": "The Board of Education will entertain a ",
+     "purpose": "a pupil expulsion hearing"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-619283",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 619283",
+   "note": "BoardBook doubled the label ('II.A. II.A.') (blind check, round 2).",
+   "text": "I. CALL TO ORDER\nII. Request for Closed Session Pursuant to State Statutes\nII.A. II.A. The Board will convene into closed session under Wis. Stat. s. 19.85(1)(f) to discuss and consider investigation of employee matter which, if discussed in open session, would likely have a substantial adverse effect upon the reputation of the individuals involved, and which involves confidential student information protected by Wis. Stat. s. 118.125.\nII.B. Reconvene in Open Session, to take further action if necessary and appropriate\nIII. ADJOURN",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "f"
+     ],
+     "starts": "The Board will convene into closed sessi",
+     "purpose": "investigation of employee matter"
+    }
+   ]
+  },
+  {
+   "id": "wausau-1051",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 1051; the requester's name replaced",
+   "note": "A second 'regarding' inside one subject doesn't split it (blind check, round 2).",
+   "text": "CLOSED SESSION pursuant to 19.85(1)(f) of the Wisconsin Statutes for considering\nfinancial, medical, social or personal histories or disciplinary data of specific persons,\npreliminary consideration of specific personnel problems or the investigation of\ncharges against specific persons except where par. (b) applies which, if discussed in\npublic, would be likely to have a substantial adverse effect upon the reputation of any\nperson referred to in such histories or data, or involved in such problems or\ninvestigations relating to bond counsel opinion as it relates to a response to a\nJanuary 21, 2025, open records request of Pat Q. Requester regarding a verified\ncomplaint.\nRECONVENE into open session to take action, if necessary, on Closed Session\nitems.\nPublic Comment & Suggestions",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "f"
+     ],
+     "starts": "CLOSED SESSION pursuant to 19.85(1)(f) o",
+     "purpose": "bond counsel opinion as it relates to a response to a January 21, 2025, open records request of Pat Q. Requester regarding a verified complaint"
+    }
+   ]
+  },
+  {
+   "id": "wausau-1779",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 1779 (excerpt)",
+   "note": "The (a) wording names no subject (regression found re-scoring round 1).",
+   "text": "3. Appeal of Declaration of Chronic Nuisance Premises.\n4. CLOSED SESSION pursuant to Section 19. 85( 1)( a) of the Wisconsin Statutes: Deliberating concerning a case which was the subject of any judicial or quasi-judicial trial or hearing before that governmental body.\n5. Adjourn",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "a"
+     ],
+     "starts": "CLOSED SESSION pursuant to Section 19. 8",
+     "purpose": ""
+    }
+   ]
+  },
+  {
+   "id": "dc_everest-623761",
+   "jurisdiction": "dc_everest",
+   "source": "BoardBook 1315 meeting 623761",
+   "note": "'Following the Open Meeting' is procedure; a marker inside parentheses stops at ')'; no duplicate part. (blind check, round 3)",
+   "text": "1. The Board Will Consider Adjournment to Closed Session Following the Open Meeting Pursuant to W.S.S. 19.85(1)(f) - to consider investigation of charges against specific persons except where par. (b) applies, which if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations. (Inquiry regarding loss of personal property.) The Board will adjourn from Closed Session.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "f"
+     ],
+     "starts": "The Board Will Consider Adjournment to C",
+     "purpose": "Inquiry regarding loss of personal property"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-2c4c71c4784d4d74addba4dc636",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode 2c4c71c4; employees' names replaced",
+   "note": "A second motion's subject after an en dash ('–Review of ...'). (blind check, round 3)",
+   "text": "1. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit Wage Compensation for added duties: Pat Doe, Lee Roe, Kim Poe Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility –Review of Village Clerk Resumes",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "Wage Compensation for added duties: Pat Doe, Lee Roe, Kim Poe; Review of Village Clerk Resumes"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-62b19366031b484890e5be2b773",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode 62b19366",
+   "note": "Misspelled 'PURSUSANT' with the dotless 1985(1)(E) is still procedure. (blind check, round 3)",
+   "text": "1. CLOSED SESSION CONSIDERATION OF MOTION TO CONVENE INTO CLOSED SESSION PURSUSANT TO WIS.STAT.1985(1)(E); FOR CONDUCTING OTHER SPECIFIED PUBLIC BUSINESS, WHENEVER COMPETITIVE OR BARGAINING REASONS REQUIRE A CLOSED SESSION - TO WIT LEASE AND DEVELOPEMENT AGREEMENT FOR POLZER HOLDINGS, LLC.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "CLOSED SESSION CONSIDERATION OF MOTION T",
+     "purpose": "LEASE AND DEVELOPEMENT AGREEMENT FOR POLZER HOLDINGS, LLC"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-724381",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 724381",
+   "note": "The (a) subject 'quasi-judicial hearing before the board' is not statute wording; no ';;'. (blind check, round 3)",
+   "text": "1. Convene into closed session pursuant to Wis. Stat. 19.85(1)(b) for the board to receive evidence concerning allegations regarding employee conduct and administrative recommendation for the employee’s termination from employment; and pursuant to Wis. Stat. 19.85(1)(a) to deliberate regarding the evidence received during the quasi-judicial hearing before the board. The Board may also consider an employee resignation agreement.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "b",
+      "a"
+     ],
+     "starts": "Convene into closed session pursuant to ",
+     "purpose": "employee conduct and administrative recommendation for the employee’s termination from employment; the evidence received during the quasi-judicial hearing before the board"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-f432750fb1d34fbcb533fdcb377",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode f432750f",
+   "note": "'applicant(s)' keeps its '(s)'. (blind check, round 3)",
+   "text": "1. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85(1)(f) to consider financial, medical, social or personal histories or disciplinary data of specific persons, preliminary consideration of specific personnel problems or the investigation of charges against specific persons except where par. (b) applies which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations; and pursuant to Wis. Stat. 19.85(1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit interview Fire Department applicant(s).",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "f",
+      "c"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "interview Fire Department applicant(s)"
+    }
+   ]
+  },
+  {
+   "id": "wausau-2404",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 2404",
+   "note": "A project name in parentheses stays part of the subject. (blind check, round 3)",
+   "text": "1. Closed Session. Adjourn to Closed Session pursuant to Wisconsin State Statute §19.85(1)(g) for conferring with legal counsel for the governmental body who is rendering oral or written advice concerning strategy to be adopted by the body with respect to litigation in which it is or is likely to become involved, regarding the Development Agreement with Wangard for Redevelopment of 920 North 1st Street & 15 Fulton (Riverlife South)",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "Closed Session. Adjourn to Closed Sessio",
+     "purpose": "the Development Agreement with Wangard for Redevelopment of 920 North 1st Street & 15 Fulton (Riverlife South)"
     }
    ]
   }

@@ -81,3 +81,9 @@ def test_minutes_rules(text, want):
 def test_times_are_not_tallies():
     assert minutes.vote_record("Motion passed at 5:02 p.m.") == "result_only"
     assert minutes.vote_record("convened at 3:57 pm") == "not_shown"
+
+
+def test_mentions_that_are_not_motions():
+    for text in ["Motion by Doe/Roe to discuss the matter at the meeting scheduled on Monday, July 22, 2024, in closed session. Motion carried 5:0.",
+                 "Motion by Doe, second by Roe, as follows: That the information received in closed session regarding a Village employee be accepted. Motion carried."]:
+        assert not minutes.analyze(text, 1).motion_recorded

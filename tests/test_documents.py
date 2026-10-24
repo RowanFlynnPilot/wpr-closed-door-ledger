@@ -81,3 +81,21 @@ def test_one_request_per_host_per_second(monkeypatch):
     b = [t for u, t in calls if "b.example" in u]
     assert a[1] - a[0] >= 0.2
     assert b[0] - a[0] < 0.2          # a different host is not held back
+
+
+def _docx(paragraphs: list[str]) -> bytes:
+    import zipfile
+    w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+    body = "".join(f"<w:p><w:r><w:t>{p[:10]}</w:t></w:r><w:r><w:t>{p[10:]}</w:t></w:r></w:p>" for p in paragraphs)
+    out = io.BytesIO()
+    with zipfile.ZipFile(out, "w") as z:
+        z.writestr("word/document.xml", f'<w:document xmlns:w="{w}"><w:body>{body}</w:body></w:document>')
+    return out.getvalue()
+
+
+def test_docx_text():
+    lines = ["MOTION TO MOVE TO CLOSED SESSION Pursuant to Wis. Stat. 19.85(1)(c)",
+             "Motion by Doe, second by Roe, to convene into closed session. Motion carried 5-0."] * 2
+    assert documents.docx_text(_docx(lines), "m.docx").splitlines() == lines
+    with pytest.raises(documents.UnreadableDocument):
+        documents.docx_text(_docx(["Draft"]), "short.docx")

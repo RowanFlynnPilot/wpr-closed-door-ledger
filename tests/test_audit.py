@@ -37,7 +37,8 @@ def test_quarters():
 
 
 def test_requests_grouped_by_custodian():
-    grouped = audit.requests(CONFIG, ITEMS, "2026Q3")
+    assert "City of Wausau" not in audit.requests(CONFIG, ITEMS, "2026Q3", {"wausau:1:abc"})
+    grouped = audit.requests(CONFIG, ITEMS, "2026Q3", set())
     assert {k: [i["meeting_id"] for i in v] for k, v in grouped.items()} == {
         "City of Wausau": ["wausau:1"],
         "Mountain Bay Metropolitan Police Department": ["weston:3"],

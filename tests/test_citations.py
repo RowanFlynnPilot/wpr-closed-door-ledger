@@ -17,7 +17,8 @@ def test_citations():
         got = parse(case["text"])
         want = case["expected"]
         if (got.exemptions, got.cites_subsection_1, got.other_citations) != (
-                want["exemptions"], want["cites_subsection_1"], want["other_citations"]):
+                want["exemptions"], want["cites_subsection_1"], want["other_citations"]) or (
+                "citation_raw" in want and got.citation_raw != want["citation_raw"]):
             failures.append((case["id"], got, want))
     assert not failures, failures
 

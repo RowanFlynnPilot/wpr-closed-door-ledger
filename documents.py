@@ -9,7 +9,9 @@ from __future__ import annotations
 import hashlib
 import io
 import re
+import zipfile
 from dataclasses import dataclass
+from xml.etree import ElementTree
 
 import pdfplumber
 import pypdf
@@ -76,15 +78,42 @@ def pdf_text(content: bytes, name: str, max_pages: int | None = None) -> PdfText
     return PdfText(joined, "ocr" if ocr_pages else "text_layer", ocr_pages, total)
 
 
+def _internal_link(annotation) -> bool:
+    a = annotation.get_object()
+    action = a.get("/A")
+    return "/Dest" in a or (action is not None and action.get_object().get("/S") == "/GoTo")
+
+
 def first_pages(content: bytes, n: int) -> bytes:
-    """A new PDF holding the first n pages (Weston packets are archived this way)."""
+    """A new PDF holding the first n pages (Weston packets are archived this way).
+
+    Links from the agenda to later packet pages are dropped: copying them would
+    pull every linked page, scans included, into the split (one 5-page Weston
+    agenda came out at 9.5 MB). Links to web addresses are kept."""
     reader = pypdf.PdfReader(io.BytesIO(content))
     writer = pypdf.PdfWriter()
     for page in reader.pages[:n]:
+        if "/Annots" in page:
+            kept = [a for a in page["/Annots"] if not _internal_link(a)]
+            page[pypdf.generic.NameObject("/Annots")] = pypdf.generic.ArrayObject(kept)
         writer.add_page(page)
     out = io.BytesIO()
     writer.write(out)
     return out.getvalue()
+
+
+_W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+
+
+def docx_text(content: bytes, name: str) -> str:
+    """A Word file's text, one paragraph per line (Weston posts some minutes this way)."""
+    with zipfile.ZipFile(io.BytesIO(content)) as docx:
+        root = ElementTree.fromstring(docx.read("word/document.xml"))
+    lines = ["".join(t.text or "" for t in p.iter(f"{_W}t")) for p in root.iter(f"{_W}p")]
+    text = "\n".join(line for line in lines if line.strip())
+    if _chars(text) < MIN_DOCUMENT_CHARS:
+        raise UnreadableDocument(f"{name}: only {_chars(text)} readable characters")
+    return text
 
 
 def require_text(text: str, name: str) -> str:

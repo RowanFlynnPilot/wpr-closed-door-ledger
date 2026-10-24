@@ -24,7 +24,7 @@ import extract
 
 _MOTION = re.compile(
     r"\b(?:motion|motioned|moved|move)\b[^.;]{0,240}?"
-    r"\b(?:(?:enter|convene|go|move|adjourn|recess)\w*\s+(?:\w+\s+){0,3}?)?(?:in|into|to)\s+(?:a\s+)?closed\s+session",
+    r"(?:\b(?:enter|convene|go|move|adjourn|recess)\w*\s+(?:\w+\s+){0,3}?(?:in|into|to)|\bto)\s+(?:a\s+)?closed\s+session",
     re.I,
 )                                   # "Motion by Lewitzke and seconded by Felch to Closed Session"
 _CONVENED = re.compile(

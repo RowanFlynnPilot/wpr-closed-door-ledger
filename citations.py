@@ -49,27 +49,34 @@ class Citations:
     exemptions: list[str]               # s. 19.85(1) letters, in order of appearance
     cites_subsection_1: bool | None     # None when the item cites no 19.85 exemption
     other_citations: list[str]          # every other statute, normalized ("111.70(4)(cm)")
-    citation_raw: str                   # the 19.85 citation text as written, "; "-joined
+    citation_raw: str                   # the 19.85 citation text as written, "; "-joined (else any other statute's)
 
 
 def parse(text: str) -> Citations:
     found: list[tuple[int, str]] = []
-    raw: list[str] = []
+    raw: list[tuple[int, str]] = []
     has_sub1: list[bool] = []
+    spans: list[tuple[int, int]] = []
     for match in _CITE_1985.finditer(text):
-        raw.append(re.sub(r"\s+", " ", match.group(0)).strip(" ,"))
+        raw.append((match.start(), re.sub(r"\s+", " ", match.group(0)).strip(" ,")))
+        spans.append(match.span())
         has_sub1.append(bool(_HAS_SUB1.match(match.group(0))))
         for letter in re.finditer(_LETTER, match.group(1), re.I):
             found.append((match.start(1) + letter.start(), letter.group(1).lower()))
     if found:
         for match in _CONTINUATION.finditer(text):
             found.append((match.start(), match.group(1).lower()))
+            # D.C. Everest's chained "(e) for ...": its own piece of the citation as written.
+            if not any(start <= match.start() < end for start, end in spans):
+                raw.append((match.start(), f"({match.group(1)})"))
     letters: list[str] = []
     for _, letter in sorted(found):
         if letter not in letters:
             letters.append(letter)
     others: list[str] = []
+    other_raw: list[tuple[int, str]] = []
     for match in _OTHER.finditer(text):
+        other_raw.append((match.start(), re.sub(r"\s+", " ", match.group(0)).strip(" ,")))
         for section in re.findall(_SECTION, match.group(1), re.I):
             section = re.sub(r"\s+", "", section).lower()
             if not section.startswith("19.85") and section not in others:
@@ -78,5 +85,7 @@ def parse(text: str) -> Citations:
         exemptions=letters,
         cites_subsection_1=all(has_sub1) if has_sub1 else None,
         other_citations=others,
-        citation_raw="; ".join(raw),
+        # The s. 19.85 citation as written; with none, whatever statute the item cites
+        # instead (SAFER's "§ 19.81(1)(c)"), so a wrong citation is visible as written.
+        citation_raw="; ".join(r for _, r in sorted(raw or other_raw)),
     )

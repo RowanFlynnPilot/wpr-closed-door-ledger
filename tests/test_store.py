@@ -80,3 +80,27 @@ def test_archive_check(tmp_path, monkeypatch):
     assert any("big.pdf" in p for p in archive_check.problems(tmp_path))
     (tmp_path / "new.txt").write_text("uncommitted")
     assert any("uncommitted" in p for p in archive_check.problems(tmp_path))
+
+
+def test_files_over_the_limit_keep_only_text(tmp_path, monkeypatch):
+    monkeypatch.setattr(store, "MAX_FILE", 3)
+    record = store.new_record(MEETING, "2026-01-01T00:00:00Z")
+    assert store.apply_document(tmp_path, record, "minutes", _doc(b"big file", "minutes"), "2026-01-01T00:00:00Z")
+    v = record["versions"][0]
+    folder = store.meeting_dir(tmp_path, "wausau", "130")
+    assert v["file"] is None and (folder / v["text_file"]).exists() and v["size"] == 8
+    assert not list(folder.glob("*.pdf"))
+
+
+def test_html_versions_are_told_apart_by_text(tmp_path):
+    import hashlib
+    from dataclasses import replace as dc_replace
+    record = store.new_record(MEETING, "2026-01-01T00:00:00Z")
+    page = _doc(b"<html>(c) 2015-2026 All.27.css</html>")
+    page = dc_replace(page, extension="html", text="I. CALL TO ORDER", text_source="html")
+    assert store.apply_document(tmp_path, record, "notice", page, "2026-01-01T00:00:00Z")
+    chrome = b"<html>(c) 2015-2027 All.28.css</html>"
+    same_text = dc_replace(page, content=chrome, sha256=hashlib.sha256(chrome).hexdigest())
+    assert not store.apply_document(tmp_path, record, "notice", same_text, "2027-01-02T00:00:00Z")
+    amended = dc_replace(same_text, text="I. CALL TO ORDER II. CLOSED SESSION")
+    assert store.apply_document(tmp_path, record, "notice", amended, "2027-01-03T00:00:00Z")
