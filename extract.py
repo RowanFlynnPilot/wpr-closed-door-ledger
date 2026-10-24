@@ -387,9 +387,32 @@ def item_id(meeting_id: str, item_text: str) -> str:
     return f"{meeting_id}:{hashlib.sha256(normalize(item_text).encode('utf-8')).hexdigest()[:12]}"
 
 
+# Each exemption's own wording. An item that uses one of these but doesn't cite its
+# letter names a purpose with no exemption cited for it (a (c) item that goes on to
+# "conferring with legal counsel ... with respect to litigation"), so it goes to review.
+_LETTER_WORDING = {
+    "a": r"quasi-judicial|a\s+case\s+which\s+was\s+the\s+subject",
+    "b": r"dismissal,\s*demotion,\s*licensing",
+    "c": r"employment,\s*promotion,\s*compensation",
+    "d": r"crime\s+detection\s+or\s+prevention|probation,?\s+extended\s+supervision",
+    "e": r"purchas\w*\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|competitive\s+(?:or|and)\s+bargaining\s+reasons",
+    "f": r"financial,\s*medical,\s*social|substantial\s+adverse\s+effect",
+    "g": r"conferring\s+with\s+legal\s+counsel",
+    "h": r"requests?\s+for\s+confidential\s+(?:written\s+)?advice",
+}
+
+
+def uncited_wording(item_text: str, exemptions: list[str]) -> list[str]:
+    """Letters whose statute wording the item uses without citing them."""
+    return [letter for letter, wording in _LETTER_WORDING.items()
+            if letter not in exemptions and re.search(wording, item_text, re.I)]
+
+
 def triage(no_citation: bool, cites_subsection_1: bool | None, purpose: str | None,
-           text_source: str, exemptions: list[str]) -> str:
+           text_source: str, exemptions: list[str], item_text: str = "") -> str:
     if no_citation or not cites_subsection_1 or text_source == "ocr":
+        return "check"
+    if exemptions and uncited_wording(item_text, exemptions):
         return "check"
     if not purpose or len(purpose.split()) < 4:
         return "check"
@@ -418,6 +441,6 @@ def item_record(meeting: dict, found: Found, text_source: str) -> dict:
         "no_citation": found.no_citation,
         "text_source": text_source,
         "purpose_text": purpose,
-        "triage": triage(found.no_citation, c.cites_subsection_1, purpose, text_source, c.exemptions),
+        "triage": triage(found.no_citation, c.cites_subsection_1, purpose, text_source, c.exemptions, found.item_text),
         "minutes": None,
     }

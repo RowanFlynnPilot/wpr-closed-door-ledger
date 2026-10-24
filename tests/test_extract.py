@@ -95,3 +95,13 @@ def test_quorum_notice_header():
     footer = ("OFFICIAL NOTICE AND AGENDA\nMeeting of the: FINANCE COMMITTEE\n1 Approve minutes.\n" + "x\n" * 20 +
               "NOTICE: It is possible that a quorum of members of other committees may be in attendance.")
     assert not extract.quorum_notice(footer)
+
+
+def test_uncited_wording_goes_to_review():
+    text = ("CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) "
+            "for consideration of employment, promotion, compensation or performance evaluation data - to wit interviewing "
+            "of Administrator Candidate AND conferring with legal counsel for the village who is rendering oral or written "
+            "advice concerning strategy to be adopted with respect to litigation in which it is involved.")
+    row = extract.item_record({"id": "x", "bodies": [], "meeting_date": ""}, extract.closed_items(text)[0], "html")
+    assert row["exemptions"] == ["c"] and extract.uncited_wording(text, ["c"]) == ["g"] and row["triage"] == "check"
+    assert extract.uncited_wording(text, ["c", "g"]) == []

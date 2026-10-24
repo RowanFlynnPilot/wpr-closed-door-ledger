@@ -230,6 +230,7 @@ Sources: [Wis. Stat. 19.85](https://docs.legis.wisconsin.gov/statutes/statutes/1
 - `cites_subsection_1` is false
 - `purpose_text` is empty or under 4 words
 - `text_source` is `ocr`
+- the item uses another exemption's statute wording without citing that letter (a (c) item that goes on to "conferring with legal counsel … with respect to litigation"; three Wausau (b) bargaining items with (e)'s "competitive or bargaining reasons"). Added after blind check round 9.
 - the `purpose_text` contains none of the terms listed in `triage_terms.json` for any of the cited letters (a case-insensitive substring match). Letters with no terms (ee, eg, em) always check.
 
 Otherwise `triage` is `ok`. Nearly every notice names some subject, so the real *Buswell* question is generic subjects such as "Potential Litigation" or "deliberating on claims". That's why the word-count rule exists.
