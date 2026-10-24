@@ -32,6 +32,7 @@ _LABEL = re.compile(
     r"^\s*(?P<label>"
     r"(?P<combined>" + _PART + r"(?:\." + _PART + r")+\.?)"          # BoardBook "V.A." "II.A.1."
     r"|(?P<simple>" + _PART + r")[.)]"                                # "IV." "A." "7." "a)"
+    r"|(?P<doubled>(?P<letter>[A-Z])(?P=letter))\."                   # Kronenwetter's letters run on past Z: "AA."
     r"|\((?P<paren>\d{1,2}|[a-z]|[ivx]{1,4})\)"                       # "(1)" "(a)"
     r"|(?P<bare>\d{1,2})(?=\s+[A-Z])"                                 # Wausau's "5 Closed Session."
     r"|(?P<bareroman>[IVX]{1,4})(?=\s+[A-Z])"                         # Wausau's "IV Closed Session."
@@ -106,6 +107,8 @@ def _style(m: re.Match, previous_upper: str | None) -> str:
         return "paren-digit" if m.group("paren").isdigit() else "paren-lower"
     if m.group("bareroman"):
         return "roman"
+    if m.group("doubled"):
+        return "upper"
     if m.group("bare") or m.group("ocr") or m.group("junk"):
         return "digit"
     part = m.group("simple")
@@ -295,6 +298,73 @@ def closed_items(text: str) -> list[Found]:
     if not uncited:
         return []
     return [Found(" / ".join(t for _, t in uncited), uncited[0][0], True)]
+
+
+# --- which bodies of a joint meeting an item belongs to -----------------------
+
+_SECTION_FILLER = {"joint", "and", "the", "of", "agenda", "items", "item", "meeting", "session", "regular", "special"}
+
+
+def _norm(text: str) -> str:
+    return re.sub(r"\s+", " ", text.replace("&", " and ")).strip().casefold()
+
+
+def _name_forms(name: str) -> list[str]:
+    """A body's name as headers write it: whole, without "Village "/"City of ", and without
+    its trailing "Committee" ("JOINT FINANCE AND HUMAN RESOURCES COMMITTEE" names two)."""
+    short = re.sub(r"^(?:village|city\s+of)\s+", "", name, flags=re.I)
+    core = re.sub(r"\s+(?:committee|commission)$", "", short, flags=re.I)
+    return [_norm(f) for f in dict.fromkeys([name, short, core])]
+
+
+def _names_in(line: str, names: dict[str, str]) -> list[str]:
+    """Body keys the line names."""
+    low = _norm(line)
+    return [key for key, name in names.items() if any(re.search(rf"\b{re.escape(f)}\b", low) for f in _name_forms(name))]
+
+
+def _is_section_header(line: str, names: dict[str, str]) -> bool:
+    keys = _names_in(line, names)
+    if not keys or len(line) > 100 or re.search(r"adjourn", line, re.I):
+        return False
+    rest = _norm(line)
+    for key in keys:
+        for form in _name_forms(names[key]):
+            rest = rest.replace(form, " ")
+    return len([w for w in re.findall(r"[a-z0-9]+", rest) if w not in _SECTION_FILLER | {"committee", "committees"}]) <= 1
+
+
+def _item_line(lines: list[str], item_text: str) -> int | None:
+    """The line an item starts on, found by its whole text in the joined lines, spaces
+    ignored (items often open with the same long statute wording)."""
+    flat, starts = "", []
+    for line in lines:
+        starts.append(len(flat))
+        flat += re.sub(r"\s+", "", line.casefold())
+    pos = flat.find(re.sub(r"\s+", "", item_text.casefold()))
+    if pos < 0:
+        return None
+    return max(i for i, s in enumerate(starts) if s <= pos)
+
+
+def section_bodies(text: str, item_text: str, names: dict[str, str]) -> list[str]:
+    """In a joint meeting's agenda, the bodies an item belongs to: those named by the
+    section header it sits under ("Finance Committee" / "Joint Finance Committee and
+    Economic Development Committee"), less any body adjourned before it ("Adjournment of
+    Utility Committee"). All of the meeting's bodies when the agenda has no such structure."""
+    lines = [line for page in agenda_pages(text) for line in page]
+    at = _item_line(lines, item_text)
+    first = next((i for i, line in enumerate(lines) if _LABEL.match(line)), None)
+    if at is None or first is None:
+        return list(names)
+    section = list(names)
+    for i in range(at - 1, first - 2, -1):     # the agenda's own lines, and the one just above its first item
+        if i >= 0 and not _LABEL.match(lines[i]) and _is_section_header(lines[i], names):
+            section = _names_in(lines[i], names)
+            break
+    adjourned = {key for line in lines[first:at] if re.search(r"adjourn", line, re.I) for key in _names_in(line, names)}
+    kept = [key for key in section if key not in adjourned]
+    return kept or list(names)
 
 
 # --- item records -----------------------------------------------------------

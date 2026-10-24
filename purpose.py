@@ -46,7 +46,8 @@ _SENTENCE_END = re.compile(r"(?<!\b[A-Z])(?<!\bvs)(?<!\bv)(?<!\bNo)(?<!\bSt)(?<!
 # Statute letters in parentheses inside a clause ("(1)(c)") are dropped; longer
 # parentheses ("(Riverlife South)", "applicant(s)") are part of the subject.
 _SHORT_PAREN = re.compile(r"\(\s*(?:\d{1,2}|[a-h]{1,2}|cm)\s*\)", re.I)
-_NOT_A_SUBJECT = re.compile(r"^(?:board only|if necessary|if needed|same|the same|said)$", re.I)
+_NOT_A_SUBJECT = re.compile(r"^(?:board only|if necessary|if needed|same|the same|said|"
+                            r"action requested|possible action|action item|information only|discussion only)$", re.I)
 # The statute's own wording, restated in the notice. A subject candidate is cut
 # where it begins: "To consider the employment, promotion, compensation or
 # performance evaluation data of an employee" names no subject.
@@ -120,6 +121,7 @@ def purpose_text(item_text: str) -> str | None:
         while (opening := _MARKER.match(clause)) and opening.end():
             clause = _clean(clause[opening.end():])        # "specifically, to discuss the ..."
         clause = re.sub(r"(?i)^and\s+(?:(?:consider|discuss)\s+)?", "", clause)   # "to discuss and consider the ..."
+        clause = re.sub(r"(?i)^(?:the\s+)?purposes?\s+of\s+", "", clause)          # "for the purpose of the purpose of ..."
         clause = "" if _NOT_A_SUBJECT.match(clause) else _subject(clause)
         if clause:
             parts.append(clause)

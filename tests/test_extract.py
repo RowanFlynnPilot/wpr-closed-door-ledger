@@ -65,3 +65,24 @@ def test_item_record():
     assert row["exemptions"] == ["e"] and row["cites_subsection_1"] is True and row["triage"] == "ok"
     assert row["purpose_text"] == "the sale of 424 Burns Street, Wausau" and row["minutes"] is None
     assert row["item_text"].startswith("Adjourn to Closed Session")
+
+
+def test_section_bodies_in_joint_meetings():
+    names = {"fin": "Finance Committee", "ed": "Economic Development Committee", "ww": "Wausau Water Works Commission"}
+    text = "\n".join([
+        "MEETING: Joint Finance Committee and Economic Development Committee",
+        "Finance Committee",
+        "1 Public comment.",
+        "4 Closed Session.",
+        "Adjourn to Closed Session pursuant to Wisconsin State Statute § 19.85(1)(e) for the purpose of buying 1 Elm St.",
+        "Joint Finance and Economic Development Committee agenda items",
+        "2 Closed Session.",
+        "Adjourn to Closed Session pursuant to Wisconsin State Statute § 19.85(1)(e) for the purpose of a term sheet.",
+        "3 Adjourn Wausau Water Works Commission",
+        "4 Closed Session pursuant to Section 19.85(1)(g) for the purpose of claims.",
+        "5 Adjournment.",
+    ])
+    found = extract.closed_items(text)
+    assert [extract.section_bodies(text, f.item_text, names) for f in found] == [["fin"], ["fin", "ed"], ["fin", "ed"]]
+    flat = "1 Call to order.\n2 Closed session pursuant to 19.85(1)(c) for the purpose of an evaluation.\n3 Adjourn."
+    assert extract.section_bodies(flat, extract.closed_items(flat)[0].item_text, names) == ["fin", "ed", "ww"]

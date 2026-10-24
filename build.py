@@ -128,6 +128,10 @@ def build_meeting(root: Path, config: dict, record: dict) -> tuple[dict, list[di
         for found in extract.closed_items(text):
             row = extract.item_record(meeting, found, item_text_source(version, found.page))
             row["minutes"] = meeting["minutes"]
+            if len(match.bodies) > 1:
+                names = {k: b["name"] for j in config["jurisdictions"].values() for b in j["bodies"]
+                         if (k := b["key"]) in match.bodies}
+                row["bodies"] = extract.section_bodies(text, found.item_text, names)
             if all(row["id"] != other["id"] for other in items):
                 items.append(row)
         meeting["closed_item_count"] = len(items)
