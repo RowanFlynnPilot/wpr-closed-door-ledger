@@ -181,7 +181,7 @@ jurisdictions:
     platform: agendacenter
     base: https://www.westonwi.gov
     exclude:
-      - "possible quorum"        # 19 quorum notices in categories 3, 5 and 6 (2024-26)
+      - "quorum"                 # quorum notices in categories 3, 5 and 6: "Notice of (Possible) Quorum ..."
     exclude_category_ids: [17]   # Election Notices
     bodies:
       - { key: weston-village-board, name: Village Board of Trustees, category_id: 3 }

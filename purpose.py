@@ -39,6 +39,7 @@ _PROCEDURAL = set("""
     convening adjourn adjournment adjourning directly enter entering go recess closed session pursuant under
     per wis wisconsin stat stats statute statutes state sec section sections s ss meeting meetings regular special
     following after before open prior remain remaining executive if necessary needed trustees for
+    announcement possible discussion action approve approving going and
 """.split())
 # A sentence's end, but not an initial ("T. Winters") or an abbreviation ("vs. City", "No. 24CV40").
 _SENTENCE_END = re.compile(r"(?<!\b[A-Z])(?<!\bvs)(?<!\bv)(?<!\bNo)(?<!\bSt)(?<!\bInc)(?<!\bMr)(?<!\bMs)(?<!\bDr)(?<!\bWis)(?<!\bStat)(?<!\bStats)\.\s+[A-Z]")
@@ -56,7 +57,7 @@ _STATUTE_WORDING = re.compile(
     r"deliberating\s+or\s+negotiating\s+the\s+purchas|conferring\s+with\s+legal\s+counsel|"
     r"dismissal,\s*demotion,\s*licensing|crime\s+detection\s+or\s+prevention|(?:judicial\s+or\s+)?quasi-judicial\s+trial|"
     r"(?:deliberating\s+(?:concerning\s+|on\s+)?)?a\s+case\s+which\s+was\s+the\s+subject|purchasing\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|"
-    r"competitive\s+or\s+bargaining\s+reasons|personal\s+histories|preliminary\s+consideration\s+of\s+specific|"
+    r"competitive\s+(?:or|and)\s+bargaining\s+reasons|personal\s+histories|preliminary\s+consideration\s+of\s+specific|"
     r"requests?\s+for\s+confidential\s+(?:written\s+)?advice|probation,?\s+extended\s+supervision",
     re.I,
 )
@@ -68,7 +69,7 @@ def _subject(candidate: str) -> str:
     found = _STATUTE_WORDING.search(candidate)
     if found:
         candidate = _clean(candidate[: found.start()])
-    candidate = _clean(re.sub(r"(?i)\s+(?:and|or)$", "", candidate))
+    candidate = _clean(re.sub(r"(?i)\s+(?:and|or|when|whenever|which|where)$", "", candidate))
     meaningful = [w for w in re.findall(r"[\w'’/-]+", candidate.lower()) if w not in _FILLER]
     return candidate if len(meaningful) >= 2 or (meaningful and not found) else ""
 

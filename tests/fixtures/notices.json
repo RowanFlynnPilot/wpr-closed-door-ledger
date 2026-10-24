@@ -752,6 +752,88 @@
      "purpose": "Appraisals and Right-of-Way"
     }
    ]
+  },
+  {
+   "id": "wausau-2149",
+   "jurisdiction": "wausau",
+   "source": "wausau:2149 (excerpt)",
+   "note": "Roman numerals with no period ('IV Closed Session.') and sub-labels alone on a line ('a.'). (blind check, round 6)",
+   "text": "III Consideration of the minutes of the preceding meeting(s).\nJune 22, 2026 Regular Police and Fire Commission Minutes\nIV Closed Session.\na.\nClosed Session Pursuant to Section 19.85(1)(c) of the Wisconsin State Statutes\nconsidering employment of any public employee over which the governmental body\nhas jurisdiction or exercises responsibility; for the purpose of interviewing two\ncandidates for Firefighter/EMT with the Wausau Fire Department.\nb.\nClosed Session Pursuant to Section 19.85(1)(c) of the Wisconsin State Statutes for\nconsidering employment, promotion, compensation or performance evaluation data\nof any public employee over which the governing body has jurisdiction or exercises\nresponsibility; for the purpose of strategizing the recruitment and appointment of a\nnew Deputy Police Chief and for discussion and deliberation on a hiring process.\nV Open Session.\nReconvene meeting into Open Session for purpose of potential action upon consideration",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Closed Session Pursuant to Section 19.85",
+     "purpose": "interviewing two candidates for Firefighter/EMT with the Wausau Fire Department"
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Closed Session Pursuant to Section 19.85",
+     "purpose": "strategizing the recruitment and appointment of a new Deputy Police Chief and for discussion and deliberation on a hiring process"
+    }
+   ]
+  },
+  {
+   "id": "weston-1717",
+   "jurisdiction": "weston",
+   "source": "weston:1717 (excerpt)",
+   "note": "OCR read the item number '7.' as 'fe' before a motion line. (blind check, round 6)",
+   "text": "6. Consideration of Motion to Adjourn to Closed Session Pursuant to Wisconsin\n\nStatutes Section 19.85 (1)(c) Considering Employment, Promotion, Compensation\n\nor Performance Evaluation Data of any Public Employee over which the\n\nGovernmental Body has Jurisdiction or Exercises Responsibility, to Discuss Chief of\n\n\n\nPolice Performance Evaluation\n\n\n\nfe Motion to Reconvene into Open Session and take Action Regarding Items Discussed",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Consideration of Motion to Adjourn to Cl",
+     "purpose": "Chief of Police Performance Evaluation"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-8f88041c4e684f5796c44eee653",
+   "jurisdiction": "kronenwetter",
+   "source": "kronenwetter:8f88041c4e684f5796c44eee653f8433 (excerpt)",
+   "note": "An announced closed session under 'ANNOUNCEMENT OF CLOSED SESSION' is the one held later in the agenda, not a second session. (blind check, round 6)",
+   "text": "3. ANNOUNCEMENT OF CLOSED SESSION\nC. Announcement of possible closed session pursuant to Wisconsin Statutes Section 19.85 (1)(e) when deliberating strategy for a public purpose when competitive or bargaining reasons require a closed session—namely, discussing strategy to obtain approval of the Kowalski Road Interchange from the Wisconsin Department of Transportation and the Federal Highway Administration.\n4. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit Hiring of interim Administrator\nD. Discussion and possible action to approve going into closed session pursuant to Wisconsin Statutes Section 19.85 (1)(e) when deliberating and discussing the strategy to obtain approval of the Kowalski Road Interchange from the Wisconsin Department of Transportation and the Federal Highway Administration when competitive and bargaining reasons require a closed session.\n5. RECONVENE OPEN SESSION Consideration of motion to reconvene into open session.",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "Hiring of interim Administrator"
+    },
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "Discussion and possible action to approv",
+     "purpose": "the strategy to obtain approval of the Kowalski Road Interchange from the Wisconsin Department of Transportation and the Federal Highway Administration"
+    }
+   ]
+  },
+  {
+   "id": "wausau-1388",
+   "jurisdiction": "wausau",
+   "source": "wausau:1388 (excerpt)",
+   "note": "A number broken at a hyphen across lines ('6999-' / '18-11') rejoins without a space. (blind check, round 6)",
+   "text": "CLOSED SESSION pursuant to Section 19.85(1)(e) of the Wisconsin Statutes for deliberating or negotiating the purchase of public\nproperties, the investing of pubic funds, or conducting other specified public business, whenever competitive or bargaining reasons require\na closed session regarding possible action on Nominal Payment Parcel Report for Business Campus Trail E-W Connector, Project ID 6999-\n18-11, for the following properties: 8101 International Drive and 7801 International Drive.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "CLOSED SESSION pursuant to Section 19.85",
+     "purpose": "possible action on Nominal Payment Parcel Report for Business Campus Trail E-W Connector, Project ID 6999-18-11, for the following properties: 8101 International Drive and 7801 International Drive"
+    }
+   ]
   }
  ]
 }

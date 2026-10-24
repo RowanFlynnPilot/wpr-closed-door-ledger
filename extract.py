@@ -34,10 +34,14 @@ _LABEL = re.compile(
     r"|(?P<simple>" + _PART + r")[.)]"                                # "IV." "A." "7." "a)"
     r"|\((?P<paren>\d{1,2}|[a-z]|[ivx]{1,4})\)"                       # "(1)" "(a)"
     r"|(?P<bare>\d{1,2})(?=\s+[A-Z])"                                 # Wausau's "5 Closed Session."
+    r"|(?P<bareroman>[IVX]{1,4})(?=\s+[A-Z])"                         # Wausau's "IV Closed Session."
     r"|(?P<ocr>\d{1,2}),(?=\s+[A-Z])"                                 # OCR reads "8." as "8,"
-    r")(?:\s+(?=\S)|(?<=\.)(?=[A-Z][a-z]))"                           # D.C. Everest PDFs: "III.The Board"
+    # OCR misreads a number ("7." as "fe", "13." as "us.") before a motion line.
+    r"|(?P<junk>(?!(?:of|to|a|an|by|in|on|or|and|the|for)\b)[a-z]{1,3}\.?)(?=\s+(?:Consideration\s+of\s+Motion|Motion\s+to)\b)"
+    r")(?:\s+(?=\S)|(?<=\.)(?=[A-Z][a-z])|\s*$)"                      # "III.The Board"; a label alone on its line ("a.")
 )
 _CLOSED = re.compile(r"closed\s+session", re.I)
+_ANNOUNCEMENT = re.compile(r"\bannouncement\s+of\s+(?:a\s+)?(?:possible\s+)?closed\s+session", re.I)
 # Mentions of closed session that are not about convening one.
 _NOT_CONVENE = re.compile(
     r"reconven|return\w*\s+(?:to|into)\s+open|"
@@ -100,7 +104,9 @@ def _style(m: re.Match, previous_upper: str | None) -> str:
         return f"combined{m.group('combined').rstrip('.').count('.') + 1}"
     if m.group("paren"):
         return "paren-digit" if m.group("paren").isdigit() else "paren-lower"
-    if m.group("bare") or m.group("ocr"):
+    if m.group("bareroman"):
+        return "roman"
+    if m.group("bare") or m.group("ocr") or m.group("junk"):
         return "digit"
     part = m.group("simple")
     if part.isdigit():
@@ -165,7 +171,9 @@ def segment(text: str, stop_at_adjourn: bool = True) -> list[Segment]:
                                            and len(segments[-1].text) < 60):
                 segments.append(Segment("", line, page_no, "header"))
             elif segments:
-                segments[-1].text += " " + line
+                # A word or number broken at a hyphen ("Project ID 6999-" / "18-11") rejoins without a space.
+                joiner = "" if re.search(r"\w-$", segments[-1].text) else " "
+                segments[-1].text = (segments[-1].text + joiner + line).strip()
             else:
                 segments.append(Segment("", line, page_no, "preamble"))
     _assign_depths(segments)
@@ -269,6 +277,12 @@ def closed_items(text: str) -> list[Found]:
     picked = [i for i, seg in enumerate(segments)
               if cites(seg.text) and (convenes(seg.text)
                                       or any(convenes(segments[a].text) for a in _ancestors(segments, i)))]
+    # An announcement ("ANNOUNCEMENT OF CLOSED SESSION", "Announcement of possible closed
+    # session pursuant to ...") forecasts a session the agenda notices again where it is
+    # held; it is counted only when nothing else is (Kronenwetter, Nov 14, 2024).
+    held = [i for i in picked if not any(_ANNOUNCEMENT.search(segments[j].text)
+                                         for j in [i] + _ancestors(segments, i))]
+    picked = held or picked
     if picked:
         return [_cited(segments, i, picked) for i in picked]
     uncited: list[tuple[int, str]] = []
