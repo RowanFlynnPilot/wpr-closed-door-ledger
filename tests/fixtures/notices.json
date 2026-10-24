@@ -728,6 +728,30 @@
      "purpose": "Marathon County Case No. 2018-CV-119"
     }
    ]
+  },
+  {
+   "id": "weston-1976",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1976 (Joint Budget Workshop, excerpt)",
+   "note": "Unnumbered capitals lead-ins that reach CLOSED SESSION start their own items (blind check, round 5).",
+   "text": "10. Discussion and/or action on President’s Appointments to Committees and/or\nCommissions\nIF NECESSARY, MOTION TO MOVE TO CLOSED SESSION Pursuant to Wis. Stat. §\n19.85(1)(c) to consider employment, promotion, compensation, or performance evaluation data of\nany public employee over which the governmental body has jurisdiction or exercises responsibility\nto wit:\n 2027 Staff Compensation Changes\nRECONVENE TO OPEN SESSION\nPOSSIBLE ACTION ON CLOSED SESSION ITEMS\n 2027 Staff Compensation Changes\nREMARKS FROM FINANCE AND HUMAN RESOURCES COMMITTEE.\nFINANCE AND HUMAN RESOURCES COMMITTEE ADJOURNMENT\nBOARD OF TRUSTEES CONTINUE FOR MOTION TO MOVE TO CLOSED SESSION\nPursuant to Wis. Stat. § 19.85(1)(e), Deliberating or negotiating the purchasing of public\nproperties, the investing of public funds, or conducting other specified public business, whenever\ncompetitive or bargaining reasons require a closed session to wit: Appraisals and Right-of-Way",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "IF NECESSARY, MOTION TO MOVE TO CLOSED S",
+     "purpose": "2027 Staff Compensation Changes"
+    },
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "BOARD OF TRUSTEES CONTINUE FOR MOTION TO",
+     "purpose": "Appraisals and Right-of-Way"
+    }
+   ]
   }
  ]
 }

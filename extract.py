@@ -62,7 +62,8 @@ _CONVENE_VERB = re.compile(
 # Weston: "MOTION TO MOVE TO CLOSED SESSION Pursuant to ...", "CONTINUE IN CLOSED SESSION").
 _KEYWORD_LINE = re.compile(
     r"^(?:CLOSED\s+SESSION|RECONVENE|ADJOURN|CONVENE|CONTINUE\s+IN|ACTION\s+AFTER|ANNOUNCEMENT\s+OF|"
-    r"OPEN\s+SESSION|RETURN\s+TO|MOTION\s+TO|MOVE\s+TO\s+CLOSED|REMAIN\s+IN\s+CLOSED|POSSIBLE\s+ACTION)\b"
+    r"OPEN\s+SESSION|RETURN\s+TO|MOTION\s+TO|MOVE\s+TO\s+CLOSED|REMAIN\s+IN\s+CLOSED|POSSIBLE\s+ACTION|"
+    r"[A-Z][A-Z ,&'/-]{0,60}?CLOSED\s+SESSION)\b"   # "IF NECESSARY, MOTION TO MOVE TO CLOSED SESSION Pursuant ..."
 )
 # The agenda's closing item. Packets (Weston, some Wausau) carry other documents
 # after the agenda, such as the previous meeting's minutes; pages after the one

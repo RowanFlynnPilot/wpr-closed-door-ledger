@@ -38,7 +38,7 @@ _PROCEDURAL = set("""
     consider consideration contemplate of motion motions move moving to into in continue continuing convene
     convening adjourn adjournment adjourning directly enter entering go recess closed session pursuant under
     per wis wisconsin stat stats statute statutes state sec section sections s ss meeting meetings regular special
-    following after before open prior remain remaining executive
+    following after before open prior remain remaining executive if necessary needed trustees for
 """.split())
 # A sentence's end, but not an initial ("T. Winters") or an abbreviation ("vs. City", "No. 24CV40").
 _SENTENCE_END = re.compile(r"(?<!\b[A-Z])(?<!\bvs)(?<!\bv)(?<!\bNo)(?<!\bSt)(?<!\bInc)(?<!\bMr)(?<!\bMs)(?<!\bDr)(?<!\bWis)(?<!\bStat)(?<!\bStats)\.\s+[A-Z]")
