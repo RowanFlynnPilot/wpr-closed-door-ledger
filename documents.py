@@ -78,11 +78,24 @@ def pdf_text(content: bytes, name: str, max_pages: int | None = None) -> PdfText
     return PdfText(joined, "ocr" if ocr_pages else "text_layer", ocr_pages, total)
 
 
+def _internal_link(annotation) -> bool:
+    a = annotation.get_object()
+    action = a.get("/A")
+    return "/Dest" in a or (action is not None and action.get_object().get("/S") == "/GoTo")
+
+
 def first_pages(content: bytes, n: int) -> bytes:
-    """A new PDF holding the first n pages (Weston packets are archived this way)."""
+    """A new PDF holding the first n pages (Weston packets are archived this way).
+
+    Links from the agenda to later packet pages are dropped: copying them would
+    pull every linked page, scans included, into the split (one 5-page Weston
+    agenda came out at 9.5 MB). Links to web addresses are kept."""
     reader = pypdf.PdfReader(io.BytesIO(content))
     writer = pypdf.PdfWriter()
     for page in reader.pages[:n]:
+        if "/Annots" in page:
+            kept = [a for a in page["/Annots"] if not _internal_link(a)]
+            page[pypdf.generic.NameObject("/Annots")] = pypdf.generic.ArrayObject(kept)
         writer.add_page(page)
     out = io.BytesIO()
     writer.write(out)

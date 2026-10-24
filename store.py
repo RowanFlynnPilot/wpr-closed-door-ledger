@@ -19,6 +19,7 @@ from pathlib import Path
 from adapters.base import DocFile, KnownFile, Meeting, Unchanged
 
 ARCHIVE = Path(__file__).with_name("archive")
+MAX_FILE = 45 * 1024 * 1024
 
 
 def now_utc() -> str:
@@ -87,11 +88,15 @@ def apply_document(root: Path, record: dict, kind: str, doc: DocFile | Unchanged
     folder = meeting_dir(root, record["jurisdiction"], record["meeting_id"])
     folder.mkdir(parents=True, exist_ok=True)
     stem = f"{kind}-{doc.sha256[:12]}"
-    (folder / f"{stem}.{doc.extension}").write_bytes(doc.content)
+    # The archive may hold no file over 50 MB; above MAX_FILE the version keeps
+    # its text, sha256, size and URL, but not the file itself.
+    stored = len(doc.content) <= MAX_FILE
+    if stored:
+        (folder / f"{stem}.{doc.extension}").write_bytes(doc.content)
     (folder / f"{stem}.txt").write_text(doc.text, encoding="utf-8")
     record["versions"].append({
         "kind": kind, "sha256": doc.sha256, "seen_at": seen_at, "url": doc.url,
-        "file": f"{stem}.{doc.extension}", "text_file": f"{stem}.txt",
+        "file": f"{stem}.{doc.extension}" if stored else None, "text_file": f"{stem}.txt",
         "text_source": doc.text_source, "ocr_pages": doc.ocr_pages,
         "size": doc.size, "pages": doc.pages, "last_modified": doc.last_modified,
     })

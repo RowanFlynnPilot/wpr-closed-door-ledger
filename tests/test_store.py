@@ -80,3 +80,13 @@ def test_archive_check(tmp_path, monkeypatch):
     assert any("big.pdf" in p for p in archive_check.problems(tmp_path))
     (tmp_path / "new.txt").write_text("uncommitted")
     assert any("uncommitted" in p for p in archive_check.problems(tmp_path))
+
+
+def test_files_over_the_limit_keep_only_text(tmp_path, monkeypatch):
+    monkeypatch.setattr(store, "MAX_FILE", 3)
+    record = store.new_record(MEETING, "2026-01-01T00:00:00Z")
+    assert store.apply_document(tmp_path, record, "minutes", _doc(b"big file", "minutes"), "2026-01-01T00:00:00Z")
+    v = record["versions"][0]
+    folder = store.meeting_dir(tmp_path, "wausau", "130")
+    assert v["file"] is None and (folder / v["text_file"]).exists() and v["size"] == 8
+    assert not list(folder.glob("*.pdf"))
