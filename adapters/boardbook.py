@@ -7,16 +7,18 @@ School Board Meeting" (or "October 28, 2026 Immediately following ... - Title"
 when no clock time is given), wrapped in `span.meeting-is-cancelled` markers
 when canceled. Its last cell links Agenda and, once posted, Minutes.
 
-Notice: /Public/Agenda/{org}?meeting=N, an HTML page whose agenda is the table
-in div#Tab-AgendaItem, one `tr.agenda-item-information` per item. The item's
+Notice: /Public/Agenda/{org}?meeting=N. Usually an HTML page whose agenda is the
+table in div#Tab-AgendaItem, one `tr.agenda-item-information` per item. The item's
 own wording is its div.form-check, which starts with the numbering label
 ("XIV.A."), followed by its div.Description when it has one; presenters and
-attachment lists are not text.
+attachment lists are not text. Some special meetings redirect instead to a PDF
+viewer (CustomAgendaForMeeting).
 
-Minutes: /Public/Minutes/{org}?meeting=N is a viewer page; the PDF's id is in
-the hidden input NewDocumentViewerDocumentID, and the PDF downloads from
-/Documents/DownloadPDF/{id}?org={org}. BoardBook sends no Last-Modified, so
-there is no HEAD shortcut: every call downloads both documents.
+Minutes: /Public/Minutes/{org}?meeting=N. Usually a viewer page: the PDF's id is
+in the hidden input NewDocumentViewerDocumentID, and the PDF downloads from
+/Documents/DownloadPDF/{id}?org={org}. Some are an item table like an agenda.
+BoardBook sends no Last-Modified, so there is no HEAD shortcut: every call
+downloads both documents.
 """
 from __future__ import annotations
 
@@ -125,24 +127,63 @@ def _meeting_param(url: str) -> str:
 # ---- documents ----------------------------------------------------------------
 
 def fetch_documents(meeting: Meeting, known: dict[str, KnownFile]) -> Documents:
-    notice = fetch_notice(meeting) if meeting.notice_url else None
-    minutes = fetch_minutes(meeting) if meeting.minutes_url else None
+    org = meeting.source["org"]
+    notice = fetch_page_document("notice", meeting.notice_url, org) if meeting.notice_url else None
+    minutes = fetch_page_document("minutes", meeting.minutes_url, org) if meeting.minutes_url else None
     return Documents(notice=notice, minutes=minutes)
 
 
-def fetch_notice(meeting: Meeting) -> DocFile:
-    response = polite.get(meeting.notice_url)
+def fetch_page_document(kind: str, page_url: str, org: int) -> DocFile:
+    """A BoardBook agenda or minutes page, which is one of two things:
+
+    - an item table (div#Tab-AgendaItem): the document is the page itself, as HTML.
+      Agendas usually are; some Wausau SD minutes are too.
+    - a document viewer (input#NewDocumentViewerDocumentID): the document is a PDF.
+      Minutes usually are; a custom agenda (CustomAgendaForMeeting, D.C. Everest
+      special meetings) is too.
+
+    A page that is neither (a minutes link redirected to the listing) raises.
+    """
+    response = polite.get(page_url)
+    soup = BeautifulSoup(response.text, "html.parser")
+    if soup.find("div", id="Tab-AgendaItem") is not None:
+        return html_document(kind, page_url, response)
+    viewer = soup.find("input", id="NewDocumentViewerDocumentID")
+    if viewer is not None and viewer.get("value", "").isdigit():
+        return pdf_document(kind, pdf_url(org, viewer["value"]))
+    raise BoardBookPageError(f"{page_url}: neither an item table nor a document viewer")
+
+
+def html_document(kind: str, url: str, response) -> DocFile:
     content = stable_html(response.content)
-    text = documents.require_text(agenda_text(response.text, meeting.notice_url), meeting.notice_url)
+    text = documents.require_text(agenda_text(response.text, url), url)
     return DocFile(
-        kind="notice",
-        url=meeting.notice_url,
+        kind=kind,
+        url=url,
         content=content,
         extension="html",
         sha256=documents.sha256(content),
         text=text,
         text_source="html",
         size=len(content),
+        last_modified=response.headers.get("Last-Modified"),
+    )
+
+
+def pdf_document(kind: str, url: str) -> DocFile:
+    response = polite.get(url)
+    pdf = documents.pdf_text(response.content, url)
+    return DocFile(
+        kind=kind,
+        url=url,
+        content=response.content,
+        extension="pdf",
+        sha256=documents.sha256(response.content),
+        text=pdf.text,
+        text_source=pdf.text_source,
+        size=len(response.content),
+        pages=pdf.pages,
+        ocr_pages=pdf.ocr_pages,
         last_modified=response.headers.get("Last-Modified"),
     )
 
@@ -175,33 +216,3 @@ def item_line(row: Tag, name: str) -> str:
     if description is not None:
         parts.append(description.get_text(" "))
     return _collapse(" ".join(parts))
-
-
-def fetch_minutes(meeting: Meeting) -> DocFile:
-    org = meeting.source["org"]
-    viewer = polite.get(meeting.minutes_url)
-    url = pdf_url(org, minutes_document_id(viewer.text, meeting.minutes_url))
-    response = polite.get(url)
-    pdf = documents.pdf_text(response.content, url)
-    return DocFile(
-        kind="minutes",
-        url=url,
-        content=response.content,
-        extension="pdf",
-        sha256=documents.sha256(response.content),
-        text=pdf.text,
-        text_source=pdf.text_source,
-        size=len(response.content),
-        pages=pdf.pages,
-        ocr_pages=pdf.ocr_pages,
-        last_modified=response.headers.get("Last-Modified"),
-    )
-
-
-def minutes_document_id(html: str, name: str) -> str:
-    """The minutes PDF's id from the viewer page. A meeting without minutes
-    redirects to the organization page, which has no viewer input."""
-    field = BeautifulSoup(html, "html.parser").find("input", id="NewDocumentViewerDocumentID")
-    if field is None or not field.get("value", "").isdigit():
-        raise BoardBookPageError(f"{name}: no NewDocumentViewerDocumentID (not a minutes viewer page)")
-    return field["value"]

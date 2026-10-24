@@ -225,3 +225,21 @@ def test_empty_agenda_raises(served):
         b'<div class="form-check">I. CALL TO ORDER</div></td></tr></table></div>')
     with pytest.raises(documents.UnreadableDocument):
         boardbook.fetch_documents(meeting(None), {})
+
+
+def test_custom_pdf_agenda_and_html_minutes(served, monkeypatch):
+    # D.C. Everest special meetings redirect the agenda to a PDF viewer
+    # (CustomAgendaForMeeting); some Wausau SD minutes are an item table, not a PDF.
+    pages, asked = served
+    agenda = boardbook.agenda_url(1360, "674363")
+    viewer = "https://meetings.boardbook.org/Public/Minutes/1360?meeting=674363"
+    pdf = "https://meetings.boardbook.org/Documents/DownloadPDF/6835351?org=1360"
+    pages[agenda] = b'<html><body><input type="hidden" id="NewDocumentViewerDocumentID" value="6835351" /></body></html>'
+    pages[pdf] = b"%PDF-1.7 placeholder"
+    pages[viewer] = fixture("agenda_1360_674363.html")
+    monkeypatch.setattr(documents, "pdf_text",
+                        lambda content, name: documents.PdfText("closed session agenda", "text_layer", [], 1))
+    docs = boardbook.fetch_documents(meeting(viewer), {})
+    assert asked == [agenda, pdf, viewer]
+    assert (docs.notice.extension, docs.notice.url, docs.notice.text_source) == ("pdf", pdf, "text_layer")
+    assert (docs.minutes.extension, docs.minutes.url, docs.minutes.text_source) == ("html", viewer, "html")
