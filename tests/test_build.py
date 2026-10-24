@@ -103,3 +103,27 @@ def test_write_site(archive, tmp_path):
     assert (site / "data" / "closed_sessions.csv").read_text(encoding="utf-8").startswith("id,meeting_id,bodies")
     for item in p["closed_sessions"]:
         assert (site / item["archive_url"]).is_file()
+
+
+def test_minutes_facts_and_unnoticed_sessions(archive):
+    meeting = Meeting("wausau", "925", "Board Of Public Works Regular Meeting", "2026-06-09T09:30",
+                      "https://example.test/925", "https://example.test/925/minutes")
+    record = store.new_record(meeting, "2026-06-05T12:00:00Z")
+    store.update_listing(record, meeting, "2026-06-05T12:00:00Z")
+    store.apply_document(archive, record, "notice", _doc("1. Make recommendation for lighting materials." + " x" * 120),
+                         "2026-06-05T12:00:00Z")
+    text = ("CLOSED SESSION pursuant to Section 19.85(1)(g), Wis. Stats., for the purpose of deliberating on claims\n"
+            "Motion by Doe, second by Roe to convene in closed session. Motion passed.")
+    content = text.encode("utf-8")
+    store.apply_document(archive, record, "minutes",
+                         DocFile("minutes", "https://example.test/m", content, "pdf",
+                                 hashlib.sha256(content).hexdigest(), text, "text_layer", len(content), 1),
+                         "2026-06-20T12:00:00Z")
+    store.save(archive, record)
+    meetings, items = build.build_internal(archive, CONFIG)
+    leads = build.unnoticed_sessions(meetings)
+    assert [l["meeting_id"] for l in leads] == ["wausau:925"] and leads[0]["minutes_pages"] == [1]
+    m = next(m for m in meetings if m["id"] == "wausau:925")
+    assert m["minutes"]["vote_record"] == "result_only" and m["minutes"]["exemption_in_minutes"]
+    p = build.public_projection(CONFIG, meetings, items, {})
+    assert all(i["minutes"] is None for i in p["closed_sessions"])      # not published until validated

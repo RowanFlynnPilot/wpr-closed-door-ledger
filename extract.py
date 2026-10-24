@@ -101,6 +101,8 @@ def _style(m: re.Match, previous_upper: str | None) -> str:
         return "digit"
     if part.islower():
         return "lower"
+    if len(part) > 1:
+        return "roman"
     if re.fullmatch(_ROMAN, part) and part:
         # "I.", "V.", "X.", "C." after "H.", "U.", "W.", "B." are letters, not numerals.
         if len(part) == 1 and previous_upper and ord(part) - ord(previous_upper) == 1:
@@ -113,9 +115,10 @@ def _edge_key(line: str) -> str:
     return re.sub(r"[\d\s]+", " ", line).strip().casefold()
 
 
-def agenda_pages(text: str) -> list[list[str]]:
+def agenda_pages(text: str, stop_at_adjourn: bool = True) -> list[list[str]]:
     """Each page's non-empty lines, whitespace collapsed, without repeated page
-    headers and footers, and ending with the page that holds the closing Adjourn."""
+    headers and footers, and (for notices) ending with the page that holds the
+    closing Adjourn."""
     # U+F0B7 is the Symbol-font bullet Weston's PDFs use; it is a bullet.
     text = text.replace("", "•")
     pages = [[re.sub(r"\s+", " ", l).strip() for l in p.splitlines() if l.strip()] for p in text.split("\f")]
@@ -129,15 +132,16 @@ def agenda_pages(text: str) -> list[list[str]]:
                   if not ((i < _EDGE_LINES or i >= len(lines) - _EDGE_LINES) and _edge_key(l) in repeated)]
                  for lines in pages]
     for n, lines in enumerate(pages):
-        if any(_ADJOURN.match(l) and len(l) <= 40 for l in lines):
+        if stop_at_adjourn and any(_ADJOURN.match(l) and len(l) <= 40 for l in lines):
             return pages[: n + 1]
     return pages
 
 
-def segment(text: str) -> list[Segment]:
+def segment(text: str, stop_at_adjourn: bool = True) -> list[Segment]:
+    """Agenda items. Minutes are segmented the same way, without stopping at Adjourn."""
     segments: list[Segment] = []
     previous_upper = None
-    for page_no, lines in enumerate(agenda_pages(text), 1):
+    for page_no, lines in enumerate(agenda_pages(text, stop_at_adjourn), 1):
         for line in lines:
             m = _LABEL.match(line)
             if m:

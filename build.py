@@ -6,7 +6,8 @@
 Fails (exit 1) on any meeting title bodies.yaml doesn't classify, and on any
 review in reviews.json whose key matches no item.
 
-Internal files (archive/data/, every field): meetings.json, closed_sessions.json.
+Internal files (archive/data/, every field): meetings.json, closed_sessions.json, and
+unnoticed_closed_sessions.json (minutes that record a closed session the notice never listed).
 Public projection (site/data/, whitelisted fields only): closed_sessions.json
 and .csv, meetings.json and .csv, bodies.json; plus the archived notice copies
 that published items link to (site/archive/).
@@ -26,6 +27,7 @@ from zoneinfo import ZoneInfo
 
 import bodies
 import extract
+import minutes as minutes_rules
 import store
 
 CENTRAL = ZoneInfo("America/Chicago")
@@ -34,6 +36,9 @@ SITE = ROOT / "site"
 
 PUBLIC_ITEM_FIELDS = ["id", "meeting_id", "bodies", "meeting_date", "item_text", "citation_raw", "exemptions",
                       "other_citations", "purpose_text", "notice_url", "archive_url", "minutes", "review_note"]
+# The minutes rules (minutes.py) are published only once the Q3 2026 hand-check
+# has validated them against what editors read in the minutes.
+PUBLISH_MINUTES = False
 PUBLIC_MEETING_FIELDS = ["id", "bodies", "jurisdiction", "meeting_date", "canceled", "notice_url",
                          "source_status", "closed_item_count", "minutes_url"]
 
@@ -103,17 +108,24 @@ def build_meeting(root: Path, config: dict, record: dict) -> tuple[dict, list[di
         "notice_versions": len(notices), "changed_after_meeting": changed_after_meeting(root, record),
         "source_status": record["source_status"], "notices_reconvene": False, "closed_item_count": 0,
         "minutes_url": listing["minutes_url"], "minutes_versions": len(minutes),
-        "notice_file": None,
+        "notice_file": None, "minutes": None, "minutes_convene_pages": [],
     }
+    folder = store.meeting_dir(root, record["jurisdiction"], record["meeting_id"])
+    if minutes:
+        # The latest minutes version: minutes get amended (Kronenwetter, Jan 12, 2026).
+        facts = minutes_rules.analyze((folder / minutes[-1]["text_file"]).read_text(encoding="utf-8"),
+                                      len(minutes))
+        meeting["minutes"] = minutes_rules.as_record(facts)
+        meeting["minutes_convene_pages"] = list(facts.convene_pages)
     version = items_version(notices, listing["start"])
     items: list[dict] = []
     if version:
-        folder = store.meeting_dir(root, record["jurisdiction"], record["meeting_id"])
         text = (folder / version["text_file"]).read_text(encoding="utf-8")
         meeting["notice_file"] = f"meetings/{record['jurisdiction']}/{record['meeting_id']}/{version['file']}"
         meeting["notices_reconvene"] = extract.notices_reconvene(text)
         for found in extract.closed_items(text):
             row = extract.item_record(meeting, found, item_text_source(version, found.page))
+            row["minutes"] = meeting["minutes"]
             if all(row["id"] != other["id"] for other in items):
                 items.append(row)
         meeting["closed_item_count"] = len(items)
@@ -141,6 +153,17 @@ def build_internal(root: Path, config: dict) -> tuple[list[dict], list[dict]]:
     meetings.sort(key=lambda m: (m["meeting_date"], m["id"]))
     items.sort(key=lambda i: (i["meeting_date"], i["id"]))
     return meetings, items
+
+
+def unnoticed_sessions(meetings: list[dict]) -> list[dict]:
+    """Meetings whose minutes record a motion to convene in closed session, but whose
+    archived notice has no closed-session item. Leads for editors; never published."""
+    return [{"meeting_id": m["id"], "bodies": m["bodies"], "meeting_date": m["meeting_date"],
+             "notice_url": m["notice_url"], "notice_versions": m["notice_versions"],
+             "minutes_url": m["minutes_url"], "minutes_pages": m["minutes_convene_pages"],
+             "held": m["minutes"]["held"]}
+            for m in meetings
+            if m["minutes"] and m["minutes"]["motion_recorded"] and not m["closed_item_count"]]
 
 
 def check_reviews(reviews: dict, items: list[dict]) -> None:
@@ -171,6 +194,7 @@ def public_projection(config: dict, meetings: list[dict], items: list[dict], rev
             continue
         meeting = by_id[item["meeting_id"]]
         row = {**item, "bodies": published_bodies,
+               "minutes": item["minutes"] if PUBLISH_MINUTES else None,
                "notice_url": "" if item["meeting_id"] in withheld_meetings else meeting["notice_url"],
                "archive_url": "" if item["meeting_id"] in withheld_meetings or not meeting["notice_file"]
                else "archive/" + meeting["notice_file"].removeprefix("meetings/"),
@@ -260,6 +284,7 @@ def main(argv: list[str] | None = None) -> int:
     data.mkdir(exist_ok=True)
     (data / "meetings.json").write_text(_json(meetings), encoding="utf-8")
     (data / "closed_sessions.json").write_text(_json(items), encoding="utf-8")
+    (data / "unnoticed_closed_sessions.json").write_text(_json(unnoticed_sessions(meetings)), encoding="utf-8")
     write_site(args.site, args.archive, projection)
     print(f"wrote {data} and {args.site}")
     return 0
