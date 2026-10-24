@@ -99,3 +99,21 @@ def test_docx_text():
     assert documents.docx_text(_docx(lines), "m.docx").splitlines() == lines
     with pytest.raises(documents.UnreadableDocument):
         documents.docx_text(_docx(["Draft"]), "short.docx")
+
+
+def _image_pdf(draw_box: bool) -> bytes:
+    img = Image.new("RGB", (850, 1100), "white")
+    if draw_box:
+        ImageDraw.Draw(img).rectangle((100, 100, 300, 160), fill="black")
+    out = io.BytesIO()
+    img.save(out, format="PDF")
+    return out.getvalue()
+
+
+def test_blank_pdf_draws_nothing():
+    writer = pypdf.PdfWriter()
+    writer.add_blank_page(612, 792)
+    out = io.BytesIO()
+    writer.write(out)
+    assert documents.blank_pdf(out.getvalue()) and documents.blank_pdf(_image_pdf(False))
+    assert not documents.blank_pdf(_image_pdf(True)) and not documents.blank_pdf(_scanned_pdf())

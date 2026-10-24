@@ -209,3 +209,14 @@ def test_redact_review(archive):
     assert "424 Burns" not in row["purpose_text"] and "[name withheld]" in row["purpose_text"]
     assert row["archive_url"] == "" and row["notice_url"] and row["review_note"] is None
     assert "424 Burns" in sale["item_text"]                    # internal data keeps the wording
+
+
+def test_blank_earlier_version_is_passed_over(tmp_path):
+    _weston(tmp_path, "2024-12-16", "2024-12-18T09:00", "1. Call to order." + " x" * 120, [(1824, SALE)])
+    record = store.load(tmp_path, "weston", "1716")
+    blank = DocFile("notice", "https://example.test/a/2021", b"%PDF blank", "pdf",
+                    hashlib.sha256(b"%PDF blank").hexdigest(), "", "blank", 10, 1)
+    store.apply_previous_version(tmp_path, record, 2021, blank, "2026-10-23T12:00:00Z")
+    store.save(tmp_path, record)
+    meetings, items = build.build_internal(tmp_path, CONFIG)
+    assert len(items) == 1 and "424 Burns Street" in items[0]["purpose_text"]

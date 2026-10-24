@@ -72,6 +72,11 @@ def _stamped_after_start(record: dict) -> bool:
     return stamp[:10] > start if len(start) == 10 else stamp > start[:16]
 
 
+def readable_previous(record: dict) -> list[dict]:
+    """The platform's earlier notice versions, oldest first, less any blank page it lists."""
+    return [v for v in store.previous_versions(record, "notice") if v["text_source"] != "blank"]
+
+
 def items_version(record: dict) -> dict | None:
     """The notice version the items come from: the latest seen before the meeting started.
 
@@ -82,7 +87,7 @@ def items_version(record: dict) -> dict | None:
     before = [v for v in served if _seen_before_start(v, start)]
     if before:
         return before[-1]
-    previous = store.previous_versions(record, "notice")
+    previous = readable_previous(record)
     if previous and _stamped_after_start(record):
         return previous[-1]
     return served[0] if served else None
@@ -106,7 +111,7 @@ def changed_after_meeting(root: Path, record: dict) -> bool:
     for previous, version in zip(served, served[1:]):
         if _local_date(version["seen_at"]) > date and text(version) != text(previous):
             return True
-    previous = store.previous_versions(record, "notice")
+    previous = readable_previous(record)
     stamp = record["listing"].get("source", {}).get("listed_at")
     current = [v for v in served if stamp and v["last_modified"] == stamp]
     return bool(previous and current and _stamped_after_start(record) and text(current[-1]) != text(previous[-1]))
