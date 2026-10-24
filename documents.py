@@ -9,7 +9,9 @@ from __future__ import annotations
 import hashlib
 import io
 import re
+import zipfile
 from dataclasses import dataclass
+from xml.etree import ElementTree
 
 import pdfplumber
 import pypdf
@@ -85,6 +87,20 @@ def first_pages(content: bytes, n: int) -> bytes:
     out = io.BytesIO()
     writer.write(out)
     return out.getvalue()
+
+
+_W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+
+
+def docx_text(content: bytes, name: str) -> str:
+    """A Word file's text, one paragraph per line (Weston posts some minutes this way)."""
+    with zipfile.ZipFile(io.BytesIO(content)) as docx:
+        root = ElementTree.fromstring(docx.read("word/document.xml"))
+    lines = ["".join(t.text or "" for t in p.iter(f"{_W}t")) for p in root.iter(f"{_W}p")]
+    text = "\n".join(line for line in lines if line.strip())
+    if _chars(text) < MIN_DOCUMENT_CHARS:
+        raise UnreadableDocument(f"{name}: only {_chars(text)} readable characters")
+    return text
 
 
 def require_text(text: str, name: str) -> str:
