@@ -227,3 +227,13 @@ def test_fetch_previous_versions_skips_known_urls(monkeypatch):
     gets.clear()
     assert agendacenter.fetch_previous_versions(meeting, {doc.url}) == []
     assert gets == [meeting.source["previous_versions_url"]]
+
+
+def test_blank_earlier_version_is_recorded_as_blank():
+    writer = pypdf.PdfWriter()
+    writer.add_blank_page(612, 792)
+    out = io.BytesIO()
+    writer.write(out)
+    got = agendacenter.previous_text(out.getvalue(), "ArchivedAgenda/_07272026-2021")
+    assert got.text == "" and got.text_source == "blank" and got.pages == 1
+    assert agendacenter.previous_text(_text_pdf(2), "x").text_source == "text_layer"

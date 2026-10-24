@@ -78,6 +78,23 @@ def pdf_text(content: bytes, name: str, max_pages: int | None = None) -> PdfText
     return PdfText(joined, "ocr" if ocr_pages else "text_layer", ocr_pages, total)
 
 
+def blank_pdf(content: bytes, max_pages: int | None = None) -> bool:
+    """Every one of the first max_pages pages renders pure white: nothing is drawn on them.
+
+    Not the same as unreadable. Weston's platform lists one earlier agenda version that
+    is a single blank page (weston:1946, July 27, 2026)."""
+    pdf = pypdfium2.PdfDocument(content)
+    try:
+        count = len(pdf) if max_pages is None else min(max_pages, len(pdf))
+        return all(pdf[i].render(scale=1).to_pil().convert("L").getextrema() == (255, 255) for i in range(count))
+    finally:
+        pdf.close()
+
+
+def page_count(content: bytes) -> int:
+    return len(pypdf.PdfReader(io.BytesIO(content)).pages)
+
+
 def _internal_link(annotation) -> bool:
     a = annotation.get_object()
     action = a.get("/A")

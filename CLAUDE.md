@@ -114,6 +114,7 @@ python handcheck.py --quarter 2026Q3   # archive/handcheck/2026-Q3/
   - The page dates none of them: every row repeats the meeting's own Posted stamp. Archive ids rise over time, so they order the versions, and all predate the current one.
   - `fetch.py` reads them once per listing stamp (`previous_checked` in `meeting.json`), since an amendment moves the old current version onto that page and changes the stamp. Each is archived as a version with `origin: "previous"` and its `archive_id`, read like a notice (first 5 pages).
   - To stay inside the 1 GB budget, an earlier version keeps its file only when its text mentions a closed session; every one keeps its text and sha256.
+  - An earlier version whose pages render pure white (one so far: weston:1946's `ArchivedAgenda/_07272026-2021`, a single blank page) is archived with `text_source: "blank"` and never supplies items. Any other unreadable version still raises.
   - Of the 225, only 4 had their current version stamped after the meeting (weston:1705, 1870, 1871, 1877; Oct 23, 2026), none with a closed session.
 
 **Municode (Kronenwetter):**

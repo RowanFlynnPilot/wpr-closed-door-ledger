@@ -177,13 +177,24 @@ def fetch_previous_versions(meeting: Meeting, known_urls: set[str]) -> list[tupl
         if url in known_urls:
             continue
         content = pdf_content(polite.get(url))
-        text = documents.pdf_text(content, url, max_pages=NOTICE_PAGES)
+        text = previous_text(content, url)
         found.append((archive_id, DocFile(
             kind="notice", url=url, content=documents.first_pages(content, NOTICE_PAGES), extension="pdf",
             sha256=documents.sha256(content), text=text.text, text_source=text.text_source,
             size=len(content), pages=text.pages, ocr_pages=text.ocr_pages, last_modified=None,
         )))
     return found
+
+
+def previous_text(content: bytes, url: str) -> documents.PdfText:
+    """An earlier version's text. One that draws nothing at all is recorded as blank
+    (text_source "blank"); any other version that can't be read still raises."""
+    try:
+        return documents.pdf_text(content, url, max_pages=NOTICE_PAGES)
+    except documents.UnreadableDocument:
+        if not documents.blank_pdf(content, NOTICE_PAGES):
+            raise
+        return documents.PdfText("", "blank", [], documents.page_count(content))
 
 
 def packet_unchanged(url: str, stamp: str, known: KnownFile) -> bool:
