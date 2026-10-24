@@ -497,6 +497,23 @@
      "purpose": "bond counsel opinion as it relates to a response to a January 21, 2025, open records request of Pat Q. Requester regarding a verified complaint"
     }
    ]
+  },
+  {
+   "id": "wausau-1779",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 1779 (excerpt)",
+   "note": "The (a) wording names no subject (regression found re-scoring round 1).",
+   "text": "3. Appeal of Declaration of Chronic Nuisance Premises.\n4. CLOSED SESSION pursuant to Section 19. 85( 1)( a) of the Wisconsin Statutes: Deliberating concerning a case which was the subject of any judicial or quasi-judicial trial or hearing before that governmental body.\n5. Adjourn",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "a"
+     ],
+     "starts": "CLOSED SESSION pursuant to Section 19. 8",
+     "purpose": ""
+    }
+   ]
   }
  ]
 }

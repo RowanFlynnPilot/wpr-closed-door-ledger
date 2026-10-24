@@ -49,7 +49,7 @@ _STATUTE_WORDING = re.compile(
     r"employment,\s*promotion,\s*compensation|performance\s+evaluation\s+data|financial,\s*medical,\s*social|"
     r"deliberating\s+or\s+negotiating\s+the\s+purchas|conferring\s+with\s+legal\s+counsel|"
     r"dismissal,\s*demotion,\s*licensing|crime\s+detection\s+or\s+prevention|quasi-judicial|"
-    r"a\s+case\s+which\s+was\s+the\s+subject|purchasing\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|"
+    r"(?:deliberating\s+(?:concerning\s+|on\s+)?)?a\s+case\s+which\s+was\s+the\s+subject|purchasing\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|"
     r"competitive\s+or\s+bargaining\s+reasons|personal\s+histories|preliminary\s+consideration\s+of\s+specific|"
     r"requests?\s+for\s+confidential\s+(?:written\s+)?advice|probation,?\s+extended\s+supervision",
     re.I,
