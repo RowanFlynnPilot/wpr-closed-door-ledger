@@ -198,14 +198,18 @@ Sources: [Wis. Stat. 19.85](https://docs.legis.wisconsin.gov/statutes/statutes/1
 - **Sections.** A closed-session section is an item that speaks of convening in closed session, plus everything under it. Mentions that aren't about convening don't start one: reconvening, action after or on closed-session items, approving closed-session minutes, "prior to any potential closed session".
 - **Closed-session items:** each item that cites s. 19.85(1) or s. 19.86 and either itself speaks of convening or sits under a section that does. Header-only lines are not items.
 - **`no_citation`:** when a notice has closed-session sections but no cited item anywhere, it yields **one** item with `no_citation: true` whose text is the sections' wording, " / "-joined. A notice with any cited item yields only those: its uncited mentions ("ANNOUNCEMENT OF CLOSED SESSION", "Closed Session Information (Board Only)") belong to the same session.
-- **`notices_reconvene`** is set by a `19.85(2)` citation or wording that states the intent to reconvene in open session.
+- **`notices_reconvene`** is set by a `19.85(2)` citation or wording that states the intent to reconvene in open session ("reconvene [meeting] into open session", "return to open session", even the misspelled "RECONVEVE"), read from the agenda's own pages only (not a packet's bound-in earlier agendas).
+- Labels may have no space after them in some PDFs ("III.The Board"); a label BoardBook doubles ("II.A. II.A.") is read once.
+- **A wrong statute** (SAFER's "19.81(1)(c)") makes the item `no_citation`, but `citation_raw` shows the statute as written and `purpose_text` still reads the named subject. `citation_raw` falls back to any other statute's text only when there is no s. 19.85 citation, so s. 19.86 items show "ss. 19.86 and 111.70 (4)(cm)".
+- **s. 19.86 footnotes:** a heading row carrying an asterisked footnote ("ADJOURNMENT* * The Parties may continue negotiations in closed session pursuant to ss. 19.86 …") yields the footnote as the item, and its subject comes from the earlier item that cites s. 19.86 and names the talks.
 - **19.86-only items** (bargaining negotiations) are kept and counted separately as "s. 19.86 bargaining sessions", never in the exemption mix.
 - **`citations.parse(text)`** returns `exemptions`, `cites_subsection_1`, `other_citations` and `citation_raw`.
   - It found letters in every one of 127 unique citation paragraphs from Wausau, both school districts and Kronenwetter, and every one of Weston's 14.
   - A review caught that D.C. Everest's chained letters were being dropped. That's fixed, and the 6 affected items are now fixtures.
   - The parser passes all 27 fixtures.
 - **`purpose.purpose_text(text)`** returns the notice's own subject.
-  - It looks for text after a marker ("for the purpose of", "regarding", "in regard to", "to wit", "specifically", "to discuss", a bullet), text in parentheses, or text before the citation.
+  - It looks for, in order: text before the citation, kept whole when it names something beyond procedural words ("Meet with Attorney to Discuss Sale of Property"; not "MOTION TO MOVE TO" or "The Board will adjourn to"); text after a marker ("for the purpose of", "regarding", "in regard to", "to wit", "specifically", "to discuss", "including", "discussing", "related to", "relating to", "to hold", a bullet), running to the next citation, bullet, motion or sentence end, so a second "regarding" inside one subject doesn't split it; text in parentheses; and, when none of those names anything, the words right after the last citation.
+  - Every candidate is cut where the statute's own wording begins ("employment, promotion, compensation", "substantial adverse effect", …), so restated statute text never passes as a subject.
   - It returns `""` when the notice only restates the statute and `None` when the item cites nothing.
   - It passes every fixture. On the 110 sample items it found a subject in 109.
   - The sample items were split by paragraph, so some include a neighboring item. Use them to see wording, not as test truth.

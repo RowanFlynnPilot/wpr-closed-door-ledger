@@ -17,31 +17,28 @@ from citations import parse
 _CITATION = re.compile(
     r"(?:\b(?:pursuant\s+to|under)\s+)?"
     r"(?:(?:Wisconsin\s+State\s+Statutes?|Wis\.\s*Stats?\.?(?:\s*(?:sec\.|ss?\.))?|W\.?S\.?S\.?|Sections?|sec\.|ss?\.)\s*)?§*\s*"
-    r"19\s*[./]?\s*8[56]\s*(?:\(\s*\w{1,2}\s*\)?\s*(?:,|and|or|&)?\s*)*"
+    r"19\s*[./]?\s*8[56]\s*(?:(?:,|and|or|&)?\s*\(\s*\w{1,2}\s*\)?\s*,?\s*)*"
     r"(?:\s*,?\s*(?:of\s+the\s+)?(?:Wis(?:consin)?\.?\s*Stat(?:ute)?s?\.?|Wisconsin\s+Statutes))?",
     re.I,
 )
 # Phrases after which a notice names its actual subject.
 _MARKER = re.compile(
     r"(?:\b(?:for\s+the\s+purposes?\s+of|regarding|in\s+regards?\s+to|to\s+wit|specifically|to\s+discuss|re:|"
-    r"including|discussing|related\s+to|relating\s+to)|•)\s*[:\-–—•]?\s*",
+    r"including|discussing|related\s+to|relating\s+to|to\s+hold)|•)\s*[:\-–—•]?\s*",
     re.I,
 )
-_WEAK = re.compile(r"related\s+to|relating\s+to|including", re.I)
 # The start of another motion: a subject clause ends there (Kronenwetter puts
 # two motions in one item).
 _MOTION_START = re.compile(
     r"\b(?:consideration\s+of\s+(?:a\s+)?motion|motion\s+to\s+(?:convene|adjourn|move|go))\b", re.I)
-# Words that carry no subject. If nothing else precedes the citation, the
-# notice named no subject there.
-_BOILERPLATE = re.compile(
-    r"(?:^|\s)(?:[IVXL]+\.|\d+[.)]?|[A-Z]\.)(?=\s)|"
-    r"the\s+board\s+will\s+(?:consider|contemplate)\s+adjournment\s+to|the\s+board\s+will\s+convene\s+into|"
-    r"consideration\s+of\s+(?:a\s+)?motion\s+to\s+(?:convene|adjourn|move|go)\s+(?:in|into|to)|"
-    r"adjourn(?:ment)?\s+to|convene\s+(?:meeting\s+)?into|"
-    r"closed\s+session|pursuant\s+to|\bunder\b|\bwis(?:consin)?\.?\s*stat(?:ute)?s?\.?|[.:,;\-–—]",
-    re.I,
-)
+# Procedural words. Text before the citation made only of these (and item labels)
+# names no subject: "MOTION TO MOVE TO", "The Board will adjourn to", "CONTINUE".
+_PROCEDURAL = set("""
+    the a an board council committee commission education village city will may shall likely entertain
+    consider consideration contemplate of motion motions move moving to into in continue continuing convene
+    convening adjourn adjournment adjourning directly enter entering go recess closed session pursuant under
+    per wis wisconsin stat stats statute statutes state sec section sections s ss meeting meetings regular special
+""".split())
 _NOT_A_SUBJECT = re.compile(r"^(?:board only|if necessary|if needed)$", re.I)
 # The statute's own wording, restated in the notice. A subject candidate is cut
 # where it begins: "To consider the employment, promotion, compensation or
@@ -51,7 +48,10 @@ _STATUTE_WORDING = re.compile(
     r"(?:to\s+)?have\s+a\s+substantial\s+adverse\s+effect|"
     r"employment,\s*promotion,\s*compensation|performance\s+evaluation\s+data|financial,\s*medical,\s*social|"
     r"deliberating\s+or\s+negotiating\s+the\s+purchas|conferring\s+with\s+legal\s+counsel|"
-    r"dismissal,\s*demotion,\s*licensing|crime\s+detection\s+or\s+prevention|quasi-judicial\s+trial",
+    r"dismissal,\s*demotion,\s*licensing|crime\s+detection\s+or\s+prevention|quasi-judicial|"
+    r"a\s+case\s+which\s+was\s+the\s+subject|purchasing\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|"
+    r"competitive\s+or\s+bargaining\s+reasons|personal\s+histories|preliminary\s+consideration\s+of\s+specific|"
+    r"requests?\s+for\s+confidential\s+(?:written\s+)?advice|probation,?\s+extended\s+supervision",
     re.I,
 )
 _FILLER = {"to", "consider", "considering", "the", "of", "a", "an", "and", "or", "for", "data", "any", "on"}
@@ -65,6 +65,11 @@ def _subject(candidate: str) -> str:
     candidate = re.sub(r"(?i)\s+(?:and|or)$", "", candidate)
     meaningful = [w for w in re.findall(r"[\w'’/-]+", candidate.lower()) if w not in _FILLER]
     return candidate if len(meaningful) >= 2 or (meaningful and not found) else ""
+
+
+def _names_something(text: str) -> bool:
+    words = re.findall(r"[A-Za-z']+", text)
+    return any(w.lower() not in _PROCEDURAL and not re.fullmatch(r"[IVXLC]+|[A-Za-z]", w) for w in words)
 
 
 def _clean(text: str) -> str:
@@ -87,25 +92,27 @@ def purpose_text(item_text: str) -> str | None:
     lead = ""
     if first:
         before = _clean(item_text[: first.start()])
-        if before and _subject(_BOILERPLATE.sub(" ", before)):
-            lead =_subject(re.sub(r"(?i)\s*(?:in\s+)?closed\s+session$", "", before).strip())
+        if _names_something(before):
+            lead = _subject(re.sub(r"(?i)\s*(?:in\s+)?closed\s+session$", "", before).strip())
     if lead:
         parts.append(lead)
-    # 2. Subject named after a marker. Take each marker's clause up to the next
-    #    citation, the next marker, the next motion, or the end, so multi-exemption
-    #    items keep every subject. Markers inside a kept lead are already covered.
-    covered = 0
+    # 2. Subject named after a marker. A clause runs to the next citation, bullet or
+    #    motion, so multi-exemption items keep every subject, and a second "regarding"
+    #    inside one subject doesn't split it. Markers inside a kept lead are covered.
+    covered = first.start() if lead else 0
     for marker in _MARKER.finditer(item_text):
-        if lead and marker.start() < first.start() or marker.start() < covered:
+        if marker.start() < covered:
             continue
         rest = item_text[marker.end():]
-        # "related to", "relating to" and "including" sit inside subjects ("three Citizen
-        # Complaints related to the Police Department"), so they don't end a clause.
-        strong = next((m for m in _MARKER.finditer(rest) if not _WEAK.match(m.group())), None)
-        stops = [m.start() for m in (_CITATION.search(rest), strong, _MOTION_START.search(rest)) if m]
+        stops = [m.start() for m in (_CITATION.search(rest), re.search("•", rest), _MOTION_START.search(rest),
+                                     re.search(r"(?<!\b[A-Z])\.\s+[A-Z]", rest)) if m]   # or the sentence's end (not "T. Winters")
         end = min(stops) if stops else len(rest)
         covered = marker.end() + end
-        clause = _subject(_clean(re.sub(r"\([^)]*\)", " ", rest[:end])))
+        clause = _clean(re.sub(r"\([^)]*\)", " ", rest[:end]))
+        while (opening := _MARKER.match(clause)) and opening.end():
+            clause = _clean(clause[opening.end():])        # "specifically, to discuss the ..."
+        clause = re.sub(r"(?i)^and\s+(?:consider|discuss)\s+", "", clause)   # "to discuss and consider the ..."
+        clause = _subject(clause)
         if clause:
             parts.append(clause)
     # 3. Subjects given in parentheses (D.C. Everest's layout).
@@ -114,6 +121,18 @@ def purpose_text(item_text: str) -> str | None:
         if not re.match(r"^\s*(?:\d|[a-h]{1,2}|cm)\s*$", paren, re.I) and not _NOT_A_SUBJECT.match(paren):
             if _subject(paren):
                 parts.append(paren)
+    # 4. Otherwise, the words right after the last citation, to the end of the sentence
+    #    ("CONTINUE IN CLOSED SESSION PURSUANT TO §19.85(1)(c) Reclassification Review ...").
+    if not parts:
+        last = None
+        for last in _CITATION.finditer(item_text):
+            pass
+        if last:
+            rest = item_text[last.end():]
+            stops = [m.start() for m in (re.search(r"\.\s", rest), _MOTION_START.search(rest)) if m]
+            tail = _subject(_clean(rest[: min(stops)] if stops else rest))
+            if tail and _names_something(tail):
+                parts.append(tail)
     seen: list[str] = []
     for part in parts:
         if part and part not in seen:

@@ -35,7 +35,7 @@ _LABEL = re.compile(
     r"|\((?P<paren>\d{1,2}|[a-z]|[ivx]{1,4})\)"                       # "(1)" "(a)"
     r"|(?P<bare>\d{1,2})(?=\s+[A-Z])"                                 # Wausau's "5 Closed Session."
     r"|(?P<ocr>\d{1,2}),(?=\s+[A-Z])"                                 # OCR reads "8." as "8,"
-    r")\s+(?=\S)"
+    r")(?:\s+(?=\S)|(?<=\.)(?=[A-Z][a-z]))"                           # D.C. Everest PDFs: "III.The Board"
 )
 _CLOSED = re.compile(r"closed\s+session", re.I)
 # Mentions of closed session that are not about convening one.
@@ -70,8 +70,11 @@ _KEYWORD_LINE = re.compile(
 _ADJOURN = re.compile(r"^(?:\S{1,6}\s+)?adjourn(?:ment)?\b(?!\s+(?:to|into|in)\b)", re.I)
 # Page headers and footers repeat at the top or bottom of each page.
 _EDGE_LINES = 3
-_RECONVENE = re.compile(  # "RECONVENE MEETING INTO OPEN SESSION" (Wausau) counts too
-    r"19\s*[./]?\s*85\s*\(\s*2\s*\)|reconven\w*\s+(?:\w+\s+){0,2}?(?:in|into|to)\s+(?:the\s+)?open\s+session", re.I)
+# "RECONVENE MEETING INTO OPEN SESSION" (Wausau), "RECONVEVE into Open Session" (a Weston
+# misspelling) and "The Board will return to open session" (D.C. Everest) all state the intent.
+_RECONVENE = re.compile(
+    r"19\s*[./]?\s*85\s*\(\s*2\s*\)|(?:reconv\w*|return\w*)\s+(?:\w+\s+){0,2}?(?:in|into|to)\s+(?:the\s+)?open\s+session",
+    re.I)
 
 
 @dataclass
@@ -150,7 +153,10 @@ def segment(text: str, stop_at_adjourn: bool = True) -> list[Segment]:
                 style = _style(m, previous_upper)
                 if style == "upper":
                     previous_upper = m.group("simple")
-                segments.append(Segment(m.group("label"), line[m.end():], page_no, style))
+                rest = line[m.end():]
+                if rest.startswith(m.group("label") + " "):     # BoardBook sometimes doubles it: "II.A. II.A."
+                    rest = rest[len(m.group("label")) + 1:]
+                segments.append(Segment(m.group("label"), rest, page_no, style))
             elif _KEYWORD_LINE.match(line):
                 segments.append(Segment("", line, page_no, "keyword"))
             elif _is_header(line) and not (segments and segments[-1].style == "header"
@@ -216,7 +222,9 @@ def cites(text: str) -> bool:
 
 
 def notices_reconvene(text: str) -> bool:
-    return bool(_RECONVENE.search(text))
+    """The agenda states the intent to reconvene in open session. Only the agenda's own
+    pages count: a packet's bound-in earlier agendas and minutes don't."""
+    return bool(_RECONVENE.search("\n".join(" ".join(page) for page in agenda_pages(text))))
 
 
 @dataclass(frozen=True)
@@ -300,7 +308,8 @@ def triage(no_citation: bool, cites_subsection_1: bool | None, purpose: str | No
 def item_record(meeting: dict, found: Found, text_source: str) -> dict:
     """One closed_sessions.json row. `meeting` is the meetings.json row."""
     c = citations.parse(found.item_text)
-    purpose = None if found.no_citation else purpose_text(found.subject_from or found.item_text)
+    # None only when the item cites no statute at all; a wrong statute ("19.81(1)(c)") still names a subject.
+    purpose = purpose_text(found.subject_from or found.item_text)
     return {
         "id": item_id(meeting["id"], found.item_text),
         "meeting_id": meeting["id"],
