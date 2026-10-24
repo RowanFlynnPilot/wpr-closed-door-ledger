@@ -23,9 +23,9 @@ SCAN_PAGE_CHARS = 25
 # A document that yields less readable text than this raises: it must never
 # count as "no closed items" because it couldn't be read.
 MIN_DOCUMENT_CHARS = 200
-# HTML agendas are never scans, and real ones can be this short ("I. Call to
-# Order II. Continued Facility Discussion III. Adjourn"); below this the page is empty.
-MIN_HTML_CHARS = 40
+# HTML agendas are never scans, and real ones can hold a single item
+# ("I. VERIFY SCHOOL BOARD ELECTION RESULTS"); below this the page is empty.
+MIN_HTML_CHARS = 10
 
 
 class UnreadableDocument(Exception):
