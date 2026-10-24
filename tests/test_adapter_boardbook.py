@@ -221,8 +221,7 @@ def test_minutes_link_landing_on_listing_raises(served):
 def test_empty_agenda_raises(served):
     pages, _ = served
     pages[boardbook.agenda_url(1360, "674363")] = (
-        b'<div id="Tab-AgendaItem"><table><tr class="agenda-item-information"><td>'
-        b'<div class="form-check">I. CALL TO ORDER</div></td></tr></table></div>')
+        b'<div id="Tab-AgendaItem"><table></table></div>')
     with pytest.raises(documents.UnreadableDocument):
         boardbook.fetch_documents(meeting(None), {})
 
