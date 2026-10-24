@@ -26,6 +26,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import bodies
+import documents
 import extract
 import minutes as minutes_rules
 import store
@@ -198,7 +199,7 @@ def public_projection(config: dict, meetings: list[dict], items: list[dict], rev
                "minutes": item["minutes"] if PUBLISH_MINUTES else None,
                "notice_url": "" if item["meeting_id"] in withheld_meetings else meeting["notice_url"],
                "archive_url": "" if item["meeting_id"] in withheld_meetings or not meeting["notice_file"]
-               else "archive/" + meeting["notice_file"].removeprefix("meetings/"),
+               else public_copy_path(meeting["notice_file"]),
                "review_note": review.get("note") if review.get("decision") in ("confirmed", "flagged") else None}
         public_items.append({k: row[k] for k in PUBLIC_ITEM_FIELDS})
     public_meetings = []
@@ -251,7 +252,28 @@ def write_site(site: Path, root: Path, projection: dict) -> None:
     for path in sorted({i["archive_url"] for i in projection["closed_sessions"] if i["archive_url"]}):
         target = site / path
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(root / "meetings" / path.removeprefix("archive/"), target)
+        target.write_bytes(public_copy(root, path))
+
+
+# --- the public archived copy -----------------------------------------------------
+# What a reader gets from "Archived copy" is the agenda and nothing else. A PDF is
+# cut after the page holding the agenda's closing Adjourn: Weston packets bind the
+# previous meeting's minutes, with residents' names, right behind it. An HTML page
+# (BoardBook, Municode) is published as its extracted text, so the platform's own
+# scripts never run on the ledger's site.
+
+def public_copy_path(notice_file: str) -> str:
+    path = "archive/" + notice_file.removeprefix("meetings/")
+    return path.rsplit(".", 1)[0] + ".txt" if path.endswith(".html") else path
+
+
+def public_copy(root: Path, path: str) -> bytes:
+    archived = root / "meetings" / path.removeprefix("archive/")
+    text_file = archived.with_suffix(".txt")
+    if path.endswith(".txt"):
+        return text_file.read_bytes()
+    agenda = extract.agenda_pages(text_file.read_text(encoding="utf-8"))
+    return documents.first_pages(archived.read_bytes(), len(agenda))
 
 
 # --- summary -------------------------------------------------------------------

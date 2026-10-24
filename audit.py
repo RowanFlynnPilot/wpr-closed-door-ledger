@@ -33,13 +33,16 @@ def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
 
 
-def requests(config: dict, items: list[dict], quarter: str) -> dict[str, list[dict]]:
-    """Custodian -> the quarter's noticed closed sessions for bodies it keeps records for."""
+def requests(config: dict, items: list[dict], quarter: str, skip: set[str]) -> dict[str, list[dict]]:
+    """Custodian -> the quarter's noticed closed sessions for bodies it keeps records for.
+
+    `skip` holds item ids left out: withheld items (their wording may name a student)
+    and items of canceled meetings."""
     index = quarters.body_index(config)
     grouped: dict[str, list[dict]] = {}
     for item in items:
         bargaining_only = not item["exemptions"] and not item["no_citation"]
-        if not quarters.in_quarter(item["meeting_date"], quarter) or bargaining_only:
+        if not quarters.in_quarter(item["meeting_date"], quarter) or bargaining_only or item["id"] in skip:
             continue
         for custodian in dict.fromkeys(index[b]["custodian"] for b in item["bodies"]):
             grouped.setdefault(custodian, []).append(item)
@@ -76,7 +79,11 @@ def main(argv: list[str] | None = None) -> int:
     items = json.loads((args.archive / "data" / "closed_sessions.json").read_text(encoding="utf-8"))
     meetings = {m["id"]: m for m in json.loads((args.archive / "data" / "meetings.json").read_text(encoding="utf-8"))}
     template = TEMPLATE.read_text(encoding="utf-8")
-    grouped = requests(config, items, args.quarter)
+    reviews_path = args.archive / "reviews.json"
+    reviews = json.loads(reviews_path.read_text(encoding="utf-8")) if reviews_path.exists() else {}
+    skip = {i["id"] for i in items if reviews.get(i["id"], {}).get("decision") == "withhold"
+            or meetings[i["meeting_id"]]["canceled"]}
+    grouped = requests(config, items, args.quarter, skip)
     out = args.archive / "audit" / args.quarter.replace("Q", "-Q")
     summary = [f"# Records audit requests, {args.quarter}", "",
                "Not filed. Each file is one request; fill the bracketed requester fields, send it, "

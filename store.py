@@ -86,6 +86,11 @@ def apply_document(root: Path, record: dict, kind: str, doc: DocFile | Unchanged
     if isinstance(doc, Unchanged) or any(v["sha256"] == doc.sha256 for v in versions(record, kind)):
         return False
     folder = meeting_dir(root, record["jurisdiction"], record["meeting_id"])
+    # An HTML page's chrome changes on its own (BoardBook's copyright years and asset
+    # versions such as "All.27.css"); its document is the agenda text. Same text, same version.
+    if doc.extension == "html" and any((folder / v["text_file"]).read_text(encoding="utf-8") == doc.text
+                                       for v in versions(record, kind)):
+        return False
     folder.mkdir(parents=True, exist_ok=True)
     stem = f"{kind}-{doc.sha256[:12]}"
     # The archive may hold no file over 50 MB; above MAX_FILE the version keeps

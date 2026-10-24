@@ -76,12 +76,13 @@ def run_jurisdiction(root: Path, config: dict, jurisdiction: str, since: date, t
         record = record or store.new_record(meeting, seen_at)
         store.update_listing(record, meeting, seen_at)
         if _excluded(config, meeting):
+            # Not marked fetched: if bodies.yaml later keeps this meeting, the next run fetches it.
             excluded += 1
         else:
             docs = adapter.fetch_documents(meeting, store.known_files(record))
             new_versions += store.apply_document(root, record, "notice", docs.notice, seen_at)
             new_versions += store.apply_document(root, record, "minutes", docs.minutes, seen_at)
-        record["last_fetched"] = seen_at
+            record["last_fetched"] = seen_at
         store.save(root, record)
         if i % 25 == 0:
             print(f"  {jurisdiction}: {i}/{len(todo)}", flush=True)

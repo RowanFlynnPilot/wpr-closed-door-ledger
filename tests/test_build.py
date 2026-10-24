@@ -20,8 +20,20 @@ SALE = ("4. Adjourn to Closed Session pursuant to Wisconsin State Statute § 19.
         "regard to the sale of 424 Burns Street, Wausau.") + " filler" * 40
 
 
+def _pdf(pages: int) -> bytes:
+    import io
+    import pypdf
+    writer = pypdf.PdfWriter()
+    for _ in range(pages):
+        writer.add_blank_page(612, 792)
+    out = io.BytesIO()
+    writer.write(out)
+    return out.getvalue()
+
+
 def _doc(text: str) -> DocFile:
-    content = text.encode("utf-8")
+    # A real PDF with one page per text page, made unique by a trailing comment.
+    content = _pdf(text.count("\f") + 1) + b"%" + hashlib.sha256(text.encode("utf-8")).hexdigest().encode()
     return DocFile("notice", "https://example.test/f", content, "pdf", hashlib.sha256(content).hexdigest(),
                    text, "text_layer", len(content), 1)
 
@@ -127,3 +139,15 @@ def test_minutes_facts_and_unnoticed_sessions(archive):
     assert m["minutes"]["vote_record"] == "result_only" and m["minutes"]["exemption_in_minutes"]
     p = build.public_projection(CONFIG, meetings, items, {})
     assert all(i["minutes"] is None for i in p["closed_sessions"])      # not published until validated
+
+
+def test_public_copy_is_the_agenda_only(tmp_path):
+    import io
+    import pypdf
+    packet = CLAIMS + "\n8. Adjourn" + "\f" + "MINUTES OF THE PREVIOUS MEETING\nPublic comment: a resident of 123 Main St."
+    _add(tmp_path, "930", "Board Of Public Works Regular Meeting", "2026-06-09T10:30", [("2026-06-05T12:00:00Z", packet)])
+    meetings, items = build.build_internal(tmp_path, CONFIG)
+    p = build.public_projection(CONFIG, meetings, items, {})
+    url = next(i["archive_url"] for i in p["closed_sessions"] if i["meeting_id"] == "wausau:930")
+    assert len(pypdf.PdfReader(io.BytesIO(build.public_copy(tmp_path, url))).pages) == 1
+    assert build.public_copy_path("meetings/wausau_sd/1/notice-abc.html") == "archive/wausau_sd/1/notice-abc.txt"
