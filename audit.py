@@ -86,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
         lines = [list_line(i, index, meetings[i["meeting_id"]]["notice_url"]) for i in rows]
         name = f"{slug(custodian)}.md"
         summary.append(f"| {custodian} | {len(rows)} | {name} |")
-        print(f"{custodian}: {len(rows)} closed sessions")
+        print(f"{custodian}: {len(rows)} closed-session item{'' if len(rows) == 1 else 's'}")
         if not args.dry_run:
             out.mkdir(parents=True, exist_ok=True)
             (out / name).write_text(fill(template, custodian, args.quarter, lines), encoding="utf-8")
