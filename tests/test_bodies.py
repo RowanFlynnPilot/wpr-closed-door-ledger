@@ -26,6 +26,8 @@ def test_every_real_title_maps():
 def test_rules():
     m = bodies.match(CONFIG, "wausau", "1", "CANCELED - Plan Commission Meeting")
     assert m.bodies == ["wausau-plan-commission"] and m.canceled
+    assert bodies.match(CONFIG, "kronenwetter", "1", "Police and Fire Commission Meeting--CANCELLED").canceled
+    assert not bodies.match(CONFIG, "kronenwetter", "1", "Village Board Meeting").canceled
     assert bodies.match(CONFIG, "wausau", "1", "Possible Quorum of the Common Council").excluded
     assert bodies.match(CONFIG, "wausau", "1", "*TEST MEETING").excluded          # normalized before exclude
     joint = bodies.match(CONFIG, "wausau", "1", "Joint Meeting of the Finance Committee and the Economic Development Committee")

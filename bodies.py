@@ -13,7 +13,9 @@ from pathlib import Path
 import yaml
 
 _MARKERS = re.compile(r"^\s*(?:[\*\s]*(?:revised|cancel+ed)\b[\s\-:*]*|\*+\s*)+", re.I)
-_CANCELED = re.compile(r"^[\s\*]*(?:revised\b[\s\-:*]*)?\**\s*cancel+ed\b", re.I)
+# Canceled may lead or trail: "CANCELED - Plan Commission", "*Cancelled* ...",
+# "Police and Fire Commission Meeting--CANCELLED" (Kronenwetter).
+_CANCELED = re.compile(r"^[\s\*]*(?:revised\b[\s\-:*]*)?\**\s*cancel+ed\b|[\s\-*]cancel+ed[\s*]*$", re.I)
 
 
 class UnmatchedMeeting(Exception):
@@ -42,7 +44,7 @@ def normalize(title: str) -> str:
 def match(config: dict, jurisdiction: str, meeting_id: str, title: str,
           category_id: int | None = None) -> Match:
     jur = config["jurisdictions"][jurisdiction]
-    canceled = bool(_CANCELED.match(title))
+    canceled = bool(_CANCELED.search(title))
     clean = normalize(title)
     if any(re.search(p, clean, re.I) for p in jur.get("exclude", [])):
         return Match([], canceled, True)
