@@ -255,6 +255,7 @@ class Found:
     page: int
     no_citation: bool
     subject_from: str | None = None     # another item that names this one's subject (s. 19.86 footnotes)
+    context: str | None = None          # the agenda item an unnumbered closed-session line sits under
 
 
 # A heading row carrying an asterisked footnote: "ADJOURNMENT* * The Parties may
@@ -275,7 +276,15 @@ def _cited(segments: list[Segment], i: int, picked: list[int]) -> Found:
         earlier = [segments[j].text for j in range(i) if j not in picked
                    and any(o.startswith("19.86") for o in citations.parse(segments[j].text).other_citations)]
         subject_from = earlier[-1] if earlier else None
-    return Found(text, segments[i].page, False, subject_from)
+    # An unnumbered "CLOSED SESSION pursuant to ..." line under a numbered item ("4. HEARING:
+    # Appeal of Declaration of Chronic Nuisance Premises - 1013 N. Third Avenue") is that item's
+    # closed session: when the line names nothing itself, the item above names the subject.
+    context = None
+    if segments[i].style == "keyword" and i > 0 and i - 1 not in picked:
+        above = segments[i - 1]
+        if above.style not in ("header", "preamble", "keyword") and not _CLOSED.search(above.text):
+            context = above.text
+    return Found(text, segments[i].page, False, subject_from, context)
 
 
 def closed_items(text: str) -> list[Found]:
@@ -428,6 +437,8 @@ def item_record(meeting: dict, found: Found, text_source: str) -> dict:
     c = citations.parse(found.item_text)
     # None only when the item cites no statute at all; a wrong statute ("19.81(1)(c)") still names a subject.
     purpose = purpose_text(found.subject_from or found.item_text)
+    if purpose == "" and found.context:
+        purpose = re.sub(r"\s+", " ", found.context).strip(" .;:")
     return {
         "id": item_id(meeting["id"], found.item_text),
         "meeting_id": meeting["id"],

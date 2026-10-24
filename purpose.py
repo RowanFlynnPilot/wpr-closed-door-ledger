@@ -56,6 +56,7 @@ _STATUTE_WORDING = re.compile(
     r"(?:to\s+)?have\s+a\s+substantial\s+adverse\s+effect|"
     r"employment,\s*promotion,\s*compensation|performance\s+evaluation\s+data|financial,\s*medical,\s*social|"
     r"deliberating\s+or\s+negotiating\s+the\s+purchas|conferring\s+with\s+legal\s+counsel|"
+    r"legal\s+counsel'?s?\s+(?:who\s+is\s+rendering\s+)?(?:oral\s+or\s+)?written\s+advice|strategy\s+to\s+be\s+adopted|"
     r"dismissal,\s*demotion,\s*licensing|crime\s+detection\s+or\s+prevention|(?:judicial\s+or\s+)?quasi-judicial\s+trial|"
     r"(?:deliberating\s+(?:concerning\s+|on\s+)?)?a\s+case\s+which\s+was\s+the\s+subject|purchasing\s+of\s+public\s+propert|investing\s+of\s+public\s+funds|"
     r"competitive\s+(?:or|and)\s+bargaining\s+reasons|personal\s+histories|preliminary\s+consideration\s+of\s+specific|"
@@ -115,7 +116,7 @@ def purpose_text(item_text: str) -> str | None:
             continue
         rest = item_text[marker.end():]
         stops = [m.start() for m in (_CITATION.search(rest), re.search("•", rest), _MOTION_START.search(rest),
-                                     _SENTENCE_END.search(rest), re.search(r";\s*t\s?o\s+wit", rest, re.I),
+                                     _SENTENCE_END.search(rest), re.search(r"[;,]\s*t\s?o[\s-]+wit", rest, re.I),
                                      re.search(r"^[^(]*?\)", rest)) if m]           # the parenthesis it sits in
         end = min(stops) if stops else len(rest)
         clause = _clean(_SHORT_PAREN.sub(" ", rest[:end]))

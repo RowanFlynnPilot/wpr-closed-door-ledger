@@ -834,6 +834,58 @@
      "purpose": "possible action on Nominal Payment Parcel Report for Business Campus Trail E-W Connector, Project ID 6999-18-11, for the following properties: 8101 International Drive and 7801 International Drive"
     }
    ]
+  },
+  {
+   "id": "wausau-1771",
+   "jurisdiction": "wausau",
+   "source": "wausau:1771 (excerpt)",
+   "note": "An unnumbered CLOSED SESSION line under a hearing item takes the hearing as its subject. (blind check, round 11)",
+   "text": "4 HEARING: Appeal of Declaration of Chronic Nuisance Premises - 1013 N. Third Avenue.\nCLOSED SESSION pursuant to Section 19. 85( 1)( a) of the Wisconsin Statutes: Deliberating\nconcerning a case which was the subject of any judicial or quasi-judicial trial or hearing before\nthat governmental body.\nRECONVENE Into Open Session for the purpose of making a determination on the declaration",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "a"
+     ],
+     "starts": "CLOSED SESSION pursuant to Section 19. 8",
+     "purpose": "HEARING: Appeal of Declaration of Chronic Nuisance Premises - 1013 N. Third Avenue"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-0607e7cf2d7d4c9eadeeb195723",
+   "jurisdiction": "kronenwetter",
+   "source": "kronenwetter:0607e7cf2d7d4c9eadeeb195723afbc9 (excerpt)",
+   "note": "'regarding legal counsel's written advice concerning strategy' is (g)'s wording, not a subject. (blind check, round 11)",
+   "text": "2. ANNOUNCEMENT OF CLOSED SESSION\n3. APPROVAL OF MINUTES\nC. Approve 02/26/2024 meeting minutes.\n4. PUBLIC COMMENT Please be advised per State Statute Section 19.84(2), information will be received from the public. It is the policy of this Village that Public Comment will take no longer than 15 minutes with a three-minute time period, per person, with time extension per the Chief Presiding Officer’s discretion. Be further advised that there may be limited discussion on the information received, however, no action will be taken under public comments.\n5. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85(1)(c) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit interview Fire Department applicant; and pursuant to Section 19.85(1)(g) regarding legal counsel's written advice concerning strategy to be adopted by the body.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c",
+      "g"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "interview Fire Department applicant"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-763b2c94696943899b989bc8491",
+   "jurisdiction": "kronenwetter",
+   "source": "kronenwetter:763b2c94696943899b989bc84911ab4a (excerpt)",
+   "note": "A second ', to wit' starts a second subject. (blind check, round 11)",
+   "text": "2. ANNOUNCEMENT OF CLOSED SESSION\n3. PUBLIC COMMENT Please be advised per State Statute Section 19.84(2), information will be received from the public. It is the policy of this Village that Public Comment will take no longer than 15 minutes with a three-minute time period, per person, with time extension per the Chief Presiding Officer’s discretion. Be further advised that there may be limited discussion on the information received, however, no action will be taken under public comments.\n4. REPORTS FROM STAFF AND VENDORS\nC. Community Development Director Report\nD. Interim Finance Director Report\nE. Public Works Director Report\nF. Village President Report - Additional Assigned Duties\n5. CONSENT AGENDA - DISCUSSION AND POSSIBLE ACTION\nG. Operator \"Bartender\" License - Renee Peet\nH. July 14, 2025 Village Board Meeting Minutes\n6. OLD BUSINESS - DISCUSSION AND POSSIBLE ACTION\nI. Update on Riverside/Kronenwetter Fire Departments' Relationship\nJ. Discontinuation of Fluoridation in Village Water (CLIPP)\nK. Proposed Changes to § 520-121. - Conditional Use Permits (PC)\nL. Proposed Changes to § 520-124. - Site Plan Procedures (PC)\n7. NEW BUSINESS - DISCUSSION AND POSSIBLE ACTION\nM. Village Board Members' Budget Training Report\nN. 2026 Budget Guidelines and Expectations (APC)\n8. REVIEW AND DISCUSSION OF AUGUST 11, 2025 VB AGENDA ACTION ITEMS\nO. FIN-004 Policy Review (APC)\n9. PREVIOUS MEETING MINUTES FROM COMMISSIONS AND COMMITTEES\nP. March 27, 2025 Administrative Policy Committee Meeting Minutes\nQ. April 9, 2025 Administrative Policy Committee Meeting Minutes\nR. April 23, 2025 Administrative Policy Committee Meeting Minutes\nS. June 19, 2025 Administrative Policy Committee Meeting Minutes\nT. June 24, 2025 Administrative Policy Committee Meeting Minutes\n10. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit Interim Finance Director Employment Options, to wit Update on Administrator Search Process",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "Interim Finance Director Employment Options; Update on Administrator Search Process"
+    }
+   ]
   }
  ]
 }

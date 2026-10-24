@@ -217,6 +217,7 @@ Sources: [Wis. Stat. 19.85](https://docs.legis.wisconsin.gov/statutes/statutes/1
   - The parser passes all 27 fixtures.
 - **`purpose.purpose_text(text)`** returns the notice's own subject.
   - It looks for, in order: text before the citation, kept whole when it names something beyond procedural words ("Meet with Attorney to Discuss Sale of Property"; not "MOTION TO MOVE TO" or "The Board will adjourn to"); text after a marker ("for the purpose of", "regarding", "in regard to", "to wit", "specifically", "to discuss", "including", "discussing", "related to", "relating to", "to hold", a bullet), running to the next citation, bullet, motion or sentence end, so a second "regarding" inside one subject doesn't split it; text in parentheses; and, when none of those names anything, the words right after the last citation.
+  - An unnumbered "CLOSED SESSION pursuant to …" line that names nothing, sitting under a numbered item ("4. HEARING: Appeal of Declaration of Chronic Nuisance Premises – 1013 N. Third Avenue"), takes that item's text as its subject.
   - Every candidate is cut where the statute's own wording begins ("employment, promotion, compensation", "substantial adverse effect", …), so restated statute text never passes as a subject.
   - It returns `""` when the notice only restates the statute and `None` when the item cites nothing.
   - It passes every fixture. On the 110 sample items it found a subject in 109.
