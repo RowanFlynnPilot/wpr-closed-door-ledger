@@ -54,16 +54,21 @@ class Citations:
 
 def parse(text: str) -> Citations:
     found: list[tuple[int, str]] = []
-    raw: list[str] = []
+    raw: list[tuple[int, str]] = []
     has_sub1: list[bool] = []
+    spans: list[tuple[int, int]] = []
     for match in _CITE_1985.finditer(text):
-        raw.append(re.sub(r"\s+", " ", match.group(0)).strip(" ,"))
+        raw.append((match.start(), re.sub(r"\s+", " ", match.group(0)).strip(" ,")))
+        spans.append(match.span())
         has_sub1.append(bool(_HAS_SUB1.match(match.group(0))))
         for letter in re.finditer(_LETTER, match.group(1), re.I):
             found.append((match.start(1) + letter.start(), letter.group(1).lower()))
     if found:
         for match in _CONTINUATION.finditer(text):
             found.append((match.start(), match.group(1).lower()))
+            # D.C. Everest's chained "(e) for ...": its own piece of the citation as written.
+            if not any(start <= match.start() < end for start, end in spans):
+                raw.append((match.start(), f"({match.group(1)})"))
     letters: list[str] = []
     for _, letter in sorted(found):
         if letter not in letters:
@@ -78,5 +83,5 @@ def parse(text: str) -> Citations:
         exemptions=letters,
         cites_subsection_1=all(has_sub1) if has_sub1 else None,
         other_citations=others,
-        citation_raw="; ".join(raw),
+        citation_raw="; ".join(r for _, r in sorted(raw)),
     )

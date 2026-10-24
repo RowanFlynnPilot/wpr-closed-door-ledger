@@ -45,7 +45,8 @@ _NOT_CONVENE = re.compile(
     r"(?:discussed|taken\s+up|considered)\s+in\s+(?:the\s+)?closed\s+session|"
     r"\bminutes\b|closed\s+session\s+(?:[IVX]+\s+)?(?:of|held|on)\s+(?:\w+\s+)?\d|"
     r"prior\s+to\s+(?:any\s+)?(?:potential\s+|possible\s+)?closed\s+session|"
-    r"action\s+on\s+(?:the\s+)?closed\s+session",
+    r"action\s+on\s+(?:the\s+)?closed\s+session|"
+    r"closed\s+session\s+(?:was\s+|has\s+been\s+)?(?:removed|cancel+ed|deleted|struck|withdrawn)",  # amendment notes
     re.I,
 )
 # Wording that convenes a closed session even when the item also mentions reconvening.
@@ -69,7 +70,8 @@ _KEYWORD_LINE = re.compile(
 _ADJOURN = re.compile(r"^(?:\S{1,6}\s+)?adjourn(?:ment)?\b(?!\s+(?:to|into|in)\b)", re.I)
 # Page headers and footers repeat at the top or bottom of each page.
 _EDGE_LINES = 3
-_RECONVENE = re.compile(r"19\s*[./]?\s*85\s*\(\s*2\s*\)|reconven\w*\s+(?:in|into|to)\s+(?:the\s+)?open\s+session", re.I)
+_RECONVENE = re.compile(  # "RECONVENE MEETING INTO OPEN SESSION" (Wausau) counts too
+    r"19\s*[./]?\s*85\s*\(\s*2\s*\)|reconven\w*\s+(?:\w+\s+){0,2}?(?:in|into|to)\s+(?:the\s+)?open\s+session", re.I)
 
 
 @dataclass
@@ -222,6 +224,28 @@ class Found:
     item_text: str
     page: int
     no_citation: bool
+    subject_from: str | None = None     # another item that names this one's subject (s. 19.86 footnotes)
+
+
+# A heading row carrying an asterisked footnote: "ADJOURNMENT* * The Parties may
+# continue negotiations in closed session pursuant to ss. 19.86 ..." (Wausau SD).
+_FOOTNOTE = re.compile(r"^[A-Z][A-Z ]{2,40}\*\s*\*\s*(?P<note>\S.*)$")
+
+
+def _cited(segments: list[Segment], i: int, picked: list[int]) -> Found:
+    """A cited closed-session item. A footnote is the item, not the heading it hangs from;
+    a s. 19.86 footnote takes its subject from the item that cites s. 19.86 and names the talks."""
+    text = segments[i].text
+    footnote = _FOOTNOTE.match(text)
+    if footnote and _CLOSED.search(footnote["note"]):
+        text = footnote["note"]
+    subject_from = None
+    c = citations.parse(text)
+    if not c.exemptions and any(o.startswith("19.86") for o in c.other_citations):
+        earlier = [segments[j].text for j in range(i) if j not in picked
+                   and any(o.startswith("19.86") for o in citations.parse(segments[j].text).other_citations)]
+        subject_from = earlier[-1] if earlier else None
+    return Found(text, segments[i].page, False, subject_from)
 
 
 def closed_items(text: str) -> list[Found]:
@@ -233,11 +257,11 @@ def closed_items(text: str) -> list[Found]:
     sections cite nothing yields ONE no_citation item: their wording, " / "-joined.
     """
     segments = segment(text)
-    cited = [Found(seg.text, seg.page, False) for i, seg in enumerate(segments)
-             if cites(seg.text) and (convenes(seg.text)
-                                     or any(convenes(segments[a].text) for a in _ancestors(segments, i)))]
-    if cited:
-        return cited
+    picked = [i for i, seg in enumerate(segments)
+              if cites(seg.text) and (convenes(seg.text)
+                                      or any(convenes(segments[a].text) for a in _ancestors(segments, i)))]
+    if picked:
+        return [_cited(segments, i, picked) for i in picked]
     uncited: list[tuple[int, str]] = []
     taken: set[int] = set()
     for i, seg in enumerate(segments):
@@ -276,7 +300,7 @@ def triage(no_citation: bool, cites_subsection_1: bool | None, purpose: str | No
 def item_record(meeting: dict, found: Found, text_source: str) -> dict:
     """One closed_sessions.json row. `meeting` is the meetings.json row."""
     c = citations.parse(found.item_text)
-    purpose = None if found.no_citation else purpose_text(found.item_text)
+    purpose = None if found.no_citation else purpose_text(found.subject_from or found.item_text)
     return {
         "id": item_id(meeting["id"], found.item_text),
         "meeting_id": meeting["id"],

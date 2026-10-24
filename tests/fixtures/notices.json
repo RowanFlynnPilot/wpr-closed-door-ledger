@@ -5,9 +5,9 @@
    "id": "wausau-792",
    "jurisdiction": "wausau",
    "source": "CivicClerk event 792 (Board of Public Works), May 6, 2025",
-   "note": "Numbered items, two closed sessions, (d) without (1); reconvene item has no citation.",
+   "note": "Numbered items, two closed sessions, (d) without (1); reconvene item has no citation. \"RECONVENE MEETING INTO OPEN SESSION\" states the intent to reconvene (blind check, round 1).",
    "text": "AGENDA ITEMS FOR CONSIDERATION (All items listed may be acted upon)\n1. Approve minutes of the April 29, 2025 meeting.\n2. 2025 Street Construction Project \"A\" - Randolph Street & Cherry Street, Haas Sons, Inc., Pay\nEstimate #1.\n3. 2024 Jefferson Parking Ramp Stairwell Cleaning & Coating Project, Advanced Coating Solutions,\nFinal Payment.\n4. Alexander-Airport Park Pickleball Court Construction: S.D. Ellenbecker Inc., Pay Estimate #1.\n5. CLOSED SESSION pursuant to Section 19.85(d), Wis. Stats., for the purpose of considering and\ndeliberating on pre-qualification statements for 2025 Street Sealcoating Project.\n6. CLOSED SESSION pursuant to Section 19.85(1)(g), Wis. Stats., for the purpose of deliberating on\nclaims.\n7. RECONVENE MEETING INTO OPEN SESSION for the purpose of acting upon closed session\nitem, if necessary.\nERIC LINDMAN, PE",
-   "notices_reconvene": false,
+   "notices_reconvene": true,
    "items": [
     {
      "exemptions": [
@@ -103,13 +103,14 @@
    "id": "wausau_sd-639532",
    "jurisdiction": "wausau_sd",
    "source": "BoardBook 1360 meeting 639532, June 10, 2024",
-   "note": "Bargaining under s. 19.86; the closed-session note is a footnote in the ADJOURNMENT row.",
+   "note": "Bargaining under s. 19.86; the closed-session note is a footnote in the ADJOURNMENT row. The footnote is the item; its subject is the negotiations item (blind check, round 1).",
    "text": "I. INTRODUCTIONS\nII. INITIAL NEGOTIATIONS MEETING BETWEEN REPRESENTATIVES OF THE WAUSAU BOARD OF EDUCATION AND THE WAUSAU EDUCATION ASSOCIATION TO EXCHANGE INITIAL PROPOSALS IN WRITING FOR THE 2024-25 SCHOOL YEAR AND PURSUANT TO SECTIONS 19.86 AND 111.70(4)(CM)(2)\nIII. ADJOURNMENT* * The Parties may continue negotiations in closed session pursuant to ss. 19.86 and 111.70 (4)(cm).",
    "notices_reconvene": false,
    "items": [
     {
      "exemptions": [],
-     "starts": "ADJOURNMENT* * The Parties may continue"
+     "starts": "The Parties may continue negotiations in",
+     "purpose_starts": "INITIAL NEGOTIATIONS MEETING BETWEEN"
     }
    ]
   },
@@ -159,7 +160,8 @@
      "exemptions": [
       "c"
      ],
-     "starts": "CLOSED SESSION"
+     "starts": "CLOSED SESSION",
+     "purpose": "Interviewing Village Clerk Candidates"
     }
    ]
   },
@@ -230,6 +232,98 @@
       "f"
      ],
      "starts": "CLOSED SESSION pursuant to Wis. Stat. 19."
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-732366",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 732366, Feb 23, 2026",
+   "note": "An amendment note 'CLOSED SESSION REMOVED' is not a closed session (blind check, round 1).",
+   "text": "X. Referendum Budget Update Description: Estimated Time to Present: 10 Minutes As the April 2022 referendum funded facility improvements continue to develop, the construction and budget updates will routinely be presented until projects are completed.\nXI. ADJOURN AMENDED: CLOSED SESSION REMOVED: FEBRUARY 20, 2026, AT 1:30 PM *** Following the adjournment of the meeting, the public is welcome to join the Board and Administration on a tour of the recent updates to Wausau West High School and the Planetarium. A quorum of the Board will be present; however, no official Board action will occur. ***",
+   "notices_reconvene": false,
+   "items": []
+  },
+  {
+   "id": "wausau_sd-628365",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 628365, Apr 8, 2024",
+   "note": "X.A only restates the statute before 'Wis. Stat. sec.': no subject (blind check, round 1).",
+   "text": "X. REQUEST FOR CLOSED SESSION PURSUANT TO STATE STATUTES\nX.A. To consider the employment, promotion, compensation or performance evaluation data of an employee pursuant to Wis. Stat. sec. 19.85(1)(c)\nX.B. Consideration of contracts for Preliminary Notice of Non-renewal ss. 19.85(1)(c)\nX.C. Reconvene in Open Session, to take further action if necessary and appropriate",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "To consider the employment, promotion, co",
+     "purpose": ""
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Consideration of contracts for Prelimina",
+     "purpose": "Consideration of contracts for Preliminary Notice of Non-renewal"
+    }
+   ]
+  },
+  {
+   "id": "wausau-2148",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 2148 (Police & Fire Commission), June 22, 2026; complainants' initials replaced",
+   "note": "Subject after the (f) wording, introduced by 'related to'; 'Reconvene meeting into open session' (blind check, round 1).",
+   "text": "4 Closed Session.\nConvene Meeting into Closed Session pursuant to 19.85(1)(f) for consideration of\nfinancial, medical, social, or personal histories or disciplinary data of specific persons,\npreliminary consideration of specific personnel problems and/or the investigation of\ncharges against specific persons, which, if discussed in public, would be likely to have a\nsubstantial adverse effect upon the reputation of any person referred to in such\ncomplaint, for consideration and deliberation related to three Citizen Complaints related\nto the Police Department made by A.B. and C.D. and one Citizen Complaint related to\nthe Fire Department made by E.F.\n5 Open Session.\nReconvene meeting into open session for the purpose of potential action upon closed\nsession items.\n6 Discussion and possible action.",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "f"
+     ],
+     "starts": "Closed Session. Convene Meeting into Clos",
+     "purpose": "three Citizen Complaints related to the Police Department made by A.B. and C.D. and one Citizen Complaint related to the Fire Department made by E.F"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-75887897",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode 75887897bf254d12b99a9390f2741ee7, Aug 19, 2025",
+   "note": "Two motions in one item: each 'to wit' subject ends where the next motion begins (blind check, round 1).",
+   "text": "2. ANNOUNCEMENT OF CLOSED SESSION\n3. PUBLIC COMMENT Please be advised per State Statute Section 19.84(2), information will be received from the public. It is the policy of this Village that Public Comment will take no longer than 15 minutes with a three-minute time period, per person, with time extension per the Chief Presiding Officer’s discretion. Be further advised that there may be limited discussion on the information received, however, no action will be taken under public comments.\n4. CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit Administrator Interviews Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)(e) for consideration of deliberation or negotiating the purchase of public properties, the investing of public funds- to wit Potential Acquisition of Property",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c",
+      "e"
+     ],
+     "starts": "CLOSED SESSION Consideration of motion t",
+     "purpose": "Administrator Interviews; Potential Acquisition of Property"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-685216",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 685216, Apr 23, 2025",
+   "note": "A subject written before the citation is kept whole, 'Meet with Attorney' included (blind check, round 1).",
+   "text": "II. Request for Closed Session Pursuant to State Statutes\nII.A. Meet with Attorney to Discuss Sale of Property ss. 19.85(1)(e)\nII.B. Pursuant to Section 19.85(1)(c), Wis. Stats., to consider employment, promotion, compensation, or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility, specifically, to discuss the employment of a member of the teaching staff.\nII.C. Reconvene in Open Session, to take further action if necessary and appropriate",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "Meet with Attorney to Discuss Sale of Pro",
+     "purpose": "Meet with Attorney to Discuss Sale of Property"
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Pursuant to Section 19.85(1)(c), Wis. Sta",
+     "purpose": "the employment of a member of the teaching staff"
     }
    ]
   }

@@ -10,7 +10,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import extract  # noqa: E402
-from citations import parse  # noqa: E402
 
 CASES = json.loads((ROOT / "tests" / "fixtures" / "notices.json").read_text(encoding="utf-8"))["cases"]
 
@@ -19,12 +18,17 @@ def test_notices():
     failures = []
     for case in CASES:
         found = extract.closed_items(case["text"])
-        got = [{"exemptions": parse(f.item_text).exemptions, "no_citation": f.no_citation,
-                "starts": f.item_text[:40]} for f in found]
+        meeting = {"id": case["id"], "bodies": [], "meeting_date": ""}
+        rows = [extract.item_record(meeting, f, "text_layer") for f in found]
+        got = [{"exemptions": r["exemptions"], "no_citation": r["no_citation"], "starts": r["item_text"][:40],
+                "purpose": r["purpose_text"]} for r in rows]
         want = case["items"]
         ok = len(got) == len(want) and all(
             g["exemptions"] == w["exemptions"] and g["no_citation"] == w.get("no_citation", False)
-            and g["starts"].startswith(w["starts"][:40]) for g, w in zip(got, want))
+            and g["starts"].startswith(w["starts"][:40])
+            and ("purpose" not in w or g["purpose"] == w["purpose"])
+            and ("purpose_starts" not in w or (g["purpose"] or "").startswith(w["purpose_starts"]))
+            for g, w in zip(got, want))
         ok = ok and extract.notices_reconvene(case["text"]) == case["notices_reconvene"]
         if not ok:
             failures.append((case["id"], got, want))

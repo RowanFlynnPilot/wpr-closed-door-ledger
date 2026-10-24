@@ -361,7 +361,7 @@
       "jurisdiction": "dc_everest",
       "meeting_date": "January 14, 2026",
       "source": "BoardBook 1315 meeting 721905",
-      "note": "Later exemption letters follow the first exemption's paraphrase and parenthetical, without repeating '19.85'.",
+      "note": "Later exemption letters follow the first exemption's paraphrase and parenthetical, without repeating '19.85'. citation_raw keeps the chained letters (blind check, round 1).",
       "text": "XII. The Board will consider adjournment to Closed Session pursuant to W.S.S. 19.85(1)(f) Considering ... disciplinary data of specific persons, or the investigation of charges against specific persons which, if discussed in public, would be likely to have a substantial adverse effect upon the reputation of any person referred to in such histories or data, or involved in such problems or investigations (student safety incident), (e) for deliberating or negotiating the purchasing of public properties, the investing of public funds or conducting other specified public business whenever competitive or bargaining reasons require a closed session (teacher negotiations, compensation planning), and (c) considering employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility (working on the Superintendent's review). The Board will adjourn directly from Closed Session.",
       "expected": {
         "exemptions": [
@@ -371,7 +371,8 @@
         ],
         "cites_subsection_1": true,
         "other_citations": [],
-        "purpose_contains": "student safety incident"
+        "purpose_contains": "student safety incident",
+        "citation_raw": "19.85(1)(f); (e); (c)"
       }
     },
     {
