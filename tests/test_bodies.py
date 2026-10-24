@@ -33,6 +33,9 @@ def test_rules():
     joint = bodies.match(CONFIG, "wausau", "1", "Joint Meeting of the Finance Committee and the Economic Development Committee")
     assert sorted(joint.bodies) == ["wausau-economic-development", "wausau-finance"]
     assert bodies.match(CONFIG, "wausau", "2291", "One Time Event").bodies == ["wausau-zoning-appeals"]
+    # joint meetings the listing titles name as one body
+    assert bodies.match(CONFIG, "wausau", "1462", "Human Resources Committee Special Meeting").bodies == ["wausau-human-resources", "wausau-finance"]
+    assert bodies.match(CONFIG, "wausau", "1499", "Infrastructure & Facilities Committee Regular Meeting").excluded
     assert bodies.match(CONFIG, "wausau_sd", "1", "Special Meeting").bodies == ["wausau-sd-board"]
     # generic "Public Meeting" titles: mapped one by one; graduations are excluded,
     # but bargaining sessions and task force meetings are not

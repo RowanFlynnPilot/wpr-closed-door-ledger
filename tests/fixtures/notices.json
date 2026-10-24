@@ -618,6 +618,116 @@
      "purpose": "the Development Agreement with Wangard for Redevelopment of 920 North 1st Street & 15 Fulton (Riverlife South)"
     }
    ]
+  },
+  {
+   "id": "weston-1605",
+   "jurisdiction": "weston",
+   "source": "weston:1605 (items only)",
+   "note": "A 'for the purpose of' clause that is only (g) wording doesn't hide the later 'to wit'; 'Remain' is procedure. (blind check, round 4)",
+   "text": "1. Consideration of motion to adjourn into closed session pursuant to Wis. Stat. § 19.85(1)(g) for the purpose of conferring with legal counsel for the governmental body who is rendering oral or written advice concerning strategy to be adopted by the body with respect to litigation in which it is or is likely to become involved, to wit: union negotiations.\n2. Remain in closed session pursuant to Wis. Stat. § 19.85(1)(c) to considering employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility, to wit: 2023 annual review of the Fire Chief.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "Consideration of motion to adjourn into ",
+     "purpose": "union negotiations"
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Remain in closed session pursuant to Wis",
+     "purpose": "2023 annual review of the Fire Chief"
+    }
+   ]
+  },
+  {
+   "id": "weston-1565",
+   "jurisdiction": "weston",
+   "source": "weston:1565 (items only)",
+   "note": "The subject after 'including' in a (g) item with no 'to wit'. (blind check, round 4)",
+   "text": "1. Consideration of motion to adjourn into closed session pursuant to Wis. Stat. § 19.85(1)(g) for the purpose of conferring with legal counsel for the governmental body who is rendering advice concerning strategy to be adopted by the body with respect to potential litigation, including discussion regarding union election petition.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "Consideration of motion to adjourn into ",
+     "purpose": "discussion regarding union election petition"
+    }
+   ]
+  },
+  {
+   "id": "wausau-1171",
+   "jurisdiction": "wausau",
+   "source": "wausau:1171 (items only)",
+   "note": "'vs.' doesn't end the sentence. (blind check, round 4)",
+   "text": "1. CLOSED SESSION pursuant to Section 19.85(1)(g) conferring with legal counsel for the governmental body who is rendering oral or written advice concerning strategy to be adopted by the body with respect to litigation in which it is or is likely to become involved regarding a settlement offer from plaintiff in Marathon County Case No. 19CV162 Pat Q. Plaintiff, et al vs. City of Wausau.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "CLOSED SESSION pursuant to Section 19.85",
+     "purpose": "a settlement offer from plaintiff in Marathon County Case No. 19CV162 Pat Q. Plaintiff, et al vs. City of Wausau"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-752475",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 752475 (excerpt)",
+   "note": "'to discuss and confer ...'; 'regarding same' is not a subject; 'executive session' is procedure. (blind check, round 4)",
+   "text": "X. REQUEST FOR CLOSED SESSION PURSUANT TO STATE STATUTES\nX.A. The Board of Education may convene into executive session under Wisconsin Statute § 19.85(1)(f) and (g) to discuss and confer with legal counsel regarding a parent complaint, which if discussed in open session would be likely to have a substantial adverse effect upon the reputation of individuals involved in the complaint and which may involve confidential student information under Wis. Stats. 118.125, and may take action regarding same.\nX.B. Reconvene in Open Session, to take further action if necessary and appropriate",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "f",
+      "g"
+     ],
+     "starts": "The Board of Education may convene into ",
+     "purpose": "confer with legal counsel regarding a parent complaint"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-52404505496649c78c1ab28e037",
+   "jurisdiction": "kronenwetter",
+   "source": "kronenwetter:52404505496649c78c1ab28e03748a14 (items only)",
+   "note": "The spaced 't o wit'; a second '; to wit' starts a second subject. (blind check, round 4)",
+   "text": "1. CLOSED SESSION Consideration of a motion to convene into closed session pursuant to Wis. Stat. 19.85 (1) ( c) for consideration of employment, promotion, compensation, or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – t o wit Police Lieutenant's Annual Evaluation and Pay Increase; to wit Review and Discuss the Performance Evaluation of the Community Development Director.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "CLOSED SESSION Consideration of a motion",
+     "purpose": "Police Lieutenant's Annual Evaluation and Pay Increase; Review and Discuss the Performance Evaluation of the Community Development Director"
+    }
+   ]
+  },
+  {
+   "id": "weston-1834",
+   "jurisdiction": "weston",
+   "source": "AgendaCenter 1834 (excerpt)",
+   "note": "An unnumbered 'MOVE TO CLOSED SESSION' starts its own item (blind check, round 4).",
+   "text": "59. Discussion and/or action on Providing a Letter of Support from the Village Board for the\nMountain Bay Metro Police Department Application to the Non-State Grant Program\nadded\nMOVE TO CLOSED SESSION Pursuant to Wis. Stat. § 19.85(1)(g), conferring with legal\ncounsel for the governmental body who is rendering oral or written advice concerning strategy to\nbe adopted by the body with respect to litigation in which it is or is likely to become involved to\nwit: Marathon County Case No. 2018-CV-119\nRECONVENE TO OPEN SESSION\nBOARD OF TRUSTEES MEETING AGENDA",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "MOVE TO CLOSED SESSION Pursuant to Wis. ",
+     "purpose": "Marathon County Case No. 2018-CV-119"
+    }
+   ]
   }
  ]
 }

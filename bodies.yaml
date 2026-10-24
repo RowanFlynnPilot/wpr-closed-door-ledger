@@ -72,6 +72,8 @@ jurisdictions:
       - { key: wausau-board-of-review, name: Board of Review, match: "board of review" }
       - { key: wausau-joint-review-board, name: Joint Review Board, match: "joint review board" }
       - { key: wausau-rules-review, name: Rules Review Committee, match: "rules review" }
+      - { key: wausau-capital-improvements-street-maintenance, name: Capital Improvements and Street Maintenance Committee,
+          confirm: "Named only in a Feb 13, 2024 joint agenda. Is it the Infrastructure & Facilities Committee's former name?" }
       - { key: wausau-affordable-housing-task-force, name: Affordable Housing Regional Task Force, match: "affordable housing regional task force",
           custodian: unknown,
           confirm: "Regional body. Is it a governmental body under s. 19.82(1), and who keeps its records?" }
@@ -88,9 +90,32 @@ jurisdictions:
       # Listed as "CANCELED-Common Council Retreat"; the agenda's header reads
       # "MEETING: Committee of the Whole" (2026). Sites win: the agenda names the body.
       "wausau:2356": wausau-committee-of-the-whole
-      # Listed as "Committee Of The Whole Special Meeting"; the agenda is a possible-quorum
-      # notice for a firefighter swearing-in ceremony, not a meeting of any body (2024).
+      # Listed as "Committee Of The Whole Special Meeting"; the agendas are possible-quorum
+      # notices (a firefighter swearing-in, a screening, 2024-25), not meetings of any body.
       "wausau:981": exclude
+      "wausau:983": exclude
+      "wausau:989": exclude
+      # Joint meetings the listing titles name as one body; each agenda's header names
+      # them all (found by reading every 2024-26 Wausau agenda header, Oct 23, 2026).
+      "wausau:980": [wausau-committee-of-the-whole, wausau-water-works]
+      "wausau:1254": [wausau-economic-development, wausau-finance]
+      "wausau:1279": [wausau-finance, wausau-capital-improvements-street-maintenance, wausau-water-works]
+      "wausau:1499": exclude        # the same Feb 13, 2024 agenda as wausau:1279, posted a second time
+      "wausau:1290": [wausau-finance, wausau-economic-development]
+      "wausau:1377": [wausau-finance, wausau-economic-development]
+      "wausau:1378": [wausau-finance, wausau-economic-development]
+      "wausau:1382": [wausau-finance, wausau-economic-development]
+      "wausau:1386": [wausau-finance, wausau-economic-development]
+      "wausau:1389": [wausau-finance, wausau-economic-development]
+      "wausau:1402": [wausau-finance, wausau-economic-development]
+      "wausau:1380": [wausau-finance, wausau-human-resources]
+      "wausau:1410": [wausau-finance, wausau-human-resources]
+      "wausau:1415": [wausau-finance, wausau-human-resources]
+      "wausau:1416": [wausau-finance, wausau-human-resources]
+      "wausau:1462": [wausau-human-resources, wausau-finance]
+      "wausau:1461": [wausau-human-resources, wausau-water-works]
+      "wausau:1388": [wausau-finance, wausau-public-health-safety]
+      "wausau:1390": [wausau-finance, wausau-water-works]
 
   wausau_sd:
     name: Wausau School District

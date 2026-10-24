@@ -65,6 +65,7 @@ python handcheck.py --quarter 2026Q3   # archive/handcheck/2026-Q3/
 **Report per governmental body.** Each committee, commission and board is its own body under s. 19.82(1). `bodies.yaml` lists all 72 and states the matching rules; `bodies.py` implements them.
 - **Validated** Oct 23 on every 2024–26 meeting title: 1,278 across Wausau, both school districts and Kronenwetter. Each one maps to exactly one body, is a genuine joint meeting, or is excluded on purpose (quorum notices, test events, supplemental-packet rows). Weston matches on AgendaCenter category ids.
 - **Unmatched or ambiguous titles fail the build.** A title matching several bodies counts for each only if it contains "joint". Otherwise it needs an `overrides` entry naming the bodies.
+- **Listing titles don't name joint meetings.** Wausau posts most joint meetings under one committee's title ("Finance Committee Special Meeting" for a joint Finance and Economic Development meeting). Every 2024–26 Wausau agenda header was read on Oct 23, 2026; the 20 joint meetings, 3 quorum notices posted under committee titles and 1 duplicate posting (wausau:1499 = 1279) are in `overrides`. New ones need the same: the agenda header wins over the title.
 - **Generic titles are mapped one by one.** Wausau SD posts many different things as "Public Meeting".
   - Its 32 such entries since 2024 are mapped in `overrides` by first agenda item: 15 event quorum notices (graduations, celebrations, forums) are excluded; 11 Elementary Task Force meetings, 3 election canvasses and 3 board–union bargaining sessions are kept.
   - A blanket exclusion would have hidden those bargaining sessions, which are closed under s. 19.86.
@@ -235,7 +236,9 @@ Otherwise `triage` is `ok`. Nearly every notice names some subject, so the real 
 - `withhold` drops the item from the site and blanks its meeting's `notice_url` and archived-copy link. Use it, for example, for an agenda that named a student.
 
 ## Archive rules
-- **Append-only, every version.** Archive each distinct file version (by sha256) with `seen_at` (UTC).
+- **Append-only, every version.** Archive each distinct file version (by sha256) with `seen_at` (UTC). **HTML pages are told apart by their agenda text:** BoardBook's page chrome changes on its own (copyright years, asset versions like `All.27.css`), so a page whose text matches an archived version is the same version.
+- A meeting a jurisdiction excludes is listed but not marked fetched, so if `bodies.yaml` later keeps it, the next run fetches its documents.
+- Files over 45 MB keep their text, sha256, size and URL, but not the file (one so far: Wausau event 1584's 51.6 MB minutes).
 - **`changed_after_meeting`** is set only when a meeting already had an archived notice version, and a *new* version whose **text differs** from the one before it is first seen on a later Central date than the meeting date. Backfilled history never sets it. The text test keeps a re-published file with identical wording (Wausau re-published everything Jan 26, 2026) from looking like a change.
 - **Removals are shown neutrally** ("no longer on the body's site"). A meeting inside the listed window that the platform no longer lists gets `source_status: "removed"`; a file no longer served gets `file_status[kind]: "removed"` in `meeting.json`.
 - **Fail fast:**
@@ -308,7 +311,9 @@ DOJ's training (March 2026) says the vote of each member must be recorded. Wheth
 **Public projection** (`site/data/`, JSON and CSV):
 - **Items, whitelisted fields only:** `id`, `meeting_id`, `bodies`, `meeting_date`, `item_text`, `citation_raw`, `exemptions`, `other_citations`, `purpose_text`, `notice_url`, `archive_url`, `minutes` (`null` until `PUBLISH_MINUTES`), plus `review_note` for `confirmed` or `flagged` items.
 - **Meetings, whitelisted:** `id`, `bodies`, `jurisdiction`, `meeting_date`, `canceled`, `notice_url`, `notice_versions`, `source_status`, `closed_item_count`, `minutes_url`. Also `bodies.json` (key, name, jurisdiction), `meta.json` (build time, window, jurisdictions, how many bodies are held back) and a copy of `bodies.yaml`.
-- **`archive_url`** is a site-relative path (`archive/<jurisdiction>/<meeting_id>/notice-<sha12>.<ext>`). `build.py` copies those archived notices, and only those, into the site artifact. The archive repo stays private.
+- **`archive_url`** is a site-relative path (`archive/<jurisdiction>/<meeting_id>/notice-<sha12>.<pdf|txt>`). The archive repo stays private; `build.py` writes into the site artifact only what a reader needs:
+  - a PDF notice cut after the page holding the agenda's closing Adjourn. Weston packets bind the previous meeting's minutes, with residents' names, right behind the agenda (the code review found five such copies).
+  - an HTML notice (BoardBook, Municode) as its extracted text, so the platform's scripts never run on the ledger's site.
 - **Never published:**
   - `triage`, `cites_subsection_1`, `no_citation`, `text_source`, `notices_reconvene`, `changed_after_meeting`
   - withheld items
@@ -318,7 +323,7 @@ DOJ's training (March 2026) says the vote of each member must be recorded. Wheth
 Each quarter, file the same simple request with each **custodian**: the open-session minutes or s. 19.88(3) records showing the motion and vote for each closed session noticed in the quarter.
 - `audit.py` groups `closed_sessions.json` by `custodian` (from `bodies.yaml`, defaulting to the jurisdiction's name) and fills `audit/request_template.md`, one file per custodian in `archive/audit/<year>-Q<n>/`. The template is pending Shereen's review.
   - A joint meeting's item goes to each of its bodies' custodians.
-  - s. 19.86-only items are left out: the open meetings law doesn't apply to bargaining negotiations, so there are no s. 19.88(3) records to ask for.
+  - s. 19.86-only items are left out: the open meetings law doesn't apply to bargaining negotiations, so there are no s. 19.88(3) records to ask for. So are withheld items (their wording may name a student) and items of canceled meetings.
   - The requester's fields (`[RECORDS CUSTODIAN]`, `[EMAIL]`, `[AMOUNT]`, `[NAME]`, `[PHONE]`) are left for the editor. Custodian `unknown` (the regional housing task force) can't be sent until its `confirm:` is settled.
 - The requests are filed by an editor and logged in the Records Ledger. Nothing files automatically.
 - **The first round covers Q3 2026.** Its responses feed the phase 2 hand-check.
@@ -358,5 +363,5 @@ Each quarter, file the same simple request with each **custodian**: the open-ses
 - **Code:** Python 3.12. Scripts use `argparse` and support `--dry-run`.
 - **Locally:** Windows, PowerShell 5.1, `python -m pip`, commands chained with semicolons. Tesseract for Windows comes from the UB Mannheim build, added to PATH.
 - **Principles:** One correct path, no fallbacks, fail fast. Single-responsibility functions.
-- **Workflow:** `.github/workflows/ledger.yml` runs daily on `cron: "17 11 * * *"` (11:17 UTC, early morning Central): test, `fetch.py --recent`, `build.py`, commit the archive, `archive_check.py --push`, then upload `site/` and deploy it to Pages. It lives on the `workflow` branch until merged; schedules only run from the default branch.
+- **Workflow:** `.github/workflows/ledger.yml` runs daily on `cron: "17 11 * * *"` (11:17 UTC, early morning Central): test; `fetch.py --recent`; commit and push what was fetched even if a jurisdiction failed (so a notice version seen tonight is never lost); `build.py`; commit and push the built data; upload `site/` and deploy it to Pages only if the build passed; then fail the job if fetch or build failed. The archive is checked out with full history so `archive_check.py` measures what GitHub stores, and each push rebases first. It lives on the `workflow` branch until merged; schedules only run from the default branch.
 - **Site:** `web/` reuses the Records Ledger's tokens, masthead and footer. Values from the data are always set as text, never HTML. Preview with `.claude/launch.json` ("site": `http.server` on port 8790 over `site/`).

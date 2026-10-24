@@ -23,7 +23,7 @@ _CITATION = re.compile(
 )
 # Phrases after which a notice names its actual subject.
 _MARKER = re.compile(
-    r"(?:\b(?:for\s+the\s+purposes?\s+of|regarding|in\s+regards?\s+to|to\s+wit|specifically|to\s+discuss|re:|"
+    r"(?:\b(?:for\s+the\s+purposes?\s+of|regarding|in\s+regards?\s+to|t\s?o\s+wit|specifically|to\s+discuss|re:|"
     r"including|discussing|related\s+to|relating\s+to|to\s+hold)|•|[–—](?=\s*[A-Z]))\s*[:\-–—•]?\s*",
     re.I,
 )
@@ -38,12 +38,14 @@ _PROCEDURAL = set("""
     consider consideration contemplate of motion motions move moving to into in continue continuing convene
     convening adjourn adjournment adjourning directly enter entering go recess closed session pursuant under
     per wis wisconsin stat stats statute statutes state sec section sections s ss meeting meetings regular special
-    following after before open prior
+    following after before open prior remain remaining executive
 """.split())
+# A sentence's end, but not an initial ("T. Winters") or an abbreviation ("vs. City", "No. 24CV40").
+_SENTENCE_END = re.compile(r"(?<!\b[A-Z])(?<!\bvs)(?<!\bv)(?<!\bNo)(?<!\bSt)(?<!\bInc)(?<!\bMr)(?<!\bMs)(?<!\bDr)(?<!\bWis)(?<!\bStat)(?<!\bStats)\.\s+[A-Z]")
 # Statute letters in parentheses inside a clause ("(1)(c)") are dropped; longer
 # parentheses ("(Riverlife South)", "applicant(s)") are part of the subject.
 _SHORT_PAREN = re.compile(r"\(\s*(?:\d{1,2}|[a-h]{1,2}|cm)\s*\)", re.I)
-_NOT_A_SUBJECT = re.compile(r"^(?:board only|if necessary|if needed)$", re.I)
+_NOT_A_SUBJECT = re.compile(r"^(?:board only|if necessary|if needed|same|the same|said)$", re.I)
 # The statute's own wording, restated in the notice. A subject candidate is cut
 # where it begins: "To consider the employment, promotion, compensation or
 # performance evaluation data of an employee" names no subject.
@@ -110,17 +112,19 @@ def purpose_text(item_text: str) -> str | None:
             continue
         rest = item_text[marker.end():]
         stops = [m.start() for m in (_CITATION.search(rest), re.search("•", rest), _MOTION_START.search(rest),
-                                     re.search(r"(?<!\b[A-Z])\.\s+[A-Z]", rest),   # the sentence's end (not "T. Winters")
+                                     _SENTENCE_END.search(rest), re.search(r";\s*t\s?o\s+wit", rest, re.I),
                                      re.search(r"^[^(]*?\)", rest)) if m]           # the parenthesis it sits in
         end = min(stops) if stops else len(rest)
-        covered = marker.end() + end
         clause = _clean(_SHORT_PAREN.sub(" ", rest[:end]))
         while (opening := _MARKER.match(clause)) and opening.end():
             clause = _clean(clause[opening.end():])        # "specifically, to discuss the ..."
-        clause = re.sub(r"(?i)^and\s+(?:consider|discuss)\s+", "", clause)   # "to discuss and consider the ..."
-        clause = _subject(clause)
+        clause = re.sub(r"(?i)^and\s+(?:(?:consider|discuss)\s+)?", "", clause)   # "to discuss and consider the ..."
+        clause = "" if _NOT_A_SUBJECT.match(clause) else _subject(clause)
         if clause:
             parts.append(clause)
+            # A clause that was only statute wording ("for the purpose of conferring with legal
+            # counsel ...") hides nothing: a later "to wit" in it still names the subject.
+            covered = marker.end() + end
     # 3. Subjects given in parentheses (D.C. Everest's layout).
     for paren in re.findall(r"\(([^()]{3,})\)", item_text):
         paren = _clean(paren)
