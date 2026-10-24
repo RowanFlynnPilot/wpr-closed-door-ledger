@@ -9,6 +9,13 @@ It is pitched to funders together with the Records Ledger (`wpr-records-ledger`)
 
 **What the numbers mean.** Every count is labeled "noticed in the online agenda". A posted agenda is not necessarily the legal notice: s. 19.84(1) is also satisfied by physical posting and by notifying the media. And a session that was noticed may never have been held.
 
+## Standing rules (set Oct 23, 2026)
+- **The archive repo is always checked out at `archive/` in this folder**, locally and in Actions. `archive/` is in `.gitignore`.
+- **One request at a time per host, at least 1 second apart.** Different hosts may run in parallel. The Jan 2024 backfill runs once, locally. The nightly run re-checks only the last 90 days and upcoming meetings.
+- **Before every archive push:** no file over 50 MB and the repo under 1 GB, or stop. `archive_check.py` enforces this.
+- Never put a private person's name from minutes into data. Nothing from `archive/` or `data/` ever lands in this repo.
+- Wherever this file and the live sites disagree, the sites win: fix this file.
+
 ## Repos and licensing
 - **`wpr-closed-door-ledger` (public).** Holds the code, tests, workflow and site.
   - Code is MIT-licensed. Published data is CC BY 4.0.
@@ -88,7 +95,7 @@ It is pitched to funders together with the Records Ledger (`wpr-records-ledger`)
 - Items from OCR'd text carry `text_source: "ocr"` and always go to review.
 - If OCR yields under 200 characters, raise an error naming the file. A document must never count as "no closed items" because it couldn't be read.
 
-**Politeness.** Make requests one at a time, with a browser User-Agent and at least 0.2 seconds between them.
+**Politeness.** One request at a time per host, with a browser User-Agent and at least 1 second between them (`polite.py`). Different hosts may run in parallel.
 
 ## The law (verified Oct 23, 2026)
 - **Notice, s. 19.84(2):** A notice must give the time, date, place and subject matter, including the subject matter of any contemplated closed session. It must be in a form reasonably likely to apprise the public and news media. It is due 24 hours ahead, or no less than 2 hours ahead for good cause (s. 19.84(3)). Citing the specific exemption in the notice is recommended practice (WASB); the statute requires it in the presiding officer's *announcement*.
