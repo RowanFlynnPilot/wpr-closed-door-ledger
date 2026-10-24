@@ -5,7 +5,8 @@
 #
 # Matching rules (one way, applied in this order):
 #   1. Normalize the title: strip leading "*", "REVISED" and "CANCELED"/"CANCELLED"
-#      markers (with any following "-" or ":"). A CANCELED marker sets canceled: true.
+#      markers (with any following "-" or ":"). "Canceled"/"cancellation" anywhere in a
+#      title sets canceled: true.
 #      "SPECIAL" is NOT stripped.
 #   2. A normalized title matching a jurisdiction's `exclude` pattern is not a
 #      meeting of any body (quorum notices, test events). It is skipped.
@@ -81,6 +82,9 @@ jurisdictions:
       # Titled "One Time Event" in CivicClerk; category is Board of Zoning Appeals.
       "wausau:2291": wausau-zoning-appeals
       "wausau:3514": wausau-zoning-appeals
+      # Titled "Human Resources Committee Regular Meeting"; the agenda is a joint
+      # Human Resources Committee and Water Works Commission meeting (Nov 2024).
+      "wausau:1463": [wausau-human-resources, wausau-water-works]
 
   wausau_sd:
     name: Wausau School District
@@ -145,6 +149,8 @@ jurisdictions:
     name: Village of Weston
     platform: agendacenter
     base: https://www.westonwi.gov
+    exclude:
+      - "possible quorum"        # 19 quorum notices in categories 3, 5 and 6 (2024-26)
     exclude_category_ids: [17]   # Election Notices
     bodies:
       - { key: weston-village-board, name: Village Board of Trustees, category_id: 3 }

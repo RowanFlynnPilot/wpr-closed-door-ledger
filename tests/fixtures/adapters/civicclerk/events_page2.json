@@ -1,0 +1,34 @@
+{
+ "@odata.context": "https://wausauwi.api.civicclerk.com/v1/$metadata#Events",
+ "value": [
+  {
+   "id": 2242,
+   "eventName": "TEST MEETING",
+   "startDateTime": "2026-02-17T18:00:00Z",
+   "categoryName": "General",
+   "publishedFiles": []
+  },
+  {
+   "id": 3585,
+   "eventName": "CANCELED - Finance Committee Meeting",
+   "startDateTime": "2026-10-08T18:30:00Z",
+   "categoryName": "Finance Committee",
+   "publishedFiles": [
+    {
+     "fileId": 7644,
+     "type": "Agenda",
+     "publishOn": "2026-10-08T15:02:54.657Z",
+     "name": "Finance_BudgetSession_10082026_Agenda",
+     "url": "stream/WAUSAUWI/e100c9f4-efd2-44a2-848c-ce5839c77421.pdf"
+    }
+   ]
+  },
+  {
+   "id": 2460,
+   "eventName": "Parks & Recreation Committee Meeting",
+   "startDateTime": "2027-01-04T17:15:00Z",
+   "categoryName": "Parks & Recreation Committee",
+   "publishedFiles": []
+  }
+ ]
+}

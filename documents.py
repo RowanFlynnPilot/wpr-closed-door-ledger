@@ -23,6 +23,9 @@ SCAN_PAGE_CHARS = 25
 # A document that yields less readable text than this raises: it must never
 # count as "no closed items" because it couldn't be read.
 MIN_DOCUMENT_CHARS = 200
+# HTML agendas are never scans, and real ones can be this short ("I. Call to
+# Order II. Continued Facility Discussion III. Adjourn"); below this the page is empty.
+MIN_HTML_CHARS = 40
 
 
 class UnreadableDocument(Exception):
@@ -86,6 +89,6 @@ def first_pages(content: bytes, n: int) -> bytes:
 
 def require_text(text: str, name: str) -> str:
     """For HTML documents: raise rather than treat an empty page as no closed items."""
-    if _chars(text) < MIN_DOCUMENT_CHARS:
+    if _chars(text) < MIN_HTML_CHARS:
         raise UnreadableDocument(f"{name}: only {_chars(text)} readable characters")
     return text

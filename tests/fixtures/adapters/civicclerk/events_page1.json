@@ -1,0 +1,86 @@
+{
+ "@odata.context": "https://wausauwi.api.civicclerk.com/v1/$metadata#Events",
+ "value": [
+  {
+   "id": 1463,
+   "eventName": "Human Resources Committee Regular Meeting",
+   "startDateTime": "2024-01-08T16:45:00Z",
+   "categoryName": "Human Resources Committee",
+   "publishedFiles": [
+    {
+     "fileId": 2171,
+     "type": "Agenda Packet",
+     "publishOn": "2026-01-26T14:22:00.887Z",
+     "name": "HumanResources_Regular_01082024_Packet",
+     "url": "stream/WAUSAUWI/3afddded09.pdf"
+    },
+    {
+     "fileId": 2172,
+     "type": "Minutes",
+     "publishOn": "2026-01-26T14:22:01.25Z",
+     "name": "HumanResources_Regular_01082024_Minutes",
+     "url": "stream/WAUSAUWI/9a3cce83f2.pdf"
+    }
+   ]
+  },
+  {
+   "id": 726,
+   "eventName": "Board Of Public Works Regular Meeting",
+   "startDateTime": "2025-02-11T10:30:00Z",
+   "categoryName": "Board of Public Works",
+   "publishedFiles": [
+    {
+     "fileId": 500,
+     "type": "Agenda",
+     "publishOn": "2026-01-26T13:30:23.733Z",
+     "name": "BoardOfPublicWorks_Regular_02112025_Agenda",
+     "url": "stream/WAUSAUWI/b70e33ceda.pdf"
+    },
+    {
+     "fileId": 501,
+     "type": "Minutes",
+     "publishOn": "2026-01-26T13:30:23.883Z",
+     "name": "BoardOfPublicWorks_Regular_02112025_Minutes",
+     "url": "stream/WAUSAUWI/1985659c77.pdf"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "eventName": "Common Council Meeting",
+   "startDateTime": "2025-11-11T17:30:00Z",
+   "categoryName": "Common Council",
+   "publishedFiles": [
+    {
+     "fileId": 101,
+     "type": "Agenda",
+     "publishOn": "2025-11-05T15:27:55.93Z",
+     "name": "CommonCouncil_Regular_Agenda_11112025_1",
+     "url": "stream/WAUSAUWI/ba1d2071-8486-44f9-8cb0-e9fc0aeb0d01.pdf"
+    },
+    {
+     "fileId": 121,
+     "type": "Agenda Packet",
+     "publishOn": "2025-11-07T16:18:20.857Z",
+     "name": "CommonCouncil_Regular_11112025_Packet",
+     "url": "stream/WAUSAUWI/f43814ba-7f9e-4ade-a121-731d59261479.pdf"
+    },
+    {
+     "fileId": 254,
+     "type": "Minutes",
+     "publishOn": "2025-12-12T11:37:16.65Z",
+     "name": "CommonCouncil_Regular_Minutes_11112025",
+     "url": "stream/WAUSAUWI/27cc15cd-3692-4fd6-9447-8a17c15b103b.pdf"
+    },
+    {
+     "fileId": 122,
+     "type": "Notice",
+     "publishOn": "2025-11-10T16:09:59.143Z",
+     "name": "Notice of Possible Quorum",
+     "url": "stream/WAUSAUWI/1ba6ec2c-d86c-4448-a32b-ce15566de50a.pdf"
+    }
+   ]
+  }
+ ],
+ "@odata.nextLink": "https://wausauwi.api.civicclerk.com/v1/Events?$filter=startDateTime%20ge%202024-01-01T00%3A00%3A00Z&$orderby=startDateTime&$skiptoken=startDateTime-2025-11-11T17%3A30%3A00Z,id-4"
+}

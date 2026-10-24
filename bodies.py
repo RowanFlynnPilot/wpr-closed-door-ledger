@@ -13,9 +13,9 @@ from pathlib import Path
 import yaml
 
 _MARKERS = re.compile(r"^\s*(?:[\*\s]*(?:revised|cancel+ed)\b[\s\-:*]*|\*+\s*)+", re.I)
-# Canceled may lead or trail: "CANCELED - Plan Commission", "*Cancelled* ...",
-# "Police and Fire Commission Meeting--CANCELLED" (Kronenwetter).
-_CANCELED = re.compile(r"^[\s\*]*(?:revised\b[\s\-:*]*)?\**\s*cancel+ed\b|[\s\-*]cancel+ed[\s*]*$", re.I)
+# Canceled can sit anywhere in a title: "CANCELED - Plan Commission", "*Cancelled* ...",
+# "Police and Fire Commission Meeting--CANCELLED", "[CANCELLED]", "Notice of Meeting Cancellation".
+_CANCELED = re.compile(r"\bcancel+(?:ed|ation)\b", re.I)
 
 
 class UnmatchedMeeting(Exception):
