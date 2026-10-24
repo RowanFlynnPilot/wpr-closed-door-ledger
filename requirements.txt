@@ -4,6 +4,7 @@ beautifulsoup4>=4.12
 pypdf>=5.0
 pypdfium2>=4.30
 PyYAML>=6.0
+tzdata>=2024.1
 pytest>=8.0
 # System dependency: Tesseract OCR (Actions: sudo apt-get install -y tesseract-ocr;
 # Windows: install from the UB Mannheim build and add it to PATH)

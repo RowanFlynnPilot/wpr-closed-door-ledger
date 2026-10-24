@@ -1,0 +1,260 @@
+"""Closed-session items in a notice's text. Deterministic, no LLM.
+
+1. segment(): split the text into agenda items by their numbering labels, never
+   by line (PDF text wraps mid-citation). HTML text arrives one item per line
+   (adapters/base.py). An unnumbered line in capitals ("CLOSED SESSION",
+   "ACTION AFTER CLOSED SESSION") is a header above the numbered items.
+2. Each item gets a depth from its label style, in the order the styles first
+   appear (I. -> A. -> 1. -> a.), and a parent: the nearest earlier item that is
+   shallower.
+3. A closed-session section is an item that mentions convening in closed
+   session (not reconvening or acting after it) plus everything under it. Each
+   item in a section that cites s. 19.85(1) or s. 19.86 is a closed-session
+   item. A section with no citation anywhere becomes one item with
+   no_citation set. Header-only lines are not items.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+from dataclasses import dataclass, field
+from pathlib import Path
+
+import citations
+from purpose import purpose_text
+
+TRIAGE_TERMS = json.loads(Path(__file__).with_name("triage_terms.json").read_text(encoding="utf-8"))
+
+_ROMAN = r"(?:X{0,3})(?:IX|IV|V?I{0,3})"
+_PART = r"(?:[IVXLC]+|[A-Z]|\d{1,2}|[a-z])"
+_LABEL = re.compile(
+    r"^\s*(?P<label>"
+    r"(?P<combined>" + _PART + r"(?:\." + _PART + r")+\.?)"          # BoardBook "V.A." "II.A.1."
+    r"|(?P<simple>" + _PART + r")[.)]"                                # "IV." "A." "7." "a)"
+    r"|\((?P<paren>\d{1,2}|[a-z]|[ivx]{1,4})\)"                       # "(1)" "(a)"
+    r"|(?P<bare>\d{1,2})(?=\s+[A-Z])"                                 # Wausau's "5 Closed Session."
+    r")\s+(?=\S)"
+)
+_CLOSED = re.compile(r"closed\s+session", re.I)
+# Mentions of closed session that are not about convening one.
+_NOT_CONVENE = re.compile(
+    r"reconven|return\w*\s+(?:to|into)\s+open|"
+    r"(?:after|following|from|out\s+of|upon\s+return\w*\s+from)\s+(?:the\s+)?closed\s+session|"
+    r"(?:discussed|taken\s+up|considered)\s+in\s+(?:the\s+)?closed\s+session|"
+    r"\bminutes\b|closed\s+session\s+(?:[IVX]+\s+)?(?:of|held|on)\s+(?:\w+\s+)?\d|"
+    r"prior\s+to\s+(?:any\s+)?(?:potential\s+|possible\s+)?closed\s+session",
+    re.I,
+)
+# Wording that convenes a closed session even when the item also mentions reconvening.
+_CONVENE_VERB = re.compile(
+    r"\b(?:adjourn\w*|convene|convening|go|move|enter\w*|recess\w*|continue)\s+(?:\w+\s+){0,3}?"
+    r"(?:in|into|to)\s+(?:a\s+)?closed\s+session|"
+    r"^\W*closed\s+session\b|closed\s+session\s+(?:pursuant|under|per)\b|"
+    r"request\s+for\s+(?:a\s+)?closed\s+session|announcement\s+of\s+(?:a\s+)?closed\s+session",
+    re.I,
+)
+# An unnumbered line that starts one of these, in capitals, starts a new item
+# (Wausau: "CLOSED SESSION pursuant to ...", "RECONVENE into Open Session").
+_KEYWORD_LINE = re.compile(
+    r"^(?:CLOSED\s+SESSION|RECONVENE|ADJOURN|CONVENE|CONTINUE\s+IN|ACTION\s+AFTER|ANNOUNCEMENT\s+OF|"
+    r"OPEN\s+SESSION|RETURN\s+TO)\b"
+)
+_RECONVENE = re.compile(r"19\s*\.?\s*85\s*\(\s*2\s*\)|reconven\w*\s+(?:in|into|to)\s+(?:the\s+)?open\s+session", re.I)
+
+
+@dataclass
+class Segment:
+    label: str
+    text: str           # the item's wording, label removed, whitespace collapsed
+    page: int           # 1-based page the item starts on
+    style: str          # label style; "header" for an unnumbered capitals line
+    depth: int = 0
+    parent: int | None = None
+    children: list[int] = field(default_factory=list)
+
+
+def _is_header(line: str) -> bool:
+    letters = [c for c in line if c.isalpha()]
+    return (len(letters) >= 6 and len(line) <= 90 and len(line.split()) >= 1
+            and sum(c.isupper() for c in letters) / len(letters) >= 0.9)
+
+
+def _style(m: re.Match, previous_upper: str | None) -> str:
+    if m.group("combined"):
+        return f"combined{m.group('combined').rstrip('.').count('.') + 1}"
+    if m.group("paren"):
+        return "paren-digit" if m.group("paren").isdigit() else "paren-lower"
+    if m.group("bare"):
+        return "digit"
+    part = m.group("simple")
+    if part.isdigit():
+        return "digit"
+    if part.islower():
+        return "lower"
+    if re.fullmatch(_ROMAN, part) and part:
+        # "I.", "V.", "X.", "C." after "H.", "U.", "W.", "B." are letters, not numerals.
+        if len(part) == 1 and previous_upper and ord(part) - ord(previous_upper) == 1:
+            return "upper"
+        return "roman"
+    return "upper"
+
+
+def segment(text: str) -> list[Segment]:
+    segments: list[Segment] = []
+    previous_upper = None
+    for page_no, page in enumerate(text.split("\f"), 1):
+        for raw in page.splitlines():
+            line = re.sub(r"\s+", " ", raw).strip()
+            if not line:
+                continue
+            m = _LABEL.match(line)
+            if m:
+                style = _style(m, previous_upper)
+                if style == "upper":
+                    previous_upper = m.group("simple")
+                segments.append(Segment(m.group("label"), line[m.end():], page_no, style))
+            elif _KEYWORD_LINE.match(line):
+                segments.append(Segment("", line, page_no, "keyword"))
+            elif _is_header(line) and not (segments and segments[-1].style == "header"
+                                           and not segments[-1].text.rstrip().endswith((".", ":"))
+                                           and len(segments[-1].text) < 60):
+                segments.append(Segment("", line, page_no, "header"))
+            elif segments:
+                segments[-1].text += " " + line
+            else:
+                segments.append(Segment("", line, page_no, "preamble"))
+    _assign_depths(segments)
+    return segments
+
+
+def _assign_depths(segments: list[Segment]) -> None:
+    order: list[str] = []
+    numbered_depth = 0
+    for i, seg in enumerate(segments):
+        if seg.style in ("header", "preamble"):
+            seg.depth = -1
+        elif seg.style == "keyword":
+            seg.depth = numbered_depth          # a sibling of the numbered item before it
+        elif seg.style.startswith("combined"):
+            seg.depth = int(seg.style[len("combined"):]) - 1
+        else:
+            if seg.style not in order:
+                order.append(seg.style)
+            seg.depth = order.index(seg.style)
+        if seg.style not in ("header", "preamble", "keyword"):
+            numbered_depth = seg.depth
+        for j in range(i - 1, -1, -1):
+            if segments[j].depth < seg.depth:
+                seg.parent = j
+                segments[j].children.append(i)
+                break
+
+
+def _descendants(segments: list[Segment], i: int) -> list[int]:
+    out = []
+    for c in segments[i].children:
+        out.append(c)
+        out.extend(_descendants(segments, c))
+    return out
+
+
+def _ancestors(segments: list[Segment], i: int) -> list[int]:
+    out = []
+    p = segments[i].parent
+    while p is not None:
+        out.append(p)
+        p = segments[p].parent
+    return out
+
+
+def convenes(text: str) -> bool:
+    """The text is about convening a closed session, not reconvening or acting after one."""
+    return bool(_CONVENE_VERB.search(text)) or (bool(_CLOSED.search(text)) and not _NOT_CONVENE.search(text))
+
+
+def cites(text: str) -> bool:
+    c = citations.parse(text)
+    return bool(c.exemptions) or any(o.startswith("19.86") for o in c.other_citations)
+
+
+def notices_reconvene(text: str) -> bool:
+    return bool(_RECONVENE.search(text))
+
+
+@dataclass(frozen=True)
+class Found:
+    item_text: str
+    page: int
+    no_citation: bool
+
+
+def closed_items(text: str) -> list[Found]:
+    """The notice's closed-session items.
+
+    A notice with any cited closed-session item yields only those: its uncited
+    mentions ("ANNOUNCEMENT OF CLOSED SESSION", "Closed Session Information
+    (Board Only)") belong to the same session. A notice whose closed-session
+    sections cite nothing yields ONE no_citation item: their wording, " / "-joined.
+    """
+    segments = segment(text)
+    cited = [Found(seg.text, seg.page, False) for i, seg in enumerate(segments)
+             if cites(seg.text) and (convenes(seg.text)
+                                     or any(convenes(segments[a].text) for a in _ancestors(segments, i)))]
+    if cited:
+        return cited
+    uncited: list[tuple[int, str]] = []
+    taken: set[int] = set()
+    for i, seg in enumerate(segments):
+        if i not in taken and convenes(seg.text):
+            under = _descendants(segments, i)
+            uncited.append((seg.page, " ".join([seg.text] + [segments[d].text for d in under])))
+            taken.update(under)
+    if not uncited:
+        return []
+    return [Found(" / ".join(t for _, t in uncited), uncited[0][0], True)]
+
+
+# --- item records -----------------------------------------------------------
+
+def normalize(item_text: str) -> str:
+    return re.sub(r"\s+", " ", item_text).strip().casefold()
+
+
+def item_id(meeting_id: str, item_text: str) -> str:
+    return f"{meeting_id}:{hashlib.sha256(normalize(item_text).encode('utf-8')).hexdigest()[:12]}"
+
+
+def triage(no_citation: bool, cites_subsection_1: bool | None, purpose: str | None,
+           text_source: str, exemptions: list[str]) -> str:
+    if no_citation or not cites_subsection_1 or text_source == "ocr":
+        return "check"
+    if not purpose or len(purpose.split()) < 4:
+        return "check"
+    if not exemptions or any(not TRIAGE_TERMS.get(letter) for letter in exemptions):
+        return "check"          # 19.86-only items, and letters with no terms (ee, eg, em)
+    lowered = purpose.lower()
+    terms = [t.lower() for letter in exemptions for t in TRIAGE_TERMS[letter]]
+    return "ok" if any(t in lowered for t in terms) else "check"
+
+
+def item_record(meeting: dict, found: Found, text_source: str) -> dict:
+    """One closed_sessions.json row. `meeting` is the meetings.json row."""
+    c = citations.parse(found.item_text)
+    purpose = None if found.no_citation else purpose_text(found.item_text)
+    return {
+        "id": item_id(meeting["id"], found.item_text),
+        "meeting_id": meeting["id"],
+        "bodies": meeting["bodies"],
+        "meeting_date": meeting["meeting_date"],
+        "item_text": found.item_text,
+        "citation_raw": c.citation_raw,
+        "exemptions": c.exemptions,
+        "cites_subsection_1": c.cites_subsection_1,
+        "other_citations": c.other_citations,
+        "no_citation": found.no_citation,
+        "text_source": text_source,
+        "purpose_text": purpose,
+        "triage": triage(found.no_citation, c.cites_subsection_1, purpose, text_source, c.exemptions),
+        "minutes": None,
+    }

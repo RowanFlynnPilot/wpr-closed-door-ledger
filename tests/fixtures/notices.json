@@ -1,0 +1,182 @@
+{
+ "_about": "Short excerpts of real posted agendas (public notices, never minutes), with the closed-session items a reader finds in them. Used by tests/test_extract.py.",
+ "cases": [
+  {
+   "id": "wausau-792",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 792 (Board of Public Works), May 6, 2025",
+   "note": "Numbered items, two closed sessions, (d) without (1); reconvene item has no citation.",
+   "text": "AGENDA ITEMS FOR CONSIDERATION (All items listed may be acted upon)\n1. Approve minutes of the April 29, 2025 meeting.\n2. 2025 Street Construction Project \"A\" - Randolph Street & Cherry Street, Haas Sons, Inc., Pay\nEstimate #1.\n3. 2024 Jefferson Parking Ramp Stairwell Cleaning & Coating Project, Advanced Coating Solutions,\nFinal Payment.\n4. Alexander-Airport Park Pickleball Court Construction: S.D. Ellenbecker Inc., Pay Estimate #1.\n5. CLOSED SESSION pursuant to Section 19.85(d), Wis. Stats., for the purpose of considering and\ndeliberating on pre-qualification statements for 2025 Street Sealcoating Project.\n6. CLOSED SESSION pursuant to Section 19.85(1)(g), Wis. Stats., for the purpose of deliberating on\nclaims.\n7. RECONVENE MEETING INTO OPEN SESSION for the purpose of acting upon closed session\nitem, if necessary.\nERIC LINDMAN, PE",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "d"
+     ],
+     "starts": "CLOSED SESSION pursuant to Section 19.85(d)"
+    },
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "CLOSED SESSION pursuant to Section 19.85(1)(g)"
+    }
+   ]
+  },
+  {
+   "id": "wausau-3534",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 3534 (Board of Public Works), July 14, 2026",
+   "note": "'3 Closed Session.' header with a lettered sub-item carrying the citation; bare item numbers.",
+   "text": "3 Closed Session.\na. Closed Session pursuant to Wisconsin State Statute §19.85(1)(e) for the purpose of\nconsidering and deliberating on pre-qualification statements for the 2026 City Hall and\nFire Department Concrete Project.\n4 Reconvene into Open Session, if necessary, to take action on Closed Session items.\n5 Adjournment.",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "Closed Session pursuant to Wisconsin State Statute"
+    }
+   ]
+  },
+  {
+   "id": "wausau-1269",
+   "jurisdiction": "wausau",
+   "source": "CivicClerk event 1269",
+   "note": "Unnumbered 'CLOSED SESSION pursuant to ...' line after item 12, then unnumbered RECONVENE.",
+   "text": "12 Discussion and possible action approving a counter-offer to purchase the property at 1100 West Street for the purpose of\nconstruction a Fleet Maintenance Facility.\nCLOSED SESSION pursuant to Section 19.85(1)(e) of the Wisconsin Statutes for deliberating or negotiating the purchase of\npublic properties, the investing of public funds, or conducting other specified public business, whenever competitive or bargaining\nreasons require a closed session regarding approving a counter-offer for purchasing 1100 West Street.\nRECONVENE into Open Session, to take action on Closed Session item.\nAdjourn",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "CLOSED SESSION pursuant to Section 19.85(1)(e) of the"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-674363",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 674363, Feb 4, 2025",
+   "note": "Header 'Request for Closed Session' with cited sub-items; subject before the citation.",
+   "text": "I. CALL TO ORDER\nII. Request for Closed Session Pursuant to State Statutes\nII.A. Administrator Contract Review s. 19.85 (1)(c)\nII.B. Pursuant to Section 19.85(1)(c), Wis. Stats., to consider employment, promotion, compensation, or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility, specifically, to discuss the employment of a member of the teaching staff.\nII.C. Preliminary Discussion Regarding Potential Litigation 19.85 (g)\nII.D. Reconvene in Open Session, to take further action if necessary and appropriate\nIII. ADJOURN",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Administrator Contract Review"
+    },
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Pursuant to Section 19.85(1)(c)"
+    },
+    {
+     "exemptions": [
+      "g"
+     ],
+     "starts": "Preliminary Discussion Regarding Potential"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-769562",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 769562",
+   "note": "Approving closed-session minutes is not a closed session.",
+   "text": "VI.E. Minutes: Regular Session of September 14, 2026; Closed Session of September 21, 2026; Closed Session II of September 21, 2026; and the Special Session of September 28, 2026.\nX. REQUEST FOR CLOSED SESSION PURSUANT TO STATE STATUES\nX.A. Evaluation of Superintendent of Schools s. 19.85 (1)(c)\nX.B. ADJOURN",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "Evaluation of Superintendent of Schools"
+    }
+   ]
+  },
+  {
+   "id": "wausau_sd-639532",
+   "jurisdiction": "wausau_sd",
+   "source": "BoardBook 1360 meeting 639532, June 10, 2024",
+   "note": "Bargaining under s. 19.86; the closed-session note is a footnote in the ADJOURNMENT row.",
+   "text": "I. INTRODUCTIONS\nII. INITIAL NEGOTIATIONS MEETING BETWEEN REPRESENTATIVES OF THE WAUSAU BOARD OF EDUCATION AND THE WAUSAU EDUCATION ASSOCIATION TO EXCHANGE INITIAL PROPOSALS IN WRITING FOR THE 2024-25 SCHOOL YEAR AND PURSUANT TO SECTIONS 19.86 AND 111.70(4)(CM)(2)\nIII. ADJOURNMENT* * The Parties may continue negotiations in closed session pursuant to ss. 19.86 and 111.70 (4)(cm).",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [],
+     "starts": "ADJOURNMENT* * The Parties may continue"
+    }
+   ]
+  },
+  {
+   "id": "dc_everest-627827",
+   "jurisdiction": "dc_everest",
+   "source": "BoardBook 1315 meeting 627827, Apr 17, 2024",
+   "note": "Chained exemptions in one item; uncited sub-item 'Closed Session Information (Board Only)' is not a second session.",
+   "text": "XII. The Board Will Consider Adjournment to Closed Session Pursuant to W.S.S. 19.85(1)(c) for Considering Employment, Promotion, Compensation or Performance Evaluation Data of Any Public Employee Over Which the Governmental Body has Jurisdiction or Exercises Responsibility (Administrator Retirement Agreements) and (e) for Deliberating or Negotiating the Purchasing of Public Properties, the IUnvesting of Public Funds or Conducting Other Specified Public Business, Whenever competitive or Bargaining Reasons Require a Closed Session (Teacher Negotiations) and (f) for Considering Financial, Medical, Social or Personal Histories or Disciplinary Data of Specific Persons, Preliminary Consideration of Specific Personnel Problems or the Investigation of Charges Against Specific Persons Except Where Paragraph (b) Applies, Which If Discussed in Public, Would be Likely to Have a Substantial Adverse Effect Upon the Reputation of Any Person Referred to in Such Histories or Data, or Involved in Such Problems or Investigations. (Co-Curricular Program Review)\nXII.A. Closed Session Information (Board Only)\nXIII. Approval of Administrator, Teacher, and Other Group Wage Agreements\nXIV. Adjourn",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "c",
+      "e",
+      "f"
+     ],
+     "starts": "The Board Will Consider Adjournment to"
+    }
+   ]
+  },
+  {
+   "id": "dc_everest-679896",
+   "jurisdiction": "dc_everest",
+   "source": "BoardBook 1315 meeting 679896, Apr 16, 2025",
+   "note": "An open-session discussion 'prior to any potential closed session' is not itself a closed session.",
+   "text": "XII. Discussion regarding a possible closed session discussion under 19.85(1)(e) to review bargaining status and negotiation parameters with D.C. Everest Teachers' Association (DCETA) will occur prior to any potential closed session.\nXIII. The Board will consider adjournment to Closed Session pursuant to 19.85(1) (e) Wis. Stats. for deliberating or negotiating the purchasing of public properties, the investing of public funds, or conducting other specified public business, whenever competitive or bargaining reasons require a closed session. (Update on Negotiations with DCETA) The Board will adjourn directly from Closed Session.",
+   "notices_reconvene": false,
+   "items": [
+    {
+     "exemptions": [
+      "e"
+     ],
+     "starts": "The Board will consider adjournment to Clo"
+    }
+   ]
+  },
+  {
+   "id": "kronenwetter-c9c92d2a",
+   "jurisdiction": "kronenwetter",
+   "source": "Municode c9c92d2afc2a49afb51ba2b04743793b, Sep 17, 2026",
+   "note": "ANNOUNCEMENT OF CLOSED SESSION and an uncited motion line belong to the cited session.",
+   "text": "1. CALL MEETING TO ORDER\nA. Pledge of Allegiance\nB. Roll Call\n2. ANNOUNCEMENT OF CLOSED SESSION\n3. PUBLIC COMMENT Please be advised per State Statute Section 19.84(2), information will be received from the public. It is the policy of this Village that Public Comment will take no longer than 15 minutes with a three-minute time period, per person, with time extension per the Chief Presiding Officer’s discretion. Be further advised that there may be limited discussion on the information received, however, no action will be taken under public comments.\n4. CLOSED SESSION CLOSED SESSION Consideration of motion to convene into closed session pursuant to Wis. Stat. 19.85 (1)( c ) for consideration of employment, promotion, compensation or performance evaluation data of any public employee over which the governmental body has jurisdiction or exercises responsibility – to wit Interviewing Village Clerk Candidates.\nC. Consideration of motion to convene into closed session.\n5. RECONVENE OPEN SESSION\nD. Consideration of motion to reconvene into open session.\n6. ACTION AFTER CLOSED SESSION\n7. CONSIDERATION OF ITEMS FOR FUTURE AGENDA\n8. ADJOURNMENT\nNOTE: Upon reasonable notice, efforts will be made to accommodate the needs of disabled individuals through appropriate aids and services. For additional information or to request service, contact the clerk’s office, 1582 Kronenwetter Drive, WI 54455 (715)-692-1728 Posted: 09/16/2026 Kronenwetter Municipal Center and www.kronenwetter.gov Faxed: WAOW, WSAU, City Pages, Mosinee Times | Emailed: Wausau Daily Herald, WSAW, WAOW, Mosinee Times, Wausau Pilot and Review, City Pages, The Wausonian",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [
+      "c"
+     ],
+     "starts": "CLOSED SESSION"
+    }
+   ]
+  },
+  {
+   "id": "synthetic-no-citation",
+   "jurisdiction": "synthetic",
+   "source": "synthetic",
+   "note": "A closed session noticed with no citation anywhere: one no_citation item.",
+   "text": "6. ANNOUNCEMENT OF CLOSED SESSION\n7. CLOSED SESSION\nA. Discussion of a personnel matter.\n8. RECONVENE INTO OPEN SESSION\n9. Adjourn",
+   "notices_reconvene": true,
+   "items": [
+    {
+     "exemptions": [],
+     "no_citation": true,
+     "starts": "ANNOUNCEMENT OF CLOSED SESSION / CLOSED SE"
+    }
+   ]
+  }
+ ]
+}
